@@ -1,0 +1,7 @@
+version = "0.3.0"
+description = ""
+requires = "openQASM unix zarith"
+archive(byte) = "voqc.cma"
+archive(native) = "voqc.cmxa"
+plugin(byte) = "voqc.cma"
+plugin(native) = "voqc.cmxs"

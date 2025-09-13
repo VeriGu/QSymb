@@ -1,0 +1,4089 @@
+gf2^8_mult.qasm Best circuit size: 127
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 127
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 127
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 127
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 139
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 139
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 138
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 138
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 139
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 139
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 137
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 137
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 149
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 149
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 149
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 149
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 161
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 161
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 159
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 159
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 158
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 158
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 158
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 160
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 161
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 161
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 159
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 159
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 170
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 170
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 169
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 169
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 170
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 170
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 168
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 168
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 180
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 180
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 178
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 178
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 177
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 177
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 176
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 176
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 176
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 179
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 180
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 180
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 178
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 178
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 176
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 176
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 188
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 188
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 188
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 188
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 200
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 200
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 198
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 198
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 197
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 197
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 197
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 199
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 200
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 200
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 198
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 198
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 197
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 197
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 197
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 199
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 209
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 209
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 209
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 209
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 221
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 221
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 220
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 220
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 221
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 221
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 219
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 219
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 231
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 231
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 229
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 229
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 228
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 228
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 227
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 227
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 227
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 230
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 231
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 231
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 229
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 229
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 227
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 227
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 239
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 239
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 239
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 239
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 251
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 251
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 250
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 250
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 251
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 251
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 249
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 249
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 261
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 261
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 261
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 261
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 260
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 260
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 272
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 272
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 272
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 272
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 284
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 284
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 282
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 282
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 281
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 281
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 281
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 283
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 284
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 284
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 293
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 293
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 291
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 291
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 289
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 289
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 288
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 288
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 288
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 290
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 288
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 291
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 288
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 292
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 293
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 293
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 291
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 291
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 289
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 289
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 300
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 300
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 299
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 299
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 300
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 300
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 298
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 298
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 310
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 310
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 308
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 308
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 307
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 307
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 307
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 309
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 310
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 310
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 308
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 308
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 306
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 306
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 318
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 318
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 318
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 318
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 317
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 317
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 329
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 329
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 329
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 329
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 341
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 341
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 341
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 341
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 353
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 353
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 351
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 351
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 349
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 349
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 348
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 348
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 347
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 347
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 347
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 350
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 347
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 352
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 353
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 353
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 351
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 351
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 349
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 349
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 348
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 348
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 348
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 350
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 348
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 351
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 348
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 352
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 359
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 359
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 358
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 358
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 359
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 359
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 357
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 357
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 369
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 369
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 368
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 368
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 369
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 369
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 367
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 367
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 379
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 379
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 379
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 379
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 391
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 391
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 389
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 389
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 387
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 387
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 386
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 386
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 385
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 385
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 385
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 388
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 385
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 390
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 391
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 391
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 389
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 389
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 387
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 387
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 386
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 386
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 386
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 388
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 386
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 389
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 386
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 390
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 397
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 397
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 396
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 396
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 397
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 397
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 395
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 395
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 407
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 407
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 405
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 405
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 407
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 407
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 417
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 417
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 416
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 416
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 415
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 415
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 417
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 417
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 415
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 415
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 413
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 413
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 425
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 425
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 423
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 423
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 425
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 425
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 435
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 435
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 433
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 433
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 432
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 432
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 432
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 434
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 435
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 435
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 433
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 433
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 444
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 444
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 443
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 443
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 442
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 442
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 444
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 444
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 442
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 442
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 440
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 440
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 452
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 452
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 451
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 451
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 452
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 452
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 450
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 450
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 462
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 462
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 460
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 460
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 462
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 462
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 472
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 472
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 470
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 470
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 469
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 469
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 469
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 471
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 472
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 472
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 470
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 470
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 481
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 481
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 479
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 479
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 481
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 481
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 491
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 491
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 490
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 490
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 489
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 489
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 491
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 491
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 489
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 489
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 487
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 487
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 499
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 499
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 498
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 498
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 499
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 499
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 497
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 497
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 509
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 509
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 507
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 507
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 506
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 506
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 506
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 508
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 509
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 509
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 507
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 507
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 518
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 518
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 518
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 518
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 530
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 530
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 528
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 528
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 530
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 530
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 528
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 528
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 540
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 540
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 538
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 538
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 540
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 540
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 539
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 539
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 550
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 550
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 550
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 550
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 548
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 548
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 546
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 546
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 558
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 558
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 557
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 557
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 556
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 556
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 555
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 555
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 558
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 558
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 556
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 556
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 555
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 555
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 554
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 554
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 554
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 557
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 566
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 566
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 565
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 565
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 566
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 566
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 564
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 564
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 576
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 576
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 575
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 575
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 576
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 576
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 574
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 574
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 586
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 586
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 584
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 584
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 586
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 586
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 596
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 596
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 594
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 594
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 593
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 593
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 593
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 595
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 596
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 596
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 594
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 594
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 605
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 605
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 605
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 605
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 617
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 617
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 616
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 616
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 617
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 617
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 615
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 615
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 627
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 627
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 626
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 626
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 627
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 627
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 625
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 625
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 637
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 637
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 635
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 635
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 633
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 633
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 632
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 632
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 632
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 634
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 632
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 636
+gf2^8_mult.qasm Seconds elapsed: 1
+--
+gf2^8_mult.qasm Best circuit size: 637
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 637
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 635
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 635
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 633
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 633
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 633
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 635
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 644
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 644
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 642
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 642
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 640
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 640
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 644
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 644
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 652
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 652
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 650
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 650
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 648
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 648
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 647
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 647
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 647
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 649
+gf2^8_mult.qasm Seconds elapsed: 1
+--
+gf2^8_mult.qasm Best circuit size: 647
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 651
+gf2^8_mult.qasm Seconds elapsed: 1
+--
+gf2^8_mult.qasm Best circuit size: 652
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 652
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 650
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 650
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 659
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 659
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 658
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 658
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 657
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 657
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 659
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 659
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 657
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 657
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 655
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 655
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 667
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 667
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 667
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 667
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 679
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 679
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 677
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 677
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 679
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 679
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 677
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 677
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 689
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 689
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 688
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 688
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 687
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 687
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 689
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 689
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 687
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 687
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 686
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 686
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 686
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 688
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 698
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 698
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 697
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 697
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 698
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 698
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 696
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 696
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 708
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 708
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 706
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 706
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 705
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 705
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 705
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 707
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 708
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 708
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 706
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 706
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 729
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 729
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 727
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 727
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 724
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 724
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 724
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 726
+gf2^8_mult.qasm Seconds elapsed: 1
+--
+gf2^8_mult.qasm Best circuit size: 724
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 728
+gf2^8_mult.qasm Seconds elapsed: 1
+--
+gf2^8_mult.qasm Best circuit size: 729
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 729
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 727
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 727
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 727
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 736
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 736
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 735
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 735
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 734
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 734
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 736
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 736
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 734
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 734
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 732
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 732
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 732
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 732
+gf2^8_mult.qasm Seconds elapsed: 0
+--
+gf2^8_mult.qasm Best circuit size: 732
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 732
+gf2^8_mult.qasm Seconds elapsed: 7
+--
+gf2^8_mult.qasm Best circuit size: 732
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 732
+gf2^8_mult.qasm Seconds elapsed: 14
+--
+gf2^8_mult.qasm Best circuit size: 732
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 732
+gf2^8_mult.qasm Seconds elapsed: 22
+--
+gf2^8_mult.qasm Best circuit size: 732
+gf2^8_mult.qasm Time to best (s): 0
+gf2^8_mult.qasm Current circuit size: 732
+gf2^8_mult.qasm Seconds elapsed: 30
+--
+gf2^8_mult.qasm Best circuit size: 730
+gf2^8_mult.qasm Time to best (s): 38
+gf2^8_mult.qasm Current circuit size: 730
+gf2^8_mult.qasm Seconds elapsed: 38
+--
+gf2^8_mult.qasm Best circuit size: 730
+gf2^8_mult.qasm Time to best (s): 38
+gf2^8_mult.qasm Current circuit size: 730
+gf2^8_mult.qasm Seconds elapsed: 46
+--
+gf2^8_mult.qasm Best circuit size: 730
+gf2^8_mult.qasm Time to best (s): 38
+gf2^8_mult.qasm Current circuit size: 730
+gf2^8_mult.qasm Seconds elapsed: 53
+--
+gf2^8_mult.qasm Best circuit size: 730
+gf2^8_mult.qasm Time to best (s): 38
+gf2^8_mult.qasm Current circuit size: 730
+gf2^8_mult.qasm Seconds elapsed: 60
+--
+gf2^8_mult.qasm Best circuit size: 730
+gf2^8_mult.qasm Time to best (s): 38
+gf2^8_mult.qasm Current circuit size: 730
+gf2^8_mult.qasm Seconds elapsed: 68
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 76
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 84
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 91
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 99
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 107
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 115
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 122
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 130
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 137
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 145
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 152
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 160
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 168
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 175
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 183
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 190
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 198
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 205
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 213
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 221
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 228
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 235
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 242
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 249
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 256
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 263
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 271
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 278
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 285
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 292
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 299
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 306
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 313
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 320
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 328
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 334
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 342
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 349
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 356
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 363
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 370
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 377
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 385
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 392
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 398
+--
+gf2^8_mult.qasm Best circuit size: 725
+gf2^8_mult.qasm Time to best (s): 76
+gf2^8_mult.qasm Current circuit size: 725
+gf2^8_mult.qasm Seconds elapsed: 405
+--
+gf2^8_mult.qasm Best circuit size: 724
+gf2^8_mult.qasm Time to best (s): 412
+gf2^8_mult.qasm Current circuit size: 724
+gf2^8_mult.qasm Seconds elapsed: 412
+--
+gf2^8_mult.qasm Best circuit size: 724
+gf2^8_mult.qasm Time to best (s): 412
+gf2^8_mult.qasm Current circuit size: 724
+gf2^8_mult.qasm Seconds elapsed: 420
+--
+gf2^8_mult.qasm Best circuit size: 724
+gf2^8_mult.qasm Time to best (s): 412
+gf2^8_mult.qasm Current circuit size: 724
+gf2^8_mult.qasm Seconds elapsed: 427
+--
+gf2^8_mult.qasm Best circuit size: 724
+gf2^8_mult.qasm Time to best (s): 412
+gf2^8_mult.qasm Current circuit size: 724
+gf2^8_mult.qasm Seconds elapsed: 434
+--
+gf2^8_mult.qasm Best circuit size: 724
+gf2^8_mult.qasm Time to best (s): 412
+gf2^8_mult.qasm Current circuit size: 724
+gf2^8_mult.qasm Seconds elapsed: 441
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 448
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 456
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 463
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 471
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 478
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 485
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 492
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 500
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 507
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 514
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 521
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 528
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 535
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 542
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 550
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 557
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 565
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 572
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 579
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 587
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 595
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 602
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 610
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 618
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 625
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 632
+--
+gf2^8_mult.qasm Best circuit size: 723
+gf2^8_mult.qasm Time to best (s): 448
+gf2^8_mult.qasm Current circuit size: 723
+gf2^8_mult.qasm Seconds elapsed: 640
+--
+gf2^8_mult.qasm Best circuit size: 722
+gf2^8_mult.qasm Time to best (s): 647
+gf2^8_mult.qasm Current circuit size: 722
+gf2^8_mult.qasm Seconds elapsed: 647
+--
+gf2^8_mult.qasm Best circuit size: 722
+gf2^8_mult.qasm Time to best (s): 647
+gf2^8_mult.qasm Current circuit size: 722
+gf2^8_mult.qasm Seconds elapsed: 655
+--
+gf2^8_mult.qasm Best circuit size: 721
+gf2^8_mult.qasm Time to best (s): 663
+gf2^8_mult.qasm Current circuit size: 721
+gf2^8_mult.qasm Seconds elapsed: 663
+--
+gf2^8_mult.qasm Best circuit size: 721
+gf2^8_mult.qasm Time to best (s): 663
+gf2^8_mult.qasm Current circuit size: 721
+gf2^8_mult.qasm Seconds elapsed: 670
+--
+gf2^8_mult.qasm Best circuit size: 719
+gf2^8_mult.qasm Time to best (s): 678
+gf2^8_mult.qasm Current circuit size: 719
+gf2^8_mult.qasm Seconds elapsed: 678
+--
+gf2^8_mult.qasm Best circuit size: 719
+gf2^8_mult.qasm Time to best (s): 678
+gf2^8_mult.qasm Current circuit size: 719
+gf2^8_mult.qasm Seconds elapsed: 685
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 692
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 700
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 707
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 714
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 722
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 729
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 736
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 744
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 750
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 757
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 765
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 772
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 779
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 786
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 794
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 801
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 809
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 816
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 823
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 830
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 837
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 845
+--
+gf2^8_mult.qasm Best circuit size: 718
+gf2^8_mult.qasm Time to best (s): 692
+gf2^8_mult.qasm Current circuit size: 718
+gf2^8_mult.qasm Seconds elapsed: 852
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 860
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 868
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 875
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 883
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 890
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 897
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 905
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 913
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 920
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 928
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 935
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 942
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 950
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 957
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 965
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 972
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 979
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 987
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 994
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1001
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1009
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1016
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1023
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1030
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1038
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1045
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1052
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1060
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1067
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1074
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1081
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1088
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1096
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1103
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1110
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1117
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1124
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1132
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1139
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1146
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1153
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1160
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1167
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1174
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1181
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1188
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1196
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1203
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1210
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1217
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1224
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1231
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1238
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1245
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1253
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1260
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1267
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1274
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1281
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1288
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1295
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1303
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1310
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1317
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1324
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1331
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1339
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1346
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1353
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1360
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1367
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1374
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1381
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1388
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1395
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1403
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1410
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1417
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1424
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1431
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1438
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1445
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1453
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1460
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1467
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1474
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1482
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1489
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1496
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1503
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1510
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1518
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1525
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1532
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1539
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1546
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1553
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1560
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1567
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1574
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1582
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1589
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1596
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1604
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1611
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1618
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1625
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1632
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1639
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1647
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1654
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1662
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1668
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1676
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1683
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1690
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1697
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1704
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1712
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1719
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1726
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1733
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1740
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1748
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1754
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1761
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1769
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1776
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1783
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1790
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1798
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1805
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1812
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1819
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1826
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1834
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1841
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1848
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1855
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1862
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1869
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1876
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1883
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1890
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1897
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1905
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1912
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1919
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1926
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1933
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1940
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1947
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1954
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1961
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1968
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1975
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1982
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1989
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 1996
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2003
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2010
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2017
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2024
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2031
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2038
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2045
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2052
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2059
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2066
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2072
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2079
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2086
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2093
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2100
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2107
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2114
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2121
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2128
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2135
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2142
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2149
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2156
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2163
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2170
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2176
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2183
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2190
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2197
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2204
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2211
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2218
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2225
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2231
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2238
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2245
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2252
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2259
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2266
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2273
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2279
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2286
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2293
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2300
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2307
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2314
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2321
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2328
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2335
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2341
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2348
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2355
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2362
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2369
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2376
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2383
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2390
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2397
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2404
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2411
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2417
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2424
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2431
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2438
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2445
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2452
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2458
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2465
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2472
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2479
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2486
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2493
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2500
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2507
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2513
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2520
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2527
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2534
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2540
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2547
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2554
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2561
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2567
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2574
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2581
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2588
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2594
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2601
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2608
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2615
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2621
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2628
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2635
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2642
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2649
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2655
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2662
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2669
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2676
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2683
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2689
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2696
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2703
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2710
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2716
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2723
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2730
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2737
+--
+gf2^8_mult.qasm Best circuit size: 717
+gf2^8_mult.qasm Time to best (s): 860
+gf2^8_mult.qasm Current circuit size: 717
+gf2^8_mult.qasm Seconds elapsed: 2743
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2750
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2757
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2764
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2771
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2777
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2784
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2791
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2798
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2805
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2812
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2818
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2825
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2832
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2838
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2846
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2852
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2859
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2866
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2873
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2880
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2886
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2893
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2900
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2906
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2914
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2921
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2928
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2934
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2941
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2948
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2955
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2962
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2969
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2976
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2983
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2990
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 2997
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3004
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3011
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3018
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3024
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3031
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3038
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3045
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3052
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3059
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3066
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3073
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3080
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3088
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3095
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3102
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3110
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3117
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3124
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3132
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3139
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3146
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3154
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3161
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3169
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3176
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3183
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3190
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3197
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3204
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3211
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3218
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3225
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3232
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3239
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3246
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3253
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3261
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3268
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3275
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3282
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3290
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3297
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3304
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3312
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3319
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3327
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3334
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3341
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3349
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3356
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3363
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3371
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3378
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3386
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3393
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3400
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3407
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3415
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3422
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3429
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3436
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3443
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3451
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3458
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3465
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3472
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3479
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3486
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3493
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3500
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3507
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3514
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3521
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3528
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3535
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3542
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3549
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3556
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3563
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3570
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3577
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3583
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3590
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3597
+--
+gf2^8_mult.qasm Best circuit size: 716
+gf2^8_mult.qasm Time to best (s): 2750
+gf2^8_mult.qasm Current circuit size: 716
+gf2^8_mult.qasm Seconds elapsed: 3604

@@ -1,0 +1,2739 @@
+tof_3.qasm Best circuit size: 21
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 21
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 21
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 21
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 33
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 33
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 33
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 33
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 45
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 45
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 44
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 44
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 43
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 43
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 45
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 45
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 43
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 43
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 41
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 41
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 39
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 39
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 39
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 41
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 39
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 43
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 39
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 39
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 0
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 1
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 2
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 2
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 3
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 3
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 4
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 4
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 4
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 4
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 5
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 5
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 5
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 6
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 6
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 6
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 7
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 7
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 7
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 7
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 8
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 8
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 8
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 8
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 8
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 9
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 9
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 9
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 9
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 10
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 10
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 10
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 10
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 10
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 11
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 11
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 11
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 12
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 12
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 12
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 12
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 13
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 13
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 13
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 13
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 14
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 14
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 14
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 14
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 14
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 15
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 15
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 15
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 15
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 15
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 16
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 16
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 16
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 16
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 16
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 17
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 17
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 17
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 17
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 17
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 18
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 18
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 18
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 18
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 19
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 19
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 19
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 19
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 19
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 20
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 20
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 20
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 20
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 20
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 20
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 21
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 21
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 21
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 21
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 21
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 22
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 22
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 22
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 22
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 22
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 23
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 23
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 23
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 23
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 23
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 24
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 24
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 24
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 24
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 24
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 24
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 25
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 25
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 25
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 25
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 25
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 26
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 26
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 26
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 26
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 26
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 27
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 27
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 27
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 27
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 28
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 28
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 28
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 28
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 28
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 28
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 29
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 29
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 29
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 29
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 29
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 30
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 30
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 30
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 30
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 30
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 31
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 31
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 31
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 31
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 31
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 32
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 32
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 32
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 32
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 32
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 32
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 33
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 33
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 33
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 33
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 33
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 34
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 34
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 34
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 34
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 35
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 35
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 35
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 35
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 35
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 36
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 36
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 36
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 36
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 36
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 37
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 37
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 37
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 37
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 37
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 38
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 38
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 38
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 38
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 39
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 39
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 39
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 39
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 39
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 40
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 40
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 40
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 40
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 40
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 41
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 41
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 41
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 41
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 41
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 42
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 42
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 42
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 42
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 42
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 43
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 43
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 43
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 43
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 43
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 44
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 44
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 44
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 44
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 44
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 45
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 45
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 45
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 45
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 45
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 46
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 46
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 46
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 46
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 46
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 47
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 47
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 47
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 47
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 47
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 48
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 48
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 48
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 48
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 48
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 49
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 49
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 49
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 49
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 49
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 50
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 50
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 50
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 50
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 50
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 51
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 51
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 51
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 51
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 51
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 52
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 52
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 52
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 52
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 52
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 53
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 53
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 53
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 53
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 53
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 54
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 54
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 54
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 54
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 54
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 55
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 55
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 55
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 55
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 55
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 56
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 56
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 56
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 56
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 56
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 57
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 57
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 57
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 57
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 57
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 58
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 58
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 58
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 58
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 58
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 59
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 59
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 59
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 59
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 59
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 60
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 60
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 60
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 60
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 60
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 61
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 61
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 61
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 61
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 61
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 62
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 62
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 62
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 62
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 62
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 63
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 63
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 63
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 63
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 63
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 64
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 64
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 64
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 64
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 64
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 65
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 65
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 65
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 65
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 65
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 66
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 66
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 66
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 66
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 66
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 67
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 67
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 67
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 67
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 67
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 68
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 68
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 68
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 68
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 68
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 69
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 69
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 69
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 69
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 69
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 70
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 70
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 70
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 70
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 70
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 71
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 71
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 71
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 71
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 71
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 72
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 72
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 72
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 72
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 72
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 73
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 73
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 73
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 73
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 73
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 74
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 74
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 74
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 74
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 74
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 75
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 75
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 75
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 75
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 75
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 76
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 76
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 76
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 76
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 76
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 77
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 77
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 77
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 77
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 77
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 78
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 78
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 78
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 78
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 78
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 79
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 79
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 79
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 79
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 79
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 80
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 80
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 80
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 80
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 80
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 81
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 81
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 81
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 81
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 81
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 82
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 82
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 82
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 82
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 82
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 83
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 83
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 83
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 83
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 83
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 84
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 84
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 84
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 84
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 84
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 84
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 85
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 85
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 85
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 85
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 85
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 86
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 86
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 86
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 86
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 86
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 87
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 87
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 87
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 87
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 88
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 88
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 88
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 88
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 88
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 89
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 89
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 89
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 89
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 89
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 90
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 90
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 90
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 90
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 90
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 91
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 91
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 91
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 91
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 91
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 92
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 92
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 92
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 92
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 92
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 93
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 93
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 93
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 93
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 93
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 94
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 94
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 94
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 94
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 95
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 95
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 95
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 95
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 95
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 96
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 96
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 96
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 96
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 96
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 97
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 97
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 97
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 97
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 97
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 98
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 98
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 98
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 98
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 98
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 99
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 99
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 99
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 99
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 99
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 100
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 100
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 100
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 100
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 100
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 100
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 101
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 101
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 101
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 101
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 101
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 102
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 102
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 102
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 102
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 102
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 103
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 103
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 103
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 103
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 103
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 104
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 104
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 104
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 104
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 104
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 105
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 105
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 105
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 105
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 105
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 106
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 106
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 106
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 106
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 106
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 107
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 107
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 107
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 107
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 107
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 107
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 108
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 108
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 108
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 108
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 108
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 109
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 109
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 109
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 109
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 109
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 110
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 35
+tof_3.qasm Seconds elapsed: 110
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 39
+tof_3.qasm Seconds elapsed: 110
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 39
+tof_3.qasm Seconds elapsed: 110
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 39
+tof_3.qasm Seconds elapsed: 111
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 39
+tof_3.qasm Seconds elapsed: 111
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 39
+tof_3.qasm Seconds elapsed: 111
+--
+tof_3.qasm Best circuit size: 35
+tof_3.qasm Time to best (s): 0
+tof_3.qasm Current circuit size: 39
+tof_3.qasm Seconds elapsed: 112

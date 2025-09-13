@@ -1,0 +1,311 @@
+(lang dune 3.7)
+(name voqc)
+(version 0.3.0)
+(sections (lib .) (libexec .) (doc ../../doc/voqc))
+(files
+ (lib
+  (META
+   Qasm.ml
+   Qasm.mli
+   Voqc.ml
+   dune-package
+   extracted/BinInt.ml
+   extracted/BinNums.ml
+   extracted/BinPos.ml
+   extracted/BinPosDef.ml
+   extracted/CXCancellation.ml
+   extracted/ChangeRotationBasis.ml
+   extracted/ConnectivityGraph.ml
+   extracted/Datatypes.ml
+   extracted/FMapAVL.ml
+   extracted/FSetAVL.ml
+   extracted/FullGateSet.ml
+   extracted/FullGateSet.mli
+   extracted/GateCancellation.ml
+   extracted/GreedyLayout.ml
+   extracted/HadamardReduction.ml
+   extracted/IBMGateSet.ml
+   extracted/IBMGateSet.mli
+   extracted/Layouts.ml
+   extracted/Main.ml
+   extracted/Main.mli
+   extracted/MappingGateSet.ml
+   extracted/MappingValidation.ml
+   extracted/NotPropagation.ml
+   extracted/Optimize1qGates.ml
+   extracted/OrderedTypeEx.ml
+   extracted/PeanoNat.ml
+   extracted/RotationMerging.ml
+   extracted/RzQGateSet.ml
+   extracted/RzQGateSet.mli
+   extracted/SwapRoute.ml
+   extracted/UnitaryListRepresentation.ml
+   extracted/UnitaryListRepresentation.mli
+   opam
+   voqc.a
+   voqc.cma
+   voqc.cmi
+   voqc.cmt
+   voqc.cmx
+   voqc.cmxa
+   voqc__.cmi
+   voqc__.cmt
+   voqc__.cmx
+   voqc__.ml
+   voqc__BinInt.cmi
+   voqc__BinInt.cmt
+   voqc__BinInt.cmx
+   voqc__BinNums.cmi
+   voqc__BinNums.cmt
+   voqc__BinNums.cmx
+   voqc__BinPos.cmi
+   voqc__BinPos.cmt
+   voqc__BinPos.cmx
+   voqc__BinPosDef.cmi
+   voqc__BinPosDef.cmt
+   voqc__BinPosDef.cmx
+   voqc__CXCancellation.cmi
+   voqc__CXCancellation.cmt
+   voqc__CXCancellation.cmx
+   voqc__ChangeRotationBasis.cmi
+   voqc__ChangeRotationBasis.cmt
+   voqc__ChangeRotationBasis.cmx
+   voqc__ConnectivityGraph.cmi
+   voqc__ConnectivityGraph.cmt
+   voqc__ConnectivityGraph.cmx
+   voqc__Datatypes.cmi
+   voqc__Datatypes.cmt
+   voqc__Datatypes.cmx
+   voqc__FMapAVL.cmi
+   voqc__FMapAVL.cmt
+   voqc__FMapAVL.cmx
+   voqc__FSetAVL.cmi
+   voqc__FSetAVL.cmt
+   voqc__FSetAVL.cmx
+   voqc__FullGateSet.cmi
+   voqc__FullGateSet.cmt
+   voqc__FullGateSet.cmti
+   voqc__FullGateSet.cmx
+   voqc__GateCancellation.cmi
+   voqc__GateCancellation.cmt
+   voqc__GateCancellation.cmx
+   voqc__GreedyLayout.cmi
+   voqc__GreedyLayout.cmt
+   voqc__GreedyLayout.cmx
+   voqc__HadamardReduction.cmi
+   voqc__HadamardReduction.cmt
+   voqc__HadamardReduction.cmx
+   voqc__IBMGateSet.cmi
+   voqc__IBMGateSet.cmt
+   voqc__IBMGateSet.cmti
+   voqc__IBMGateSet.cmx
+   voqc__Layouts.cmi
+   voqc__Layouts.cmt
+   voqc__Layouts.cmx
+   voqc__Main.cmi
+   voqc__Main.cmt
+   voqc__Main.cmti
+   voqc__Main.cmx
+   voqc__MappingGateSet.cmi
+   voqc__MappingGateSet.cmt
+   voqc__MappingGateSet.cmx
+   voqc__MappingValidation.cmi
+   voqc__MappingValidation.cmt
+   voqc__MappingValidation.cmx
+   voqc__NotPropagation.cmi
+   voqc__NotPropagation.cmt
+   voqc__NotPropagation.cmx
+   voqc__Optimize1qGates.cmi
+   voqc__Optimize1qGates.cmt
+   voqc__Optimize1qGates.cmx
+   voqc__OrderedTypeEx.cmi
+   voqc__OrderedTypeEx.cmt
+   voqc__OrderedTypeEx.cmx
+   voqc__PeanoNat.cmi
+   voqc__PeanoNat.cmt
+   voqc__PeanoNat.cmx
+   voqc__Qasm.cmi
+   voqc__Qasm.cmt
+   voqc__Qasm.cmti
+   voqc__Qasm.cmx
+   voqc__RotationMerging.cmi
+   voqc__RotationMerging.cmt
+   voqc__RotationMerging.cmx
+   voqc__RzQGateSet.cmi
+   voqc__RzQGateSet.cmt
+   voqc__RzQGateSet.cmti
+   voqc__RzQGateSet.cmx
+   voqc__SwapRoute.cmi
+   voqc__SwapRoute.cmt
+   voqc__SwapRoute.cmx
+   voqc__UnitaryListRepresentation.cmi
+   voqc__UnitaryListRepresentation.cmt
+   voqc__UnitaryListRepresentation.cmti
+   voqc__UnitaryListRepresentation.cmx))
+ (libexec (voqc.cmxs))
+ (doc (CHANGES.md LICENSE README.md)))
+(library
+ (name voqc)
+ (kind normal)
+ (archives (byte voqc.cma) (native voqc.cmxa))
+ (plugins (byte voqc.cma) (native voqc.cmxs))
+ (native_archives voqc.a)
+ (requires openQASM unix zarith)
+ (main_module_name Voqc)
+ (modes byte native)
+ (modules
+  (wrapped
+   (group
+    (alias
+     (obj_name voqc__)
+     (visibility public)
+     (kind alias)
+     (source (path Voqc__) (impl (path voqc__.ml-gen))))
+    (name Voqc)
+    (modules
+     (module
+      (obj_name voqc__BinInt)
+      (visibility public)
+      (source (path BinInt) (impl (path extracted/BinInt.ml))))
+     (module
+      (obj_name voqc__BinNums)
+      (visibility public)
+      (source (path BinNums) (impl (path extracted/BinNums.ml))))
+     (module
+      (obj_name voqc__BinPos)
+      (visibility public)
+      (source (path BinPos) (impl (path extracted/BinPos.ml))))
+     (module
+      (obj_name voqc__BinPosDef)
+      (visibility public)
+      (source (path BinPosDef) (impl (path extracted/BinPosDef.ml))))
+     (module
+      (obj_name voqc__CXCancellation)
+      (visibility public)
+      (source (path CXCancellation) (impl (path extracted/CXCancellation.ml))))
+     (module
+      (obj_name voqc__ChangeRotationBasis)
+      (visibility public)
+      (source
+       (path ChangeRotationBasis)
+       (impl (path extracted/ChangeRotationBasis.ml))))
+     (module
+      (obj_name voqc__ConnectivityGraph)
+      (visibility public)
+      (source
+       (path ConnectivityGraph)
+       (impl (path extracted/ConnectivityGraph.ml))))
+     (module
+      (obj_name voqc__Datatypes)
+      (visibility public)
+      (source (path Datatypes) (impl (path extracted/Datatypes.ml))))
+     (module
+      (obj_name voqc__FMapAVL)
+      (visibility public)
+      (source (path FMapAVL) (impl (path extracted/FMapAVL.ml))))
+     (module
+      (obj_name voqc__FSetAVL)
+      (visibility public)
+      (source (path FSetAVL) (impl (path extracted/FSetAVL.ml))))
+     (module
+      (obj_name voqc__FullGateSet)
+      (visibility public)
+      (source
+       (path FullGateSet)
+       (intf (path extracted/FullGateSet.mli))
+       (impl (path extracted/FullGateSet.ml))))
+     (module
+      (obj_name voqc__GateCancellation)
+      (visibility public)
+      (source
+       (path GateCancellation)
+       (impl (path extracted/GateCancellation.ml))))
+     (module
+      (obj_name voqc__GreedyLayout)
+      (visibility public)
+      (source (path GreedyLayout) (impl (path extracted/GreedyLayout.ml))))
+     (module
+      (obj_name voqc__HadamardReduction)
+      (visibility public)
+      (source
+       (path HadamardReduction)
+       (impl (path extracted/HadamardReduction.ml))))
+     (module
+      (obj_name voqc__IBMGateSet)
+      (visibility public)
+      (source
+       (path IBMGateSet)
+       (intf (path extracted/IBMGateSet.mli))
+       (impl (path extracted/IBMGateSet.ml))))
+     (module
+      (obj_name voqc__Layouts)
+      (visibility public)
+      (source (path Layouts) (impl (path extracted/Layouts.ml))))
+     (module
+      (obj_name voqc__Main)
+      (visibility public)
+      (source
+       (path Main)
+       (intf (path extracted/Main.mli))
+       (impl (path extracted/Main.ml))))
+     (module
+      (obj_name voqc__MappingGateSet)
+      (visibility public)
+      (source (path MappingGateSet) (impl (path extracted/MappingGateSet.ml))))
+     (module
+      (obj_name voqc__MappingValidation)
+      (visibility public)
+      (source
+       (path MappingValidation)
+       (impl (path extracted/MappingValidation.ml))))
+     (module
+      (obj_name voqc__NotPropagation)
+      (visibility public)
+      (source (path NotPropagation) (impl (path extracted/NotPropagation.ml))))
+     (module
+      (obj_name voqc__Optimize1qGates)
+      (visibility public)
+      (source
+       (path Optimize1qGates)
+       (impl (path extracted/Optimize1qGates.ml))))
+     (module
+      (obj_name voqc__OrderedTypeEx)
+      (visibility public)
+      (source (path OrderedTypeEx) (impl (path extracted/OrderedTypeEx.ml))))
+     (module
+      (obj_name voqc__PeanoNat)
+      (visibility public)
+      (source (path PeanoNat) (impl (path extracted/PeanoNat.ml))))
+     (module
+      (obj_name voqc__Qasm)
+      (visibility public)
+      (source (path Qasm) (intf (path Qasm.mli)) (impl (path Qasm.ml))))
+     (module
+      (obj_name voqc__RotationMerging)
+      (visibility public)
+      (source
+       (path RotationMerging)
+       (impl (path extracted/RotationMerging.ml))))
+     (module
+      (obj_name voqc__RzQGateSet)
+      (visibility public)
+      (source
+       (path RzQGateSet)
+       (intf (path extracted/RzQGateSet.mli))
+       (impl (path extracted/RzQGateSet.ml))))
+     (module
+      (obj_name voqc__SwapRoute)
+      (visibility public)
+      (source (path SwapRoute) (impl (path extracted/SwapRoute.ml))))
+     (module
+      (obj_name voqc__UnitaryListRepresentation)
+      (visibility public)
+      (source
+       (path UnitaryListRepresentation)
+       (intf (path extracted/UnitaryListRepresentation.mli))
+       (impl (path extracted/UnitaryListRepresentation.ml))))
+     (module
+      (obj_name voqc)
+      (visibility public)
+      (source (path Voqc) (impl (path Voqc.ml))))))
+   (wrapped true))))

@@ -1,0 +1,4484 @@
+qcla_mod_7.qasm Best circuit size: 188
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 188
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 188
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 188
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 200
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 200
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 200
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 200
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 212
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 212
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 212
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 212
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 224
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 224
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 224
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 224
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 236
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 236
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 236
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 236
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 248
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 248
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 248
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 248
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 260
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 260
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 260
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 260
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 272
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 272
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 270
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 270
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 268
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 268
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 272
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 272
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 280
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 280
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 278
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 278
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 276
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 276
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 280
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 280
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 288
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 288
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 286
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 286
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 284
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 284
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 288
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 288
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 296
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 296
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 296
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 296
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 308
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 308
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 306
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 306
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 308
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 308
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 318
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 318
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 316
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 316
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 315
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 315
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 315
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 317
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 318
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 318
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 316
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 316
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 315
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 315
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 315
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 317
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 327
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 327
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 326
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 326
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 327
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 327
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 325
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 325
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 324
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 324
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 336
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 336
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 334
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 334
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 333
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 333
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 333
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 335
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 336
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 336
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 334
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 334
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 333
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 333
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 345
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 345
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 344
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 344
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 345
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 345
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 343
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 343
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 355
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 355
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 354
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 354
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 355
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 355
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 353
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 353
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 365
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 365
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 365
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 365
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 377
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 377
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 375
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 375
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 373
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 373
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 372
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 372
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 372
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 374
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 372
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 375
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 372
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 376
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 377
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 377
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 375
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 375
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 374
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 374
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 374
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 376
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 384
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 384
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 382
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 382
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 384
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 384
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 394
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 394
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 393
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 393
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 394
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 394
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 392
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 392
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 404
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 404
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 403
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 403
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 402
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 402
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 404
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 404
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 402
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 402
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 400
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 400
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 412
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 412
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 411
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 411
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 412
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 412
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 410
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 410
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 422
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 422
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 422
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 422
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 434
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 434
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 434
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 434
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 446
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 446
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 444
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 444
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 446
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 446
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 456
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 456
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 455
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 455
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 454
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 454
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 456
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 456
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 454
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 454
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 452
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 452
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 464
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 464
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 463
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 463
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 462
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 462
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 464
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 464
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 462
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 462
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 460
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 460
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 472
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 472
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 470
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 470
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 472
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 472
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 482
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 482
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 481
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 481
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 482
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 482
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 480
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 480
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 492
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 492
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 490
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 490
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 492
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 492
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 502
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 502
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 500
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 500
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 502
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 502
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 512
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 512
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 512
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 512
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 524
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 524
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 523
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 523
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 524
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 524
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 522
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 522
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 534
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 534
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 533
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 533
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 532
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 532
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 534
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 534
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 532
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 532
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 530
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 530
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 542
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 542
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 540
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 540
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 539
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 539
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 539
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 541
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 542
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 542
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 540
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 540
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 551
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 551
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 549
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 549
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 547
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 547
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 551
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 551
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 559
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 559
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 558
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 558
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 559
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 559
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 557
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 557
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 569
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 569
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 568
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 568
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 569
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 569
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 567
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 567
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 579
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 579
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 577
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 577
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 576
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 576
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 576
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 578
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 579
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 579
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 577
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 577
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 588
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 588
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 586
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 586
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 588
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 588
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 598
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 598
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 597
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 597
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 598
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 598
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 596
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 596
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 608
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 608
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 606
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 606
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 608
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 608
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 618
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 618
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 617
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 617
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 618
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 618
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 616
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 616
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 628
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 628
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 628
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 628
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 640
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 640
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 639
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 639
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 640
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 640
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 638
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 638
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 650
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 650
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 648
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 648
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 646
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 646
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 650
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 650
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 658
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 658
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 658
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 658
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 670
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 670
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 670
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 670
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 682
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 682
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 680
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 680
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 682
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 682
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 681
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 681
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 692
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 692
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 691
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 691
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 692
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 692
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 690
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 690
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 702
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 702
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 702
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 702
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 714
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 714
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 714
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 714
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 726
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 726
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 724
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 724
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 726
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 726
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 736
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 736
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 734
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 734
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 732
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 732
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 732
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 734
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 736
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 736
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 735
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 735
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 744
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 744
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 742
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 742
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 744
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 744
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 743
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 743
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 754
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 754
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 752
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 752
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 754
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 754
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 753
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 753
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 764
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 764
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 762
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 762
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 764
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 764
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 763
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 763
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 774
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 774
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 772
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 772
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 770
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 770
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 770
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 772
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 774
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 774
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 773
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 773
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 770
+qcla_mod_7.qasm Time to best (s): 0
+qcla_mod_7.qasm Current circuit size: 770
+qcla_mod_7.qasm Seconds elapsed: 0
+--
+qcla_mod_7.qasm Best circuit size: 740
+qcla_mod_7.qasm Time to best (s): 7
+qcla_mod_7.qasm Current circuit size: 740
+qcla_mod_7.qasm Seconds elapsed: 7
+--
+qcla_mod_7.qasm Best circuit size: 739
+qcla_mod_7.qasm Time to best (s): 13
+qcla_mod_7.qasm Current circuit size: 739
+qcla_mod_7.qasm Seconds elapsed: 13
+--
+qcla_mod_7.qasm Best circuit size: 739
+qcla_mod_7.qasm Time to best (s): 13
+qcla_mod_7.qasm Current circuit size: 739
+qcla_mod_7.qasm Seconds elapsed: 19
+--
+qcla_mod_7.qasm Best circuit size: 738
+qcla_mod_7.qasm Time to best (s): 24
+qcla_mod_7.qasm Current circuit size: 738
+qcla_mod_7.qasm Seconds elapsed: 24
+--
+qcla_mod_7.qasm Best circuit size: 738
+qcla_mod_7.qasm Time to best (s): 24
+qcla_mod_7.qasm Current circuit size: 738
+qcla_mod_7.qasm Seconds elapsed: 30
+--
+qcla_mod_7.qasm Best circuit size: 738
+qcla_mod_7.qasm Time to best (s): 24
+qcla_mod_7.qasm Current circuit size: 738
+qcla_mod_7.qasm Seconds elapsed: 36
+--
+qcla_mod_7.qasm Best circuit size: 737
+qcla_mod_7.qasm Time to best (s): 42
+qcla_mod_7.qasm Current circuit size: 737
+qcla_mod_7.qasm Seconds elapsed: 42
+--
+qcla_mod_7.qasm Best circuit size: 737
+qcla_mod_7.qasm Time to best (s): 42
+qcla_mod_7.qasm Current circuit size: 737
+qcla_mod_7.qasm Seconds elapsed: 47
+--
+qcla_mod_7.qasm Best circuit size: 737
+qcla_mod_7.qasm Time to best (s): 42
+qcla_mod_7.qasm Current circuit size: 737
+qcla_mod_7.qasm Seconds elapsed: 52
+--
+qcla_mod_7.qasm Best circuit size: 737
+qcla_mod_7.qasm Time to best (s): 42
+qcla_mod_7.qasm Current circuit size: 737
+qcla_mod_7.qasm Seconds elapsed: 58
+--
+qcla_mod_7.qasm Best circuit size: 737
+qcla_mod_7.qasm Time to best (s): 42
+qcla_mod_7.qasm Current circuit size: 737
+qcla_mod_7.qasm Seconds elapsed: 63
+--
+qcla_mod_7.qasm Best circuit size: 737
+qcla_mod_7.qasm Time to best (s): 42
+qcla_mod_7.qasm Current circuit size: 737
+qcla_mod_7.qasm Seconds elapsed: 68
+--
+qcla_mod_7.qasm Best circuit size: 737
+qcla_mod_7.qasm Time to best (s): 42
+qcla_mod_7.qasm Current circuit size: 737
+qcla_mod_7.qasm Seconds elapsed: 74
+--
+qcla_mod_7.qasm Best circuit size: 735
+qcla_mod_7.qasm Time to best (s): 80
+qcla_mod_7.qasm Current circuit size: 735
+qcla_mod_7.qasm Seconds elapsed: 80
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 86
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 91
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 97
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 102
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 108
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 113
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 119
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 124
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 130
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 135
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 140
+--
+qcla_mod_7.qasm Best circuit size: 733
+qcla_mod_7.qasm Time to best (s): 86
+qcla_mod_7.qasm Current circuit size: 733
+qcla_mod_7.qasm Seconds elapsed: 146
+--
+qcla_mod_7.qasm Best circuit size: 731
+qcla_mod_7.qasm Time to best (s): 151
+qcla_mod_7.qasm Current circuit size: 731
+qcla_mod_7.qasm Seconds elapsed: 151
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 156
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 162
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 167
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 172
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 177
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 183
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 188
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 193
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 199
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 204
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 209
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 215
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 220
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 226
+--
+qcla_mod_7.qasm Best circuit size: 730
+qcla_mod_7.qasm Time to best (s): 156
+qcla_mod_7.qasm Current circuit size: 730
+qcla_mod_7.qasm Seconds elapsed: 231
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 236
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 241
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 247
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 252
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 257
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 263
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 268
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 273
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 279
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 284
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 289
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 295
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 300
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 306
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 311
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 316
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 321
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 326
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 332
+--
+qcla_mod_7.qasm Best circuit size: 728
+qcla_mod_7.qasm Time to best (s): 236
+qcla_mod_7.qasm Current circuit size: 728
+qcla_mod_7.qasm Seconds elapsed: 337
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 342
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 348
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 353
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 358
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 363
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 369
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 374
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 379
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 384
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 389
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 394
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 400
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 405
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 410
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 416
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 421
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 426
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 432
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 437
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 443
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 448
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 453
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 459
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 464
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 470
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 475
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 481
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 486
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 492
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 497
+--
+qcla_mod_7.qasm Best circuit size: 725
+qcla_mod_7.qasm Time to best (s): 342
+qcla_mod_7.qasm Current circuit size: 725
+qcla_mod_7.qasm Seconds elapsed: 503
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 508
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 513
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 518
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 524
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 529
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 535
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 540
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 546
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 551
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 556
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 562
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 567
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 573
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 578
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 583
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 588
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 594
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 599
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 604
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 610
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 615
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 620
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 626
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 631
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 636
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 642
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 647
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 652
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 658
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 663
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 668
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 673
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 678
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 683
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 689
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 694
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 700
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 705
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 710
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 715
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 721
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 726
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 732
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 737
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 743
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 748
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 753
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 759
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 765
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 770
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 776
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 782
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 787
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 793
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 798
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 804
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 810
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 815
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 821
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 826
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 832
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 837
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 843
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 849
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 854
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 860
+--
+qcla_mod_7.qasm Best circuit size: 721
+qcla_mod_7.qasm Time to best (s): 508
+qcla_mod_7.qasm Current circuit size: 721
+qcla_mod_7.qasm Seconds elapsed: 865
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 871
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 877
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 882
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 888
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 893
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 898
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 904
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 909
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 915
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 920
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 926
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 931
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 937
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 942
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 947
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 953
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 959
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 964
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 970
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 975
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 981
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 987
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 992
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 998
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1003
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1008
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1013
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1019
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1024
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1030
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1035
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1041
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1046
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1052
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1057
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1063
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1068
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1074
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1079
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1085
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1090
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1096
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1102
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1107
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1113
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1118
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1124
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1129
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1135
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1141
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1146
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1152
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1157
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1163
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1168
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1174
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1180
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1185
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1191
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1196
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1202
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1207
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1213
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1218
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1224
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1230
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1236
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1241
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1247
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1253
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1258
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1264
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1269
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1274
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1280
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1285
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1291
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1296
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1301
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1306
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1312
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1317
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1322
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1328
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1333
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1338
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1344
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1349
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1354
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1360
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1365
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1370
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1376
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1381
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1386
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1391
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1397
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1402
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1407
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1413
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1418
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1423
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1429
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1434
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1439
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1445
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1450
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1455
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1461
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1466
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1471
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1477
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1482
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1487
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1493
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1498
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1504
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1509
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1514
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1520
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1525
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1531
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1536
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1541
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1547
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1552
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1557
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1563
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1568
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1574
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1579
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1584
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1590
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1595
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1601
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1606
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1612
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1617
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1622
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1628
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1633
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1639
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1645
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1650
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1655
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1661
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1666
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1672
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1678
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1683
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1688
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1694
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1699
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1704
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1709
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1715
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1720
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1726
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1731
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1737
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1742
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1747
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1753
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1758
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1763
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1769
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1774
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1779
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1785
+--
+qcla_mod_7.qasm Best circuit size: 718
+qcla_mod_7.qasm Time to best (s): 871
+qcla_mod_7.qasm Current circuit size: 718
+qcla_mod_7.qasm Seconds elapsed: 1790
+--
+qcla_mod_7.qasm Best circuit size: 716
+qcla_mod_7.qasm Time to best (s): 1795
+qcla_mod_7.qasm Current circuit size: 716
+qcla_mod_7.qasm Seconds elapsed: 1795
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1801
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1806
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1811
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1816
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1822
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1827
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1832
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1838
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1843
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1848
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1853
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1859
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1864
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1869
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1874
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1880
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1885
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1891
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1896
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1901
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1907
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1912
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1917
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1923
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1928
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1934
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1939
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1945
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1950
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1955
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1961
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1966
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1971
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1977
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1982
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1987
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1993
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 1998
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2003
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2008
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2014
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2019
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2024
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2030
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2035
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2040
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2046
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2051
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2057
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2062
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2068
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2073
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2078
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2084
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2089
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2094
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2100
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2106
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2111
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2116
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2122
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2127
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2133
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2138
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2144
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2149
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2155
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2160
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2165
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2170
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2176
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2181
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2186
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2192
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2197
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2202
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2208
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2213
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2219
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2224
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2229
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2235
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2240
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2245
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2251
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2256
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2261
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2267
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2272
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2278
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2283
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2288
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2294
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2299
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2305
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2310
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2316
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2321
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2326
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2332
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2337
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2342
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2348
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2353
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2359
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2364
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2369
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2374
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2380
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2385
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2391
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2396
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2401
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2406
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2412
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2417
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2423
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2428
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2433
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2438
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2444
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2449
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2454
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2460
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2466
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2471
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2476
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2481
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2487
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2492
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2497
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2503
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2508
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2513
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2519
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2524
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2529
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2535
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2540
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2545
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2551
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2556
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2561
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2566
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2572
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2577
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2583
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2588
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2593
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2598
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2604
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2609
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2615
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2620
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2625
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2631
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2636
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2642
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2647
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2652
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2657
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2663
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2668
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2673
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2678
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2684
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2689
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2695
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2700
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2705
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2710
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2716
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2721
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2726
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2731
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2737
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2742
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2747
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2753
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2758
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2763
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2768
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2774
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2779
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2784
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2789
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2795
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2800
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2806
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2811
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2816
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2821
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2827
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2832
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2837
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2842
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2848
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2853
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2858
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2863
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2868
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2874
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2879
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2884
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2889
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2895
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2900
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2905
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2910
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2915
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2921
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2926
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2931
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2936
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2942
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2947
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2952
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2958
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2963
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2968
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2973
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2979
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2984
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2989
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2994
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 2999
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3005
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3010
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3015
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3020
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3026
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3031
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3036
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3041
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3047
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3052
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3057
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3062
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3068
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3073
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3078
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3083
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3088
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3094
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3099
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3104
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3109
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3115
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3120
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3125
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3130
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3135
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3140
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3145
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3151
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3156
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3161
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3166
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3172
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3177
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3182
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3187
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3192
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3198
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3203
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3208
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3213
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3218
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3224
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3229
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3234
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3240
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3245
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3250
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3255
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3261
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3266
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3271
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3277
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3282
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3287
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3292
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3298
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3303
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3308
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3314
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3319
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3324
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3330
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3335
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3341
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3346
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3351
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3357
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3362
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3367
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3373
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3378
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3384
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3389
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3394
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3399
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3405
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3410
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3415
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3421
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3426
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3432
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3437
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3442
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3448
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3453
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3458
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3463
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3469
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3475
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3480
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3486
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3492
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3497
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3503
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3508
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3514
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3519
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3524
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3530
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3535
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3540
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3546
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3551
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3556
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3562
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3567
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3572
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3578
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3583
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3589
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3594
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3599
+--
+qcla_mod_7.qasm Best circuit size: 715
+qcla_mod_7.qasm Time to best (s): 1801
+qcla_mod_7.qasm Current circuit size: 715
+qcla_mod_7.qasm Seconds elapsed: 3604

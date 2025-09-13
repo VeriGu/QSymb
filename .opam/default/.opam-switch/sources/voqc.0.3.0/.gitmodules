@@ -1,0 +1,3 @@
+[submodule "extraction/SQIR"]
+	path = extraction/SQIR
+	url = https://github.com/inQWIRE/SQIR

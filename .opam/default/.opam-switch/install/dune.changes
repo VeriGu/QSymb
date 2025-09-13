@@ -1,0 +1,47 @@
+opam-version: "2.0"
+added: [
+  "bin/dune" {"F:S16129992T1678137755.43"}
+  "doc/dune" {"D"}
+  "doc/dune/CHANGES.md" {"F:S138556T1678137755.44"}
+  "doc/dune/LICENSE.md" {"F:S1111T1678137755.44"}
+  "doc/dune/README.md" {"F:S5302T1678137755.44"}
+  "lib/dune" {"D"}
+  "lib/dune/META" {"F:S108T1678137755.43"}
+  "lib/dune/dune-package" {"F:S1191T1678137755.43"}
+  "lib/dune/opam" {"F:S1879T1678137755.43"}
+  "man/man1/dune-build.1" {"F:S15412T1678137755.43"}
+  "man/man1/dune-cache.1" {"F:S1433T1678137755.43"}
+  "man/man1/dune-clean.1" {"F:S14576T1678137755.43"}
+  "man/man1/dune-coq.1" {"F:S1127T1678137755.43"}
+  "man/man1/dune-describe.1" {"F:S16650T1678137755.43"}
+  "man/man1/dune-diagnostics.1" {"F:S14295T1678137755.43"}
+  "man/man1/dune-exec.1" {"F:S15660T1678137755.43"}
+  "man/man1/dune-external-lib-deps.1" {"F:S15062T1678137755.43"}
+  "man/man1/dune-fmt.1" {"F:S15049T1678137755.44"}
+  "man/man1/dune-format-dune-file.1" {"F:S1594T1678137755.44"}
+  "man/man1/dune-help.1" {"F:S2082T1678137755.44"}
+  "man/man1/dune-init.1" {"F:S3795T1678137755.44"}
+  "man/man1/dune-install.1" {"F:S17309T1678137755.44"}
+  "man/man1/dune-installed-libraries.1" {"F:S14477T1678137755.44"}
+  "man/man1/dune-internal.1" {"F:S1148T1678137755.44"}
+  "man/man1/dune-ocaml-merlin.1" {"F:S14831T1678137755.44"}
+  "man/man1/dune-ocaml.1" {"F:S1530T1678137755.44"}
+  "man/man1/dune-printenv.1" {"F:S14738T1678137755.44"}
+  "man/man1/dune-promote.1" {"F:S14689T1678137755.44"}
+  "man/man1/dune-promotion.1" {"F:S1202T1678137755.44"}
+  "man/man1/dune-rpc.1" {"F:S1571T1678137755.44"}
+  "man/man1/dune-rules.1" {"F:S15433T1678137755.44"}
+  "man/man1/dune-runtest.1" {"F:S15168T1678137755.44"}
+  "man/man1/dune-shutdown.1" {"F:S14289T1678137755.44"}
+  "man/man1/dune-subst.1" {"F:S3507T1678137755.44"}
+  "man/man1/dune-test.1" {"F:S14646T1678137755.44"}
+  "man/man1/dune-top.1" {"F:S14894T1678137755.44"}
+  "man/man1/dune-uninstall.1" {"F:S17319T1678137755.44"}
+  "man/man1/dune-upgrade.1" {"F:S14589T1678137755.44"}
+  "man/man1/dune-utop.1" {"F:S14703T1678137755.44"}
+  "man/man1/dune.1" {"F:S5674T1678137755.44"}
+  "man/man5/dune-config.5" {"F:S3426T1678137755.44"}
+  "share/emacs/site-lisp/dune-flymake.el" {"F:S7989T1678137755.44"}
+  "share/emacs/site-lisp/dune-watch.el" {"F:S7191T1678137755.44"}
+  "share/emacs/site-lisp/dune.el" {"F:S14384T1678137755.44"}
+]

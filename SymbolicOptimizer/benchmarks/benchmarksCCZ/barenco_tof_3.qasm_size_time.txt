@@ -1,0 +1,304 @@
+barenco_tof_3.qasm Best circuit size: 22
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 22
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 22
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 22
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 34
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 34
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 34
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 34
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 46
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 46
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 45
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 45
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 44
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 46
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 46
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 44
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 42
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 42
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 54
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 54
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 53
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 53
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 52
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 52
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 54
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 54
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 52
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 52
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 50
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 50
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 48
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 48
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 48
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 50
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 48
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 52
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 48
+barenco_tof_3.qasm Time to best (s): 0
+barenco_tof_3.qasm Current circuit size: 48
+barenco_tof_3.qasm Seconds elapsed: 0
+--
+barenco_tof_3.qasm Best circuit size: 44
+barenco_tof_3.qasm Time to best (s): 1
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 1
+--
+barenco_tof_3.qasm Best circuit size: 44
+barenco_tof_3.qasm Time to best (s): 1
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 1
+--
+barenco_tof_3.qasm Best circuit size: 44
+barenco_tof_3.qasm Time to best (s): 1
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 2
+--
+barenco_tof_3.qasm Best circuit size: 44
+barenco_tof_3.qasm Time to best (s): 1
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 2
+--
+barenco_tof_3.qasm Best circuit size: 44
+barenco_tof_3.qasm Time to best (s): 1
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 2
+--
+barenco_tof_3.qasm Best circuit size: 44
+barenco_tof_3.qasm Time to best (s): 1
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 3
+--
+barenco_tof_3.qasm Best circuit size: 42
+barenco_tof_3.qasm Time to best (s): 3
+barenco_tof_3.qasm Current circuit size: 42
+barenco_tof_3.qasm Seconds elapsed: 3
+--
+barenco_tof_3.qasm Best circuit size: 40
+barenco_tof_3.qasm Time to best (s): 3
+barenco_tof_3.qasm Current circuit size: 40
+barenco_tof_3.qasm Seconds elapsed: 3
+--
+barenco_tof_3.qasm Best circuit size: 39
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 39
+barenco_tof_3.qasm Seconds elapsed: 4
+--
+barenco_tof_3.qasm Best circuit size: 39
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 39
+barenco_tof_3.qasm Seconds elapsed: 4
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 38
+barenco_tof_3.qasm Seconds elapsed: 4
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 40
+barenco_tof_3.qasm Seconds elapsed: 5
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 40
+barenco_tof_3.qasm Seconds elapsed: 5
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 40
+barenco_tof_3.qasm Seconds elapsed: 5
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 41
+barenco_tof_3.qasm Seconds elapsed: 5
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 42
+barenco_tof_3.qasm Seconds elapsed: 6
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 42
+barenco_tof_3.qasm Seconds elapsed: 6
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 42
+barenco_tof_3.qasm Seconds elapsed: 6
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 42
+barenco_tof_3.qasm Seconds elapsed: 7
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 7
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 7
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 8
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 8
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 8
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 8
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 9
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 9
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 9
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 9
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 9
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 10
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 10
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 10
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 11
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 44
+barenco_tof_3.qasm Seconds elapsed: 11
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 48
+barenco_tof_3.qasm Seconds elapsed: 11
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 48
+barenco_tof_3.qasm Seconds elapsed: 12
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 48
+barenco_tof_3.qasm Seconds elapsed: 12
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 48
+barenco_tof_3.qasm Seconds elapsed: 12
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 48
+barenco_tof_3.qasm Seconds elapsed: 12
+--
+barenco_tof_3.qasm Best circuit size: 38
+barenco_tof_3.qasm Time to best (s): 4
+barenco_tof_3.qasm Current circuit size: 48
+barenco_tof_3.qasm Seconds elapsed: 13

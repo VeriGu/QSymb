@@ -1,0 +1,25 @@
+
+(datatype Op
+  (EXP)
+  (SQRT)
+  (MINUS)
+  (COS)
+  (SIN)
+  (NOT)
+  (PLUS)
+  (SUBTRACT)
+  (MULT)
+  (DIV)
+  (POWER)
+  (XOR)
+  (AND)
+  (OR))
+
+(datatype Expr
+  (Bool bool)
+  (Real f64)
+  (Symbol String)
+  (Var String)
+  (Fun String Expr)
+  (UnOp Op Expr)
+  (BinOp Op Expr Expr))
