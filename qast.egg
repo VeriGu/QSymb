@@ -1,4 +1,3 @@
-
 (datatype Op
   (EXP)
   (SQRT)
@@ -23,3 +22,30 @@
   (Fun String Expr)
   (UnOp Op Expr)
   (BinOp Op Expr Expr))
+
+; (datatype Angle (Angle Expr))
+
+(datatype Qubit (Q String))
+
+(datatype Gate
+  (X Qubit)
+  (CX Qubit Qubit)
+  (RZ Qubit Expr)
+  (H Qubit)
+  (SYMB i64)
+  (U1 Qubit Expr)
+  (U2 Qubit Expr Expr)
+  (U3 Qubit Expr Expr Expr)
+  (RX Qubit Expr)
+  (CZ Qubit Qubit)
+  (RY Qubit Expr)
+  (RXX Qubit Qubit Expr)
+  (GPI Qubit Expr)
+  (GPI2 Qubit Expr)
+  (VZ Qubit Expr)
+  (MS Qubit Qubit Expr Expr)
+  (SX Qubit))
+
+(datatype Circuit
+  (I)
+  (Cons Gate Circuit))
