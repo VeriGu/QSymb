@@ -1,0 +1,13 @@
+.cache
+.cargo
+.config
+.dotnet
+.gemini
+.gnupg
+.m2
+.npm
+.nvm
+.opam
+.rustup
+.ssh
+.vscode-server
