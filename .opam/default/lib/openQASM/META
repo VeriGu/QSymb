@@ -1,7 +1,0 @@
-version = "v0.4.0"
-description = ""
-requires = ""
-archive(byte) = "openQASM.cma"
-archive(native) = "openQASM.cmxa"
-plugin(byte) = "openQASM.cma"
-plugin(native) = "openQASM.cmxs"
