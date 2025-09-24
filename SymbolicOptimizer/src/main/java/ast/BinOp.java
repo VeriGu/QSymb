@@ -52,4 +52,12 @@ public final class BinOp extends Expr {
     }
     return String.format("%s%s%s", e1, opString(op), e2);
   }
+
+  @Override
+  public String toEggString() {
+    return String.format("(BinOp %s %s %s)", op.toString(), e1.toEggString(), e2.toEggString());
+  }
+
+
+
 }

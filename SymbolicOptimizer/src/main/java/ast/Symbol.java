@@ -19,4 +19,9 @@ public final class Symbol extends Expr {
   public String toString() {
     return symbol;
   }
+
+  @Override
+  public String toEggString() {
+    return String.format("(Symbol \"%s\")", symbol);
+  }
 }

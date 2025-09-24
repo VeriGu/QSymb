@@ -19,4 +19,9 @@ public final class Bool extends Expr {
   public String toString() {
     return "Bool [bool=" + bool + "]";
   }
+
+  @Override
+  public String toEggString() {
+    return String.format("(Bool %s)", bool);
+  }
 }

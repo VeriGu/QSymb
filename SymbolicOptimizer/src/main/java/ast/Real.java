@@ -19,4 +19,9 @@ public final class Real extends Expr {
   public String toString() {
     return "" + number;
   }
+
+  @Override
+  public String toEggString() {
+    return String.format("(Real %s)", number);
+  }
 }

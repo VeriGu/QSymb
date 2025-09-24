@@ -19,4 +19,9 @@ public final class Var extends Expr {
   public String toString() {
     return "Var [id=" + id + "]";
   }
+
+  @Override
+  public String toEggString() {
+    return String.format("(Var \"%s\")", id);
+  }
 }

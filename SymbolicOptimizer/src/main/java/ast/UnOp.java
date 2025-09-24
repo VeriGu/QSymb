@@ -37,4 +37,9 @@ public final class UnOp extends Expr {
   public String toString() {
     return String.format("%s%s", opString(op), e);
   }
+
+  @Override
+  public String toEggString() {
+    return String.format("(UnOp %s %s)", op.toString(), e.toEggString());
+  }
 }

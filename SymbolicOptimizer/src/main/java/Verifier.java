@@ -168,6 +168,7 @@ public class Verifier {
           List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, termsMap.get(c.getQubits().size()));
           evaluatedCircuits.add(groupedCircuit);
         }
+        // the first entry is the evaluated value of the circuit, the second entry is the current symbolic function permulation
         result.add(new SimpleEntry<>(evaluatedCircuits.toString().hashCode(), perm));
       }
     } else {
@@ -431,7 +432,7 @@ public class Verifier {
   }
 
   private boolean[][] generateTerms(int numQubits) {
-    int numTerms = 1 << numQubits;
+    int numTerms = 1 << numQubits; // n qubit has 2^n number of basis
     boolean[][] terms = new boolean[numTerms][numQubits];
     for (int i = 0; i < numTerms; i++) {
       for (int j = 0; j < numQubits; j++) {

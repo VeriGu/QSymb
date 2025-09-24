@@ -27,4 +27,9 @@ public sealed class Expr
   public String toString() {
     return "Expr []";
   }
+
+
+  public String toEggString() {
+    return "(Expr )";
+  }
 }

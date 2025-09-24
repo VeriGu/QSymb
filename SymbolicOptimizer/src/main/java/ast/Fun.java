@@ -33,4 +33,10 @@ public final class Fun extends Expr {
   public String toString() {
     return "Fun [name=" + getName() + ", arg=" + arg + "]";
   }
+
+
+  @Override
+  public String toEggString() {
+    return String.format("(Fun \"%s\" %s)", getName(), arg.toEggString());
+  }
 }
