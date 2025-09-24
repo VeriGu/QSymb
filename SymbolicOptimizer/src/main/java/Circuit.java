@@ -9,11 +9,15 @@ public class Circuit {
   private List<Symbolic> pathSum;
   private List<String> qasm;
 
-  public Circuit(List<String> qubits, List<Symbolic> pathSum, List<String> qasm) {
+  // list of gates representation;
+  private List<EggGen.Gate> gates;
+
+  public Circuit(List<String> qubits, List<Symbolic> pathSum, List<String> qasm, List<EggGen.Gate> gates) {
     this.qubits = qubits;
     this.usedQubits = new ArrayList<>();
     this.pathSum = pathSum;
     this.qasm = qasm;
+    this.gates = gates;
   }
 
   public List<String> getQubits() {
@@ -22,6 +26,10 @@ public class Circuit {
 
   public void setQubits(List<String> qubits) {
     this.qubits = qubits;
+  }
+
+  public List<EggGen.Gate> getGates() {
+    return gates;
   }
 
   public List<String> getUsedQubits() {

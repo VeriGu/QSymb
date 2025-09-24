@@ -258,7 +258,7 @@ public class Verifier {
     qasm.addAll(c1.getQasm());
     qasm.addAll(c2.getQasm());
 
-    Circuit c1Minusc2 = new Circuit(new ArrayList<>(c1.getQubits()), pathSum, qasm);
+    Circuit c1Minusc2 = new Circuit(new ArrayList<>(c1.getQubits()), pathSum, qasm, new ArrayList<>());
     c1Minusc2.setUsedQubits(qubits);
 
     return c1Minusc2;
@@ -469,7 +469,7 @@ public class Verifier {
 
     Symbolic s = new Symbolic(phi, f);
     ArrayList<Symbolic> pathSum = new ArrayList<>(Arrays.asList(s));
-    Circuit c1 = new Circuit(qubits, pathSum, new ArrayList<>());
+    Circuit c1 = new Circuit(qubits, pathSum, new ArrayList<>(), new ArrayList<>());
 
     Symbolic.rz(c1, "q0", new Symbol("theta2"));
     Symbolic.cz(c1, "q0", "q1");
@@ -496,7 +496,7 @@ public class Verifier {
 
     Symbolic s2 = new Symbolic(phi2, f2);
     ArrayList<Symbolic> pathSum2 = new ArrayList<>(Arrays.asList(s2));
-    Circuit c2 = new Circuit(qubits2, pathSum2, new ArrayList<>());
+    Circuit c2 = new Circuit(qubits2, pathSum2, new ArrayList<>(), new ArrayList<>());
 
 //    Symbolic.rz(c2, "q0", new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2")));
 //    Symbolic.symb(c2, 2);

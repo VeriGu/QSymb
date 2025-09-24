@@ -956,7 +956,7 @@ public class Applier {
         TreeMap<String, Expr> f = new TreeMap<>();
         Symbolic s = new Symbolic(phi, f);
         ArrayList<Symbolic> pathSum = new ArrayList<>(Arrays.asList(s));
-        Circuit c = new Circuit(new ArrayList<>(), pathSum, new ArrayList<>());
+        Circuit c = new Circuit(new ArrayList<>(), pathSum, new ArrayList<>(), new ArrayList<>());
 
         for (Node op : ops) {
             switch (op.getId()) {

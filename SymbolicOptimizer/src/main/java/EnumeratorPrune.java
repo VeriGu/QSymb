@@ -160,7 +160,7 @@ public class EnumeratorPrune {
         }
         List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> centries = new ArrayList<>();
         for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : entries) {
-          centries.add(new SimpleEntry(CircuitTranslator.translateBack(entry.getKey()), CircuitTranslator.translateBack(entry.getValue())));
+          centries.add(new SimpleEntry(CircuitTranslator.translateBack(entry.getKey(), maxQubits), CircuitTranslator.translateBack(entry.getValue(), maxQubits)));
         }
         try {
         choose_eqs_n(centries, 2);
@@ -182,7 +182,7 @@ public class EnumeratorPrune {
         //   }
         //   EquivalenceClass eclass = new EquivalenceClass(enodes, repre);
         //   ecs.add(eclass);
-        ConstrainedCircuit repre = CircuitTranslator.translateBack(EggAstBuilder.parse(rep));
+        ConstrainedCircuit repre = CircuitTranslator.translateBack(EggAstBuilder.parse(rep), maxQubits);
         if(repre.getCircuit().getSize() == i) {
           previousReps.putIfAbsent(repre.getCircuit().getQasmString(), repre);
         }
@@ -448,7 +448,7 @@ public class EnumeratorPrune {
     Symbolic s = new Symbolic(new Real(1), f);
     ArrayList<Symbolic> pathSum = new ArrayList<>(Arrays.asList(s));
 
-    return new Circuit(qubits, pathSum, new ArrayList<>());
+    return new Circuit(qubits, pathSum, new ArrayList<>(), new ArrayList<>());
   }
 
   private String getName(int qubit) {
@@ -727,7 +727,7 @@ public class EnumeratorPrune {
       Symbolic copyS = new Symbolic(s.getPhi(), copyF);
       copyPathSum.add(copyS);
     }
-    Circuit copied = new Circuit(new ArrayList<>(c.getQubits()), copyPathSum, new ArrayList<>(c.getQasm()));
+    Circuit copied = new Circuit(new ArrayList<>(c.getQubits()), copyPathSum, new ArrayList<>(c.getQasm()), new ArrayList<>(c.getGates()));
     copied.setUsedQubits(new ArrayList<>(c.getUsedQubits()));
     return copied;
   }

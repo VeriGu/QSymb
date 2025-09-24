@@ -312,7 +312,6 @@ public class EggGen {
 
     public static class Circuit implements EggExpr {
         public final List<Gate> gates;
-
         public Circuit(List<Gate> gates) {
             this.gates = gates;
         }
