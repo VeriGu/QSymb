@@ -48,7 +48,10 @@ public class EggGen {
         content.append("(ruleset mergefinger)");
         content.append("(ruleset sizeanalysis)");
         content.append("(ruleset noteqfinger)");
-        content.append("\n(set (size (Nil)) 1)\n");
+        content.append("(rule\n" + //
+                        " ((= x (Nil)))\n" + //
+                        " ((set (size x) 1))\n" + //
+                        ":ruleset sizeanalysis)");
         content.append("(rule\n" + //
                         " ((= x (Cons y z))\n" + //
                         "  (= s (size z))\n" + //
@@ -119,6 +122,7 @@ public class EggGen {
     }
 
     public List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> parseRelation(String rel) {
+        System.err.println("Parsing relation: \n" + rel);
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> list = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new StringReader(rel))) {
             String[] nextLine;
@@ -131,6 +135,7 @@ public class EggGen {
             }
         } catch (CsvValidationException | IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
         return list;
     }
@@ -156,6 +161,7 @@ public class EggGen {
             }
         } catch (CsvValidationException | IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
         return map;
     }

@@ -96,7 +96,10 @@ public class EnumeratorPrune {
     ArrayList<ConstrainedCircuit> equiv = new ArrayList<>();
     Map<String, ConstrainedCircuit> previousReps = new HashMap<>();
     ConstrainedCircuit emptyCCircuit = new ConstrainedCircuit(emptyCircuit, emptyCircuitHashEntry.getValue());
-    egraph.addConstrainedCircuit(CircuitTranslator.translate(emptyCCircuit));
+    EggGen.ConstrainedCircuit eggcc = CircuitTranslator.translate(emptyCCircuit);
+    egraph.setFingerprint(eggcc, emptyCircuitHashEntry.getKey());
+    egraph.addConstrainedCircuit(eggcc);
+    
     previousReps.put(emptyCircuit.getQasmString(), new ConstrainedCircuit(emptyCircuit, new ArrayList<>()));
 
     for (int i = 1; i <= size; i++) {
@@ -148,12 +151,16 @@ public class EnumeratorPrune {
           egraph.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())));
         }
         egraph.runSaturation();
+        egraph.push();
         egraph.runSaturation("sizeanalysis");
         //egraph.mergeFingerPrintsEQ();
         // get the set of terms X terms that are not devived by R.
         egraph.runSaturation("noteqfinger");
+        String allterms = egraph.printFunctionCSV("CCircuit");
         String rel = egraph.printFunctionCSV("notSameButEqfinger");
-
+        egraph.pop();
+        System.out.println("All terms: \n" + allterms);
+        System.out.println("Current Relation: \n" + rel);
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> entries = egraph.parseRelation(rel);
         if(entries.size() == 0) {
           break;
@@ -208,27 +215,36 @@ public class EnumeratorPrune {
       Circuit r = entry.getKey().getCircuit();
       Circuit other = entry.getValue().getCircuit();
       String rule = r.getQasmString() + " | " + other.getQasmString();
-      System.out.println("rule:" + rule);
       if (!r.getQasmString().equals(other.getQasmString())) {
         if (!hasCommonSubcircuit(r, other)) {
           if (r.hasSymb() && other.hasSymb()) {
             if (entry.getKey().getConstraint().equals(entry.getValue().getConstraint())) { // same constraint
               if (verifier.verify(r, other, entry.getKey().getConstraint())) {
                 learned_symbolic_rules.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
+                System.out.println("rule accepted:" + rule);
                 if (constraintMap.containsKey(rule)) {
                   constraintMap.get(rule).add(entry.getKey().getConstraint());
                 } else {
                   constraintMap.put(rule, new ArrayList<>(Arrays.asList(entry.getKey().getConstraint())));
                 }
+              } else {
+                System.out.println("rule rejected, verified failed:" + rule);
               }
             }
           } else if (!r.hasSymb() && !other.hasSymb()) {
             if (verifier.verify(r, other, new ArrayList<>())) {
               learned_rules.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
+              System.out.println("rule:" + rule);
               pw.println(rule);
+            } else {
+              System.out.println("rule rejected, verified failed:" + rule);
             }
           }
+        } else {
+          System.out.println("rule rejected, has common subcircuit:" + rule);
         }
+      } else {
+        System.out.println("rule rejected, lhs = rhs" + rule);
       }
     }
 

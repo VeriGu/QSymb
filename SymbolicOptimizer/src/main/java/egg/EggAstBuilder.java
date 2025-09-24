@@ -2,6 +2,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -10,6 +11,7 @@ import ast.*;
 public class EggAstBuilder extends EggBaseVisitor<Object> {
 
     public static EggGen.ConstrainedCircuit parse(String constrainedCircuit) {
+        System.err.println("Parsing: " + constrainedCircuit);
         EggLexer lexer = new EggLexer(CharStreams.fromString(constrainedCircuit));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         EggParser parser = new EggParser(tokens);
