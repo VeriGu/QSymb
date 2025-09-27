@@ -11,14 +11,14 @@ circuit       : LPAREN Nil RPAREN
               ;
 
 permutation   : LPAREN cons='PermNil' RPAREN
-              | LPAREN cons='PermCons' NUMBER permutation RPAREN
+              | LPAREN cons='PermCons' INTEGER permutation RPAREN
               ;
 
 gate          : LPAREN gateN='X' qubit RPAREN
               | LPAREN gateN='CX' qubit qubit RPAREN
               | LPAREN gateN='RZ' qubit expr RPAREN
               | LPAREN gateN='H' qubit RPAREN
-              | LPAREN gateN='SYMB' NUMBER RPAREN
+              | LPAREN gateN='SYMB' INTEGER RPAREN
               | LPAREN gateN='U1' qubit expr RPAREN
               | LPAREN gateN='U2' qubit expr expr RPAREN
               | LPAREN gateN='U3' qubit expr expr expr RPAREN
@@ -41,8 +41,8 @@ expr          : LPAREN cons='Bool' BOOLEAN RPAREN
               | LPAREN cons='Symbol' STRING RPAREN
               | LPAREN cons='Var' STRING RPAREN
               | LPAREN cons='Fun' STRING expr RPAREN
-              | LPAREN cons='UnOp' op expr RPAREN
-              | LPAREN cons='BinOp' op expr expr RPAREN
+              | LPAREN cons='UnOp' LPAREN op RPAREN expr RPAREN
+              | LPAREN cons='BinOp' LPAREN op RPAREN expr expr RPAREN
               ;
 
 op            : 'EXP' | 'SQRT' | 'MINUS' | 'COS' | 'SIN' | 'NOT'
@@ -56,7 +56,8 @@ Nil           : 'Nil';
 LPAREN        : '(';
 RPAREN        : ')';
 STRING        : '"' (WORD)* '"';
-NUMBER        : '-'? DIGIT+ ('.' DIGIT+)?;
+INTEGER       : [0-9]+;
+NUMBER        : '-'? [0-9]+ ('.' [0-9]+);
 WORD          : (LETTER | '_') (LETTER | DIGIT | '_')*;
 WHITESPACE    : [ \t\r\n]+ -> skip;
 

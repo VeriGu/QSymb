@@ -1,28 +1,32 @@
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.FileSystems;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.io.PrintWriter;
 import java.util.Random;
-import java.util.AbstractMap.SimpleEntry;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import ast.BinOp;
 import ast.Expr;
 import ast.Expr.Op;
 import ast.Real;
 import ast.Symbol;
-import ast.UnOp;
 import ast.Var;
-import org.apache.commons.cli.*;
 
 public class EnumeratorPrune {
   private static final String[] ANGLES = {"theta1", "theta2", "theta3"};
@@ -39,7 +43,7 @@ public class EnumeratorPrune {
 ////          new BinOp(Op.MULT, new Real(3), new Symbol("pi")),
 ////          new BinOp(Op.PLUS, new Symbol("theta1"), new BinOp(Op.PLUS, new Symbol("theta2"), new Symbol("theta3"))), // ibm
 //  };
-  private static final int MAX_QUBITS_SYMB = 2;
+  public static final int MAX_QUBITS_SYMB = 2;
 
   private Verifier verifier;
   private String[] gates;
@@ -99,7 +103,7 @@ public class EnumeratorPrune {
     EggGen.ConstrainedCircuit eggcc = CircuitTranslator.translate(emptyCCircuit);
     egraph.setFingerprint(eggcc, emptyCircuitHashEntry.getKey());
     egraph.addConstrainedCircuit(eggcc);
-    
+
     previousReps.put(emptyCircuit.getQasmString(), new ConstrainedCircuit(emptyCircuit, new ArrayList<>()));
 
     for (int i = 1; i <= size; i++) {
@@ -153,13 +157,13 @@ public class EnumeratorPrune {
         egraph.runSaturation();
         egraph.push();
         egraph.runSaturation("sizeanalysis");
-        //egraph.mergeFingerPrintsEQ();
         // get the set of terms X terms that are not devived by R.
         egraph.runSaturation("noteqfinger");
-        String allterms = egraph.printFunctionCSV("CCircuit");
+        //String allterms = egraph.printFunctionCSV("CCircuit");
+        String finger = egraph.printFunctionCSV("fingerprint");
         String rel = egraph.printFunctionCSV("notSameButEqfinger");
         egraph.pop();
-        System.out.println("All terms: \n" + allterms);
+        System.out.println("Fingers\n" + finger);
         System.out.println("Current Relation: \n" + rel);
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> entries = egraph.parseRelation(rel);
         if(entries.size() == 0) {
@@ -408,6 +412,7 @@ public class EnumeratorPrune {
     for (SimpleEntry<Integer, List<Integer>> entry : hash) {
       ConstrainedCircuit cc = new ConstrainedCircuit(c, entry.getValue());
       EggGen.ConstrainedCircuit eggcc = CircuitTranslator.translate(cc);
+      //System.out.println("Adding to egraph: " + eggcc.toEggString() + " with fingerprint " + entry.getKey());
       egraph.addConstrainedCircuit(eggcc);
       egraph.setFingerprint(eggcc, entry.getKey());
     }
@@ -417,6 +422,7 @@ public class EnumeratorPrune {
     List<SimpleEntry<Integer, List<Integer>>> hash = verifier.hashCode(c, symbolMap);
     for (SimpleEntry<Integer, List<Integer>> entry : hash) {
       ConstrainedCircuit cc = new ConstrainedCircuit(c, entry.getValue());
+      //System.out.println("Adding to eclass: " + cc.getCircuit().getQasmString() + " with fingerprint " + entry.getKey());
       if (map.containsKey(entry.getKey())) {
         map.get(entry.getKey()).add(cc);
       } else {
@@ -744,7 +750,7 @@ public class EnumeratorPrune {
       copyPathSum.add(copyS);
     }
     Circuit copied = new Circuit(new ArrayList<>(c.getQubits()), copyPathSum, new ArrayList<>(c.getQasm()), new ArrayList<>(c.getGates()));
-    copied.setUsedQubits(new ArrayList<>(c.getUsedQubits()));
+    copied.setUsedQubits(new TreeSet<>(c.getUsedQubits()));
     return copied;
   }
 
@@ -855,12 +861,12 @@ public class EnumeratorPrune {
       }
 
       long time1 = System.currentTimeMillis();
-      //enumerator.enumerate(maxQubits, maxSize);
-      enumerator.enumerateEqsat(maxQubits, maxSize);
-      //enumerator.pruneECS();
+      enumerator.enumerate(maxQubits, maxSize);
+      //enumerator.enumerateEqsat(maxQubits, maxSize);
+      enumerator.pruneECS();
       long time2 = System.currentTimeMillis();
 //      System.out.println("enumerate time (s): " + ((time2-time1)/1000));
-      //enumerator.gatherRules(String.format("rules_q%s_s%s_%s", maxQubits, maxSize, gateset));
+      enumerator.gatherRules(String.format("rules_q%s_s%s_%s", maxQubits, maxSize, gateset));
       long time3 = System.currentTimeMillis();
       System.out.println(String.format("%s q%s s%s total time (s): %s", gateset, maxQubits, maxSize, ((time3-time1)/1000)));
     } catch (ParseException e) {

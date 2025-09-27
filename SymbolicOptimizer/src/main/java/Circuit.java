@@ -1,11 +1,10 @@
-import java.util.ArrayList;
 import java.util.List;
-
-import ast.Var;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Circuit {
   private List<String> qubits;
-  private List<String> usedQubits;
+  private Set<String> usedQubits;
   private List<Symbolic> pathSum;
   private List<String> qasm;
 
@@ -14,7 +13,7 @@ public class Circuit {
 
   public Circuit(List<String> qubits, List<Symbolic> pathSum, List<String> qasm, List<EggGen.Gate> gates) {
     this.qubits = qubits;
-    this.usedQubits = new ArrayList<>();
+    this.usedQubits = new TreeSet<>();
     this.pathSum = pathSum;
     this.qasm = qasm;
     this.gates = gates;
@@ -32,11 +31,11 @@ public class Circuit {
     return gates;
   }
 
-  public List<String> getUsedQubits() {
+  public Set<String> getUsedQubits() {
     return usedQubits;
   }
 
-  public void setUsedQubits(List<String> usedQubits) {
+  public void setUsedQubits(Set<String> usedQubits) {
     this.usedQubits = usedQubits;
   }
 

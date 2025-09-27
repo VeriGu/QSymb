@@ -20,7 +20,12 @@ public sealed class Expr
     // bool
     XOR,
     AND,
-    OR
+    OR;
+
+
+    public String toEggString() {
+        return "("+name()+")";
+    }
   }
 
   @Override

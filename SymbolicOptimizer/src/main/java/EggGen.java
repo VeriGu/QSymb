@@ -1,7 +1,5 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,17 +7,18 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Set;
+
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import ast.*;
+
+import ast.Expr;
+
+
 
 public class EggGen {
 
@@ -31,7 +30,7 @@ public class EggGen {
     private Process egglogProcess;
     private BufferedWriter processInput;
     private BufferedReader processOutput;
-
+    private BufferedReader processError;
     public EggGen() {
         numCircuits = 0;
         // Add standard datatype and function definitions from qast.egg
@@ -63,8 +62,8 @@ public class EggGen {
         content.append("(relation notSameButEqfinger (ConstrainedCircuit ConstrainedCircuit))");
         content.append("(rule \n" + //
                         "(" + //
-                        " (= x (CCircuit cx p1))\n" + //
-                        " (= y (CCircuit cy p2))\n" + //
+                        " (= x (CCircuit cx p))\n" + //
+                        " (= y (CCircuit cy p))\n" + //
                         " (<= (size cx) (size cy))\n" + //
                         " (!= x y)\n" + //
                         " (= (fingerprint x) (fingerprint y))\n" + //
@@ -85,9 +84,11 @@ public class EggGen {
 
     public void startEgglogREPL() throws IOException {
         ProcessBuilder pb = new ProcessBuilder("egglog");
+        pb.environment().put("RUST_LOG", "ERROR");
         pb.redirectErrorStream(true);
         this.egglogProcess = pb.start();
         this.processInput = new BufferedWriter(new OutputStreamWriter(egglogProcess.getOutputStream()));
+        this.processError = new BufferedReader(new InputStreamReader(egglogProcess.getErrorStream()));
         this.processOutput = new BufferedReader(new InputStreamReader(egglogProcess.getInputStream()));
     }
 
@@ -98,6 +99,10 @@ public class EggGen {
     }
 
     public String sendCommand(String command) {
+        return sendCommand(command, false);
+    }
+
+    public String sendCommand(String command, boolean wait) {
         if (processInput == null || processOutput == null) {
             System.out.println("REPL not started. Call startEgglogREPL() first.");
             return null;
@@ -109,7 +114,14 @@ public class EggGen {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return readOutput();
+
+        String err = readError();
+        System.err.println(err);
+        if(wait) {
+            return readOutput();
+        } else {
+            return "";
+        }
     }
 
     public void setFingerprint(ConstrainedCircuit c, Integer fingerprint) {
@@ -122,7 +134,7 @@ public class EggGen {
     }
 
     public List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> parseRelation(String rel) {
-        System.err.println("Parsing relation: \n" + rel);
+        rel = rel.replaceAll("\\n+$", "");
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> list = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new StringReader(rel))) {
             String[] nextLine;
@@ -141,6 +153,10 @@ public class EggGen {
     }
 
     public Map<String, List<EggGen.ConstrainedCircuit>> parseEnodes(String nodes) {
+        nodes = nodes.replaceAll("\\n+$", "");
+        if(nodes.equals("")) {
+            return new HashMap<>();
+        }
         Map<String, List<EggGen.ConstrainedCircuit>> map = new HashMap<>();
         try (CSVReader reader = new CSVReader(new StringReader(nodes))) {
             String[] nextLine;
@@ -170,11 +186,26 @@ public class EggGen {
         StringBuilder output = new StringBuilder();
         // A short sleep to allow the process to start writing output
         try {
-            Thread.sleep(1);
+            Thread.sleep(1000);
             while (processOutput.ready()) {
                 output.append((char) processOutput.read());
             }
+            
         } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return output.toString();
+    }
+
+    private String readError() {
+        StringBuilder output = new StringBuilder();
+        // A short sleep to allow the process to start writing output
+        try {
+            while (processError.ready()) {
+                output.append((char) processError.read());
+            }
+            
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return output.toString();
@@ -196,7 +227,8 @@ public class EggGen {
 
     public String addConstrainedCircuit(ConstrainedCircuit constrainedCircuit) {
         String name = "cc_" + numCircuits++;
-        sendCommand(String.format("(let %s %s)\n", name, constrainedCircuit.toEggString()));
+        String output = sendCommand(String.format("(let %s %s)\n", name, constrainedCircuit.toEggString()));
+        System.err.println(output);
         return name;
     }
 
@@ -218,7 +250,7 @@ public class EggGen {
     }
 
     public void getSmallestRep(String eclass) {
-        sendCommand(String.format("(extract %s)\n", eclass));
+        sendCommand(String.format("(extract %s)\n", eclass), true);
     }
 
     public void runSaturation() {
@@ -230,13 +262,13 @@ public class EggGen {
     }
 
     public String printFunctionCSV(String name) {
-        String output = sendCommand(String.format("(print-function %s :mode csv)", name));
+        String output = sendCommand(String.format("(print-function %s :mode csv)", name), true);
         return output;
     }
 
  
     public String printFunctionListCSV(List<String> list) {             
-        String output = sendCommand(String.format("(print-function %s :mode csv)", list.toArray()));
+        String output = sendCommand(String.format("(print-function %s :mode csv)", list.toArray()), true);
         return output; 
     }
 
@@ -390,7 +422,7 @@ public class EggGen {
         public final String qubit;
         public final Expr angle;
         public RZ(String qubit, Expr angle) { this.qubit = qubit; this.angle = angle; }
-        public String toEggString() { return String.format("(RZ (Q \"%s\") %s)", qubit, angle.toString()); }
+        public String toEggString() { return String.format("(RZ (Q \"%s\") %s)", qubit, angle.toEggString()); }
     }
     
     public static class H extends Gate {
@@ -409,7 +441,7 @@ public class EggGen {
         public final String qubit;
         public final Expr lambda;
         public U1(String qubit, Expr lambda) { this.qubit = qubit; this.lambda = lambda; }
-        public String toEggString() { return String.format("(U1 (Q \"%s\") %s)", qubit, lambda.toString()); }
+        public String toEggString() { return String.format("(U1 (Q \"%s\") %s)", qubit, lambda.toEggString()); }
     }
 
     public static class U2 extends Gate {
@@ -417,7 +449,7 @@ public class EggGen {
         public final Expr phi;
         public final Expr lambda;
         public U2(String qubit, Expr phi, Expr lambda) { this.qubit = qubit; this.phi = phi; this.lambda = lambda; }
-        public String toEggString() { return String.format("(U2 (Q \"%s\") %s %s)", qubit, phi.toString(), lambda.toString()); }
+        public String toEggString() { return String.format("(U2 (Q \"%s\") %s %s)", qubit, phi.toEggString(), lambda.toEggString()); }
     }
 
     public static class U3 extends Gate {
@@ -426,14 +458,14 @@ public class EggGen {
         public final Expr phi;
         public final Expr lambda;
         public U3(String qubit, Expr theta, Expr phi, Expr lambda) { this.qubit = qubit; this.theta = theta; this.phi = phi; this.lambda = lambda; }
-        public String toEggString() { return String.format("(U3 (Q \"%s\") %s %s %s)", qubit, theta.toString(), phi.toString(), lambda.toString()); }
+        public String toEggString() { return String.format("(U3 (Q \"%s\") %s %s %s)", qubit, theta.toEggString(), phi.toEggString(), lambda.toEggString()); }
     }
 
     public static class RX extends Gate {
         public final String qubit;
         public final Expr angle;
         public RX(String qubit, Expr angle) { this.qubit = qubit; this.angle = angle; }
-        public String toEggString() { return String.format("(RX (Q \"%s\") %s)", qubit, angle.toString()); }
+        public String toEggString() { return String.format("(RX (Q \"%s\") %s)", qubit, angle.toEggString()); }
     }
 
     public static class CZ extends Gate {
@@ -447,7 +479,7 @@ public class EggGen {
         public final String qubit;
         public final Expr angle;
         public RY(String qubit, Expr angle) { this.qubit = qubit; this.angle = angle; }
-        public String toEggString() { return String.format("(RY (Q \"%s\") %s)", qubit, angle.toString()); }
+        public String toEggString() { return String.format("(RY (Q \"%s\") %s)", qubit, angle.toEggString()); }
     }
 
     public static class RXX extends Gate {
@@ -455,14 +487,14 @@ public class EggGen {
         public final String qubit2;
         public final Expr angle;
         public RXX(String qubit1, String qubit2, Expr angle) { this.qubit1 = qubit1; this.qubit2 = qubit2; this.angle = angle; }
-        public String toEggString() { return String.format("(RXX (Q \"%s\") (Q \"%s\") %s)", qubit1, qubit2, angle.toString()); }
+        public String toEggString() { return String.format("(RXX (Q \"%s\") (Q \"%s\") %s)", qubit1, qubit2, angle.toEggString()); }
     }
 
     public static class GPI extends Gate {
         public final String qubit;
         public final Expr phi;
         public GPI(String qubit, Expr phi) { this.qubit = qubit; this.phi = phi; }
-        public String toEggString() { return String.format("(GPI (Q \"%s\") %s)", qubit, phi.toString()); }
+        public String toEggString() { return String.format("(GPI (Q \"%s\") %s)", qubit, phi.toEggString()); }
     }
 
     public static class GPI2 extends Gate {

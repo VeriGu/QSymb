@@ -1,17 +1,12 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.HashMap;
 
 import ast.Expr;
 import ast.Real;
-import ast.Symbol;
-import ast.BinOp;
-import ast.UnOp;
 import ast.Var;
 
 public class CircuitTranslator {
@@ -88,10 +83,7 @@ public class CircuitTranslator {
             } else if (gate instanceof EggGen.H h) {
                 Symbolic.h(circuit, h.qubit);
             } else if (gate instanceof EggGen.SYMB symb) {
-                // Assuming SYMB gate doesn't directly affect qubits or pathSum in this context
-                // If it does, we need to handle it appropriately.
-                // For now, we'll just add its QASM string to the circuit.
-                circuit.getQasm().add(gateToQasm(gate));
+                Symbolic.symb(circuit, EnumeratorPrune.MAX_QUBITS_SYMB);
             } else if (gate instanceof EggGen.U1 u1) {
                 Symbolic.u1(circuit, u1.qubit, u1.lambda);
             } else if (gate instanceof EggGen.U2 u2) {

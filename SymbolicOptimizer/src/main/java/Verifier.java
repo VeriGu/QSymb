@@ -1,3 +1,4 @@
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -5,20 +6,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
-import java.util.AbstractMap.SimpleEntry;
+import java.util.TreeSet;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.math3.complex.Complex;
 
+import ast.BinOp;
+import ast.Bool;
 import ast.Expr;
+import ast.Expr.Op;
 import ast.Fun;
 import ast.Real;
 import ast.Symbol;
 import ast.UnOp;
 import ast.Var;
-import ast.Expr.Op;
-import ast.BinOp;
-import ast.Bool;
 
 public class Verifier {
   private static final int TOLERANCE = -8;
@@ -32,7 +35,8 @@ public class Verifier {
     this.rand = rand;
     this.termsMap = new HashMap<>();
     for (int i = 1; i <= maxQubits; i++) {
-      termsMap.put(i, generateTerms(i));
+      boolean[][] terms = generateTerms(i);
+      termsMap.put(i, terms);
     }
     if (maxQubits < 4) {
       this.permsMap = new HashMap<>();
@@ -55,7 +59,8 @@ public class Verifier {
     boolean[][] funTerms = cDiff.getUsedQubits().size() > 0 ? termsMap.get(cDiff.getUsedQubits().size()) : terms;
     List<Map<String, Integer>> qubitMaps = getQubitMaps(cDiff, terms);
 
-    if (verifyHelper(cDiff, terms, qubitMaps, Collections.nCopies(terms.length, new HashMap<>()))) {
+
+    if (verifyHelper(cDiff, terms, qubitMaps, new HashMap<>(), funTerms)) {
       return new ArrayList<>();
     }
 
@@ -64,8 +69,15 @@ public class Verifier {
     ArrayList<List<Integer>> constraints = new ArrayList<>();
 
     for (List<Integer> perm : perms) {
-      List<Map<String, Expr>> funMaps = getFunMaps(cDiff, funTerms, perm);
-      if (verifyHelper(cDiff, terms, qubitMaps, funMaps)) {
+      //List<Map<String, Expr>> funMaps = getFunMaps(cDiff, funTerms, perm);
+      Map<String, Integer> reverseMap = new HashMap<>();
+      int j = 0;
+      for (boolean[] term : terms) {
+        String sterm = Arrays.toString(term);
+        reverseMap.put(sterm, j);
+        j++;
+      }
+      if (verifyHelper(cDiff, terms, qubitMaps, reverseMap, funTerms)) {
         constraints.add(perm);
       }
     }
@@ -78,18 +90,28 @@ public class Verifier {
 
   public boolean verify(Circuit c1, Circuit c2, List<Integer> perm) {
     // c1 - c2
+    System.out.println("Verifying equivalence of circuits:" + c1.getQasm() + "|" + c2.getQasm());
     Circuit cDiff = subtractCircuits(c1, c2);
 
     // enumerate qubits
     boolean[][] terms = termsMap.get(cDiff.getQubits().size());
     boolean[][] funTerms = cDiff.getUsedQubits().size() > 0 ? termsMap.get(cDiff.getUsedQubits().size()) : terms;
     List<Map<String, Integer>> qubitMaps = getQubitMaps(cDiff, terms);
-    List<Map<String, Expr>> funMaps = getFunMaps(cDiff, funTerms, perm);
 
-    return verifyHelper(cDiff, terms, qubitMaps, funMaps);
+    Map<String, Integer> reverseMap = new HashMap<>();
+    int j = 0;
+    for (boolean[] term : funTerms) {
+      String sterm = Arrays.toString(funTerms[j]);
+      reverseMap.put(sterm, j);
+      j++;
+    }
+    //List<Map<String, Expr>> funMaps = getFunMaps(cDiff, funTerms, perm);
+
+    return verifyHelper(cDiff, terms, qubitMaps, reverseMap, funTerms);
   }
 
   public boolean verify(Circuit c, Map<String, Integer> qubitMap, Map<String, Boolean> expectedMap) {
+    System.out.println("Verifying Circuit: " + c.getQasmString());
     if (c.getSize() == 0) {
       for (String q : qubitMap.keySet()) {
         if (!(qubitMap.get(q) == (expectedMap.get(q) ? 1 : 0))) {
@@ -106,7 +128,7 @@ public class Verifier {
     }
 
     List<String> qubitsNotInMap = new ArrayList<>();
-    java.util.Collections.sort(c.getUsedQubits());
+    //java.util.Collections.sort(c.getUsedQubits());
     for (String qubit : c.getUsedQubits()) {
       if (!qubitMap.containsKey(qubit)) {
         qubitsNotInMap.add(qubit);
@@ -114,9 +136,8 @@ public class Verifier {
     }
 
     List<Map<String, Integer>> qubitMaps = new ArrayList<>();
-
+    boolean[][] terms = termsMap.get(qubitsNotInMap.size());
     if (!qubitsNotInMap.isEmpty()) {
-      boolean[][] terms = termsMap.get(qubitsNotInMap.size());
       for (boolean[] qubitMapping : terms) {
         Map<String, Integer> map = new HashMap<>();
         map.putAll(qubitMap);
@@ -132,14 +153,14 @@ public class Verifier {
     }
 
     for (int i = 0; i < qubitMaps.size(); i++) {
-      List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMaps.get(i), new HashMap<>(), new HashMap<>());
+      List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMaps.get(i), new HashMap<>(), new HashMap<>(), terms);
       List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, termsMap.get(c.getUsedQubits().size()));
 
       for (Concrete concrete : groupedCircuit) {
         if (!(concrete.getPhi().abs() - 0 < Math.pow(10, TOLERANCE))) {
           for (String qubit : expectedMap.keySet()) {
             if (c.getUsedQubits().contains(qubit)) {
-              if (!(concrete.getF()[c.getUsedQubits().indexOf(qubit)] == expectedMap.get(qubit))) {
+              if (!(concrete.getF()[Integer.parseInt(qubit.replace("q", ""))] == expectedMap.get(qubit))) {
                 return false;
               }
             }
@@ -153,18 +174,25 @@ public class Verifier {
 
   public List<SimpleEntry<Integer, List<Integer>>> hashCode(Circuit c, Map<String, Double> symbolMap) {
     ArrayList<SimpleEntry<Integer, List<Integer>>> result = new ArrayList<>();
-
+    System.out.println("Hashing Circuit: " + c.getQasmString());
     List<Map<String, Integer>> qubitMaps = getQubitMaps(c, termsMap.get(c.getQubits().size()));
-
+    boolean[][] terms = termsMap.get(c.getUsedQubits().size());
     if (c.hasSymb()) {
-      boolean[][] terms = termsMap.get(c.getUsedQubits().size());
+      Map<String, Integer> reverseMap = new HashMap<>();
+      int j = 0;
+      for (boolean[] term : terms) {
+        String sterm = Arrays.toString(term);
+        System.out.println("reverse mapping " + sterm + " to " + j);
+        reverseMap.put(sterm, j);
+        j++;
+      }
       List<List<Integer>> perms = permsMap.get(terms.length);
 
       for (List<Integer> perm : perms) {
         ArrayList<List<Concrete>> evaluatedCircuits = new ArrayList<>();
-        List<Map<String, Expr>> funMaps = getFunMaps(c, terms, perm);
-        for (int i = 0; i < qubitMaps.size(); i++) {
-          List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMaps.get(i), symbolMap, funMaps.get(i % funMaps.size()));
+        //List<Map<String, Expr>> funMaps = getFunMaps(c, terms, perm);
+        for (int i = 0; i < qubitMaps.size(); i++) { //for every term's qubit mapping
+          List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMaps.get(i), symbolMap, reverseMap, terms);
           List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, termsMap.get(c.getQubits().size()));
           evaluatedCircuits.add(groupedCircuit);
         }
@@ -174,7 +202,7 @@ public class Verifier {
     } else {
       ArrayList<List<Concrete>> evaluatedCircuits = new ArrayList<>();
       for (Map<String, Integer> qubitMap : qubitMaps) {
-        List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMap, symbolMap, new HashMap<>());
+        List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMap, symbolMap, new HashMap<>(), terms);
         List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, termsMap.get(c.getQubits().size()));
         evaluatedCircuits.add(groupedCircuit);
       }
@@ -188,9 +216,9 @@ public class Verifier {
     return termsMap;
   }
 
-  private boolean verifyHelper(Circuit c, boolean[][] terms, List<Map<String, Integer>> qubitMaps, List<Map<String, Expr>> funMap) {
+  private boolean verifyHelper(Circuit c, boolean[][] terms, List<Map<String, Integer>> qubitMaps, Map<String, Integer> reversemap, boolean[][] funTerms) {
     for (int i = 0; i < qubitMaps.size(); i++) {
-      List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMaps.get(i), new HashMap<>(), funMap.get(i % funMap.size()));
+      List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMaps.get(i), new HashMap<>(), reversemap, funTerms);
       List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, terms);
       if (!isZero(groupedCircuit)) {
         return false;
@@ -242,10 +270,12 @@ public class Verifier {
       if (!c2.hasQubit(qubit)) { c2.addQubit(qubit); }
     }
     for (String qubit : c2.getUsedQubits()) {
-      if (!c1.hasQubit(qubit)) { c1.addQubit(qubit); }
+      if (c1.hasQubit(qubit)) {} else {
+          c1.addQubit(qubit);
+        }
     }
 
-    ArrayList<String> qubits = new ArrayList<>(c1.getUsedQubits());
+    Set<String> qubits = new TreeSet<>(c1.getUsedQubits());
 
     ArrayList<Symbolic> pathSum = new ArrayList<>();
     pathSum.addAll(c1.getPathSum());
@@ -268,42 +298,155 @@ public class Verifier {
   private List<Concrete> evalCircuit(Circuit c,
                                      Map<String, Integer> qubitMap,
                                      Map<String, Double> symbolMap,
-                                     Map<String, Expr> funMap) {
+                                     Map<String, Integer> reversemap,
+                                     boolean[][] terms) {
     ArrayList<Concrete> eval_circuit = new ArrayList<>();
-    for (Symbolic s : c.getPathSum()) {
-      Complex eval_phi = evalExpr(s.getPhi(), qubitMap, symbolMap, funMap);
-      boolean[] eval_f = new boolean[s.getF().size()];
-      int i = 0;
-      for (Expr e : s.getF().values()) {
-        eval_f[i] = assertZeroOrOne(evalExpr(e, qubitMap, symbolMap, funMap)) == 1;
-        i++;
+    System.out.println("Evaluating Circuit: " + c.getQasmString());
+    System.out.println("With qubit map: " + qubitMap.toString());
+    if(!c.hasSymb()) {
+      for (Symbolic s : c.getPathSum()) {
+        Complex eval_phi = evalExpr(s.getPhi(), qubitMap, symbolMap);
+        boolean[] eval_f = new boolean[s.getF().size()];
+        int i = 0;
+        for (Expr e : s.getF().values()) {
+          eval_f[i] = assertZeroOrOne(evalExpr(e, qubitMap, symbolMap)) == 1;
+          i++;
+        }
+        eval_circuit.add(new Concrete(eval_phi, eval_f));
       }
-      eval_circuit.add(new Concrete(eval_phi, eval_f));
+    } else {
+      for(Symbolic s : c.getPathSum()) {
+        Complex eval_phi = evalExpr(s.getPhi(), qubitMap, symbolMap);
+        boolean[] eval_f = new boolean[s.getF().size()];
+        Map<String, Expr> exprs = new TreeMap<>();
+        for (String qubit: s.getF().keySet()) {
+          System.out.println("expr: " + s.getF().get(qubit).toString());
+          SimpleEntry<Expr, Boolean> entry = evalExprBeforeFun(s.getF().get(qubit), qubitMap, symbolMap);
+          System.out.println("evaluating before fun: " + entry.getKey().toString() + ", has fun? " + entry.getValue());
+          if(c.getUsedQubits().contains(qubit)) {
+            exprs.put(qubit, entry.getKey());
+          }
+        }
+        //now calculate the function and update qubitMap
+        boolean[] intermediate = new boolean[exprs.size()];
+        int i = 0;
+        for(String qubit : exprs.keySet()) {
+          intermediate[i] = qubitMap.get(qubit) == 1;
+        }
+        System.out.println("term after evaluating before fun: " + Arrays.toString(intermediate));
+        //TODO:: now need to permute intermediate based on permutation
+
+        boolean[] after_map_term = terms[reversemap.get(Arrays.toString(intermediate))];
+
+        i = 0;
+        for (Expr e : exprs.values()) {
+          System.out.println("evaluating after fun: " + e.toString());
+          eval_f[i] = assertZeroOrOne(evalExpr(e, qubitMap, symbolMap)) == 1;
+          i++;
+        }
+      }
+    }
+    System.out.println("Evaluated Circuit: " + eval_circuit.toString());
+    return eval_circuit;
+  }
+
+  private SimpleEntry<Expr, Boolean> evalExprBeforeFun(Expr e,  Map<String, Integer> qubitMap, Map<String, Double> symbolMap) {
+    switch (e) {
+      case Real r: return new SimpleEntry<>(e, false);
+      case Bool b: return new SimpleEntry<>(e, false);
+      case Var v: return new SimpleEntry<>(new Real(qubitMap.get(v.getId())), false);
+      case Fun f: return evalBeforeFun(f, qubitMap, symbolMap);
+      case UnOp uo: return evalUnOpBeforeFun(uo, qubitMap, symbolMap);
+      case BinOp bo: return evalBinOpBeforeFun(bo, qubitMap, symbolMap);
+      default: assert false; return null; // stupid hack to make the compiler happy ugh
+    }
+  }
+
+  private SimpleEntry<Expr, Boolean> evalBeforeFun(Fun f,
+                          Map<String, Integer> qubitMap,
+                          Map<String, Double> symbolMap
+                          ) {
+      
+      Complex arg = evalExpr(f.getArg(), qubitMap, symbolMap);
+      int v = assertZeroOrOne(arg);
+      qubitMap.put(f.getQubit(), v);
+      
+      return new SimpleEntry<>(new Fun(f.getQubit(), new Var(f.getQubit())), true);
+  }
+
+  // assume only the transformer function uses it
+  private SimpleEntry<Expr, Boolean> evalUnOpBeforeFun(UnOp uo,
+                           Map<String, Integer> qubitMap,
+                           Map<String, Double> symbolMap
+                           ) {
+    Expr e = uo.getE();
+    SimpleEntry<Expr, Boolean> entry = evalExprBeforeFun(e, qubitMap, symbolMap);
+    Expr val = entry.getKey();
+    if(entry.getValue()) {
+      return new SimpleEntry<>(new UnOp(uo.getOp(), val), true);
     }
 
-    return eval_circuit;
+    Complex v = evalExpr(val, qubitMap, symbolMap);
+    int rv = assertZeroOrOne(v);
+    switch (uo.getOp()) {
+      case MINUS: return new SimpleEntry<>(new Real(-rv), false);
+      case NOT: {
+        int vint = assertZeroOrOne(v);
+        return new SimpleEntry<>(vint == 0 ? new Real(1) : new Real(0), false);
+      }
+      default: throw new RuntimeException(String.format("unimplemented UnOp: %s", uo.getOp()));
+    }
+  }
+
+  private SimpleEntry<Expr, Boolean> evalBinOpBeforeFun(BinOp bo,
+                            Map<String, Integer> qubitMap,
+                            Map<String, Double> symbolMap
+                            ) {
+    SimpleEntry<Expr, Boolean> entry1 = evalExprBeforeFun(bo.getE1(), qubitMap, symbolMap);
+    SimpleEntry<Expr, Boolean> entry2 = evalExprBeforeFun(bo.getE2(), qubitMap, symbolMap);
+    Expr v1 = entry1.getKey();
+    Expr v2 = entry2.getKey();
+    if (entry1.getValue() || entry2.getValue()) {
+      return new SimpleEntry<>(new BinOp(bo.getOp(), v1, v2), true);
+    }
+
+    int i1 = assertZeroOrOne(evalExpr(v1, qubitMap, symbolMap));
+    int i2 = assertZeroOrOne(evalExpr(v2, qubitMap, symbolMap));
+    
+    switch (bo.getOp()) {
+      case XOR: {
+        return new SimpleEntry<>(new Real(i1 ^ i2), false);
+      }
+      case AND: {
+        return new SimpleEntry<>(new Real(i1 & i2), false);
+      }
+      case OR: {
+        return new SimpleEntry<>(new Real(i1 | i2), false);
+      }
+      default: throw new RuntimeException(String.format("unimplemented BinOp: %s", bo.getOp()));
+    }
   }
 
   public Complex evalExpr(Expr e,
                            Map<String, Integer> qubitMap,
-                           Map<String, Double> symbolMap,
-                           Map<String, Expr> funMap) {
+                           Map<String, Double> symbolMap
+                         ) {
     switch (e) {
       case Real r: return new Complex(r.getNumber());
       case Bool b: return b.isBool() ? Complex.ONE : Complex.ZERO;
       case Var v: return new Complex(qubitMap.get(v.getId()));
-      case Symbol s: return evalSymbol(s, qubitMap, symbolMap, funMap);
-      case Fun f: return evalFun(f, qubitMap, symbolMap, funMap);
-      case UnOp uo: return evalUnOp(uo, qubitMap, symbolMap, funMap);
-      case BinOp bo: return evalBinOp(bo, qubitMap, symbolMap, funMap);
+      case Fun f: return evalFun(f, qubitMap, symbolMap);
+      case Symbol s: return evalSymbol(s, qubitMap, symbolMap);
+      case UnOp uo: return evalUnOp(uo, qubitMap, symbolMap);
+      case BinOp bo: return evalBinOp(bo, qubitMap, symbolMap);
       default: assert false; return null; // stupid hack to make the compiler happy ugh
     }
   }
 
   private Complex evalSymbol(Symbol s,
                              Map<String, Integer> qubitMap,
-                             Map<String, Double> symbolMap,
-                             Map<String, Expr> funMap) {
+                             Map<String, Double> symbolMap
+                             ) {
     String symbol = s.getSymbol();
     switch (symbol) {
       case Symbolic.S_I: return Complex.I;
@@ -333,23 +476,17 @@ public class Verifier {
 
   private Complex evalFun(Fun f,
                           Map<String, Integer> qubitMap,
-                          Map<String, Double> symbolMap,
-                          Map<String, Expr> funMap) {
-    Complex arg = evalExpr(f.getArg(), qubitMap, symbolMap, funMap);
-    int v = assertZeroOrOne(arg);
-    if (funMap.containsKey(f.getName())) {
-      qubitMap.put(f.getQubit(), v);
-      return evalExpr(funMap.get(f.getName()), qubitMap, symbolMap, funMap);
-    } else {
-      return arg;
-    }
+                          Map<String, Double> symbolMap
+                          ) {
+    Complex arg = evalExpr(f.getArg(), qubitMap, symbolMap);
+    return arg;
   }
 
   private Complex evalUnOp(UnOp uo,
                            Map<String, Integer> qubitMap,
-                           Map<String, Double> symbolMap,
-                           Map<String, Expr> funMap) {
-    Complex v = evalExpr(uo.getE(), qubitMap, symbolMap, funMap);
+                           Map<String, Double> symbolMap
+                           ) {
+    Complex v = evalExpr(uo.getE(), qubitMap, symbolMap);
     switch (uo.getOp()) {
       case EXP: return Complex.I.multiply(v).exp();
       case SQRT: return v.sqrt();
@@ -366,10 +503,10 @@ public class Verifier {
 
   private Complex evalBinOp(BinOp bo,
                             Map<String, Integer> qubitMap,
-                            Map<String, Double> symbolMap,
-                            Map<String, Expr> funMap) {
-    Complex v1 = evalExpr(bo.getE1(), qubitMap, symbolMap, funMap);
-    Complex v2 = evalExpr(bo.getE2(), qubitMap, symbolMap, funMap);
+                            Map<String, Double> symbolMap
+                            ) {
+    Complex v1 = evalExpr(bo.getE1(), qubitMap, symbolMap);
+    Complex v2 = evalExpr(bo.getE2(), qubitMap, symbolMap);
     switch (bo.getOp()) {
       case PLUS: return v1.add(v2);
       case SUBTRACT: return v1.subtract(v2);

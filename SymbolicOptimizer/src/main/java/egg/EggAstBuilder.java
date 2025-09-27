@@ -11,7 +11,6 @@ import ast.*;
 public class EggAstBuilder extends EggBaseVisitor<Object> {
 
     public static EggGen.ConstrainedCircuit parse(String constrainedCircuit) {
-        System.err.println("Parsing: " + constrainedCircuit);
         EggLexer lexer = new EggLexer(CharStreams.fromString(constrainedCircuit));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         EggParser parser = new EggParser(tokens);
@@ -62,7 +61,7 @@ public class EggAstBuilder extends EggBaseVisitor<Object> {
         if (ctx.cons.getText().equals("PermNil")) {
             return new EggGen.Permutation(new ArrayList<>());
         } else {
-            int head = Integer.parseInt(ctx.NUMBER().getText());
+            int head = Integer.parseInt(ctx.INTEGER().getText());
             EggGen.Permutation tail = (EggGen.Permutation) visit(ctx.permutation());
             tail.perm.add(0, head);
             return tail;
@@ -80,7 +79,7 @@ public class EggAstBuilder extends EggBaseVisitor<Object> {
         } else if (ctx.gateN.getText().equals("H")) {
             return new EggGen.H(visitQubit(ctx.qubit(0)).toString());
         } else if (ctx.gateN.getText().equals("SYMB")) {
-            return new EggGen.SYMB(Integer.parseInt(ctx.NUMBER().getText()));
+            return new EggGen.SYMB(Integer.parseInt(ctx.INTEGER().getText()));
         } else if (ctx.gateN.getText().equals("U1")) {
             return new EggGen.U1(visitQubit(ctx.qubit(0)).toString(), (Expr) visit(ctx.expr(0)));
         } else if (ctx.gateN.getText().equals("U2")) {
@@ -126,7 +125,7 @@ public class EggAstBuilder extends EggBaseVisitor<Object> {
             return new Fun(ctx.STRING().getText().replace("\"", ""), (Expr) visit(ctx.expr(0)));
         } else if (ctx.cons.getText().equals("UnOp")) {
             return new UnOp(Expr.Op.valueOf(visitOp(ctx.op())), (Expr) visit(ctx.expr(0)));
-        } else if (ctx.cons.getText().equals("Binop")) {
+        } else if (ctx.cons.getText().equals("BinOp")) {
             return new BinOp(Expr.Op.valueOf(visitOp(ctx.op())), (Expr) visit(ctx.expr(0)), (Expr) visit(ctx.expr(1)));
         } else if (ctx.cons.getText().equals("Var")) {
             return new Var(ctx.STRING().getText().replace("\"", ""));

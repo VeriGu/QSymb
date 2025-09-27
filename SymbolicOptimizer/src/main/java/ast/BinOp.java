@@ -55,7 +55,7 @@ public final class BinOp extends Expr {
 
   @Override
   public String toEggString() {
-    return String.format("(BinOp %s %s %s)", op.toString(), e1.toEggString(), e2.toEggString());
+    return String.format("(BinOp %s %s %s)", op.toEggString(), e1.toEggString(), e2.toEggString());
   }
 
 
