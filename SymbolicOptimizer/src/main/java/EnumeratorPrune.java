@@ -100,6 +100,7 @@ public class EnumeratorPrune {
   public void enumerateEqsat(int numQubits, int size) throws IOException {
     this.filename = String.format("rules_%s_q%s_%s.txt", gatesetName, maxQubits, size);
     this.fileSymname = String.format("rules_%s_q%s_%s_symb.txt", gatesetName, maxQubits, size);
+    egraph.push();
     fw = new FileWriter(filename, false);
     fw_symb = new FileWriter(fileSymname, false);
     pw = new PrintWriter(fw);
@@ -200,9 +201,9 @@ public class EnumeratorPrune {
         long t4 = System.currentTimeMillis();
         this.egraphTime += (t4 - t3);
 
-        //System.out.println("Fingers\n" + finger);
-        //System.out.println("Current Relation: \n" + rel);
-        //System.out.println("Bad Relation: \n" + bad);
+        System.out.println("Fingers\n" + finger);
+        System.out.println("Current Relation: \n" + rel);
+        System.out.println("Bad Relation: \n" + bad);
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> entries = egraph.parseRelation(rel);
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> bads = egraph.parseRelation(bad);
         //filter out bad ones
@@ -287,7 +288,7 @@ public class EnumeratorPrune {
 
     pw.close();
     pw_symb.close();
-    
+    egraph.pop();
     System.out.println("E-graph time (ms): " + this.egraphTime);
     System.out.println("Translation time (ms): " + this.translateTime);
     System.out.println("Choose rules time (ms): " + this.chooseTime);

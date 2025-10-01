@@ -19,12 +19,11 @@ import com.opencsv.exceptions.CsvValidationException;
 import ast.Expr;
 
 
-
-
 public class EggGen {
 
     private final StringBuilder content = new StringBuilder();
     private final Set<String> rules = new HashSet<>();
+    private final Set<String> canonicalRules = new HashSet<>();
     private Integer numCircuits;
     private final Map<String, Circuit> circuits = new HashMap<>();
 
@@ -84,6 +83,12 @@ public class EggGen {
         }
         String output = sendCommand(content.toString());
         System.out.println(output);
+    }
+
+    public ConstrainedCircuit extract(String name) {
+        String output = sendCommand(String.format("(extract %s)", name), true);
+        EggGen.ConstrainedCircuit c = EggAstBuilder.parse(output);
+        return c;
     }
 
     public void startEgglogREPL() throws IOException {
@@ -257,9 +262,108 @@ public class EggGen {
         }
     }
 
+    public List<String> getAllRewriteRules() {
+        return new ArrayList<>(rules);
+    }
+
+    private Set<String> getQubitVars(Circuit circuit) {
+        Set<String> vars = new HashSet<>();
+        for (Gate g : circuit.gates) {
+            if (g instanceof X) vars.add(((X) g).qubit);
+            else if (g instanceof H) vars.add(((H) g).qubit);
+            else if (g instanceof SX) vars.add(((SX) g).qubit);
+            else if (g instanceof RZ) vars.add(((RZ) g).qubit);
+            else if (g instanceof RX) vars.add(((RX) g).qubit);
+            else if (g instanceof RY) vars.add(((RY) g).qubit);
+            else if (g instanceof U1) vars.add(((U1) g).qubit);
+            else if (g instanceof U2) vars.add(((U2) g).qubit);
+            else if (g instanceof U3) vars.add(((U3) g).qubit);
+            else if (g instanceof GPI) vars.add(((GPI) g).qubit);
+            else if (g instanceof GPI2) vars.add(((GPI2) g).qubit);
+            else if (g instanceof VZ) vars.add(((VZ) g).qubit);
+            else if (g instanceof CX) {
+                vars.add(((CX) g).control);
+                vars.add(((CX) g).target);
+            } else if (g instanceof CZ) {
+                vars.add(((CZ) g).control);
+                vars.add(((CZ) g).target);
+            } else if (g instanceof RXX) {
+                vars.add(((RXX) g).qubit1);
+                vars.add(((RXX) g).qubit2);
+            } else if (g instanceof MS) {
+                vars.add(((MS) g).qubit1);
+                vars.add(((MS) g).qubit2);
+            }
+        }
+        return vars;
+    }
+
+    private String circuitToAlphaEquivalentString(Circuit circuit, Map<String, String> qubitMap) {
+        String current = "(Nil)";
+        for (int i = circuit.gates.size() - 1; i >= 0; i--) {
+            Gate g = circuit.gates.get(i);
+            current = String.format("(Cons %s %s)", gateToAlphaEquivalentString(g, qubitMap), current);
+        }
+        return current;
+    }
+
+    private String circuitToGeneralizedString(Circuit circuit, Map<String, String> qubitMap, String congruenceVar) {
+        String current = congruenceVar;
+        for (int i = circuit.gates.size() - 1; i >= 0; i--) {
+            Gate g = circuit.gates.get(i);
+            current = String.format("(Cons %s %s)", gateToAlphaEquivalentString(g, qubitMap), current);
+        }
+        return current;
+    }
+
+    private String gateToAlphaEquivalentString(Gate gate, Map<String, String> qubitMap) {
+        if (gate instanceof X) return String.format("(X %s)", qubitMap.computeIfAbsent(((X) gate).qubit, q -> "q" + qubitMap.size()));
+        if (gate instanceof H) return String.format("(H %s)", qubitMap.computeIfAbsent(((H) gate).qubit, q -> "q" + qubitMap.size()));
+        if (gate instanceof SX) return String.format("(SX %s)", qubitMap.computeIfAbsent(((SX) gate).qubit, q -> "q" + qubitMap.size()));
+        if (gate instanceof RZ) return String.format("(RZ %s %s)", qubitMap.computeIfAbsent(((RZ) gate).qubit, q -> "q" + qubitMap.size()), ((RZ) gate).angle.toEggString());
+        if (gate instanceof RX) return String.format("(RX %s %s)", qubitMap.computeIfAbsent(((RX) gate).qubit, q -> "q" + qubitMap.size()), ((RX) gate).angle.toEggString());
+        if (gate instanceof RY) return String.format("(RY %s %s)", qubitMap.computeIfAbsent(((RY) gate).qubit, q -> "q" + qubitMap.size()), ((RY) gate).angle.toEggString());
+        if (gate instanceof U1) return String.format("(U1 %s %s)", qubitMap.computeIfAbsent(((U1) gate).qubit, q -> "q" + qubitMap.size()), ((U1) gate).lambda.toEggString());
+        if (gate instanceof U2) return String.format("(U2 %s %s %s)", qubitMap.computeIfAbsent(((U2) gate).qubit, q -> "q" + qubitMap.size()), ((U2) gate).phi.toEggString(), ((U2) gate).lambda.toEggString());
+        if (gate instanceof U3) return String.format("(U3 %s %s %s %s)", qubitMap.computeIfAbsent(((U3) gate).qubit, q -> "q" + qubitMap.size()), ((U3) gate).theta.toEggString(), ((U3) gate).phi.toEggString(), ((U3) gate).lambda.toEggString());
+        if (gate instanceof GPI) return String.format("(GPI %s %s)", qubitMap.computeIfAbsent(((GPI) gate).qubit, q -> "q" + qubitMap.size()), ((GPI) gate).phi.toEggString());
+        if (gate instanceof GPI2) return String.format("(GPI2 %s %s)", qubitMap.computeIfAbsent(((GPI2) gate).qubit, q -> "q" + qubitMap.size()), ((GPI2) gate).phi.toEggString());
+        if (gate instanceof VZ) return String.format("(VZ %s %s)", qubitMap.computeIfAbsent(((VZ) gate).qubit, q -> "q" + qubitMap.size()), ((VZ) gate).theta.toEggString());
+        if (gate instanceof CX) return String.format("(CX %s %s)", qubitMap.computeIfAbsent(((CX) gate).control, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((CX) gate).target, q -> "q" + qubitMap.size()));
+        if (gate instanceof CZ) return String.format("(CZ %s %s)", qubitMap.computeIfAbsent(((CZ) gate).control, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((CZ) gate).target, q -> "q" + qubitMap.size()));
+        if (gate instanceof RXX) return String.format("(RXX %s %s %s)", qubitMap.computeIfAbsent(((RXX) gate).qubit1, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((RXX) gate).qubit2, q -> "q" + qubitMap.size()), ((RXX) gate).angle.toEggString());
+        if (gate instanceof MS) return String.format("(MS %s %s %s %s)", qubitMap.computeIfAbsent(((MS) gate).qubit1, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((MS) gate).qubit2, q -> "q" + qubitMap.size()), ((MS) gate).phi1.toEggString(), ((MS) gate).phi2.toEggString());
+        return gate.toEggString();
+    }
+
     public void addRewriteRule(SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> ruleEntry) {
-        String rule = String.format("(birewrite %s %s :ruleset opt)", ruleEntry.getKey().toCongruenceString(), ruleEntry.getValue().toCongruenceString());
-        addRewrite(rule);
+        Circuit lhsCircuit = ruleEntry.getKey().circuit;
+        Circuit rhsCircuit = ruleEntry.getValue().circuit;
+
+        Set<String> lhsQubits = getQubitVars(lhsCircuit);
+        Set<String> rhsQubits = getQubitVars(rhsCircuit);
+
+        boolean rhsVarsAreSubsetOfLhs = lhsQubits.containsAll(rhsQubits);
+        boolean lhsVarsAreSubsetOfRhs = rhsQubits.containsAll(lhsQubits);
+        String congruenceVar = "c";
+        Map<String, String> qubitToVar = new HashMap<>();
+        String lhsCanonical = circuitToGeneralizedString(lhsCircuit, qubitToVar, congruenceVar);
+        String rhsCanonical = circuitToGeneralizedString(rhsCircuit, qubitToVar, congruenceVar);
+
+       
+        if (rhsVarsAreSubsetOfLhs && lhsVarsAreSubsetOfRhs) {
+            // Generalized rule
+            qubitToVar.clear();
+            String rule = String.format("(birewrite (CCircuit %s %s) (CCircuit %s %s) :ruleset opt)",
+                lhsCanonical, ruleEntry.getKey().permutation.toEggString(),
+                rhsCanonical, ruleEntry.getValue().permutation.toEggString());
+            addRewrite(rule);
+        } else {
+            // Concrete rule
+            String rule = String.format("(birewrite %s %s :ruleset opt)",
+                ruleEntry.getKey().toCongruenceString("c"), ruleEntry.getValue().toCongruenceString("c"));
+            addRewrite(rule);
+        }
     }
 
     public void merge(ConstrainedCircuit eclass1, ConstrainedCircuit eclass2) {
@@ -367,6 +471,12 @@ public class EggGen {
         public String toEggString() {
             return "Gate";
         }
+
+        public void getQubitVars(Set<String> vars) {}
+
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            return toEggString();
+        }
     }
 
     public static class Circuit implements EggExpr {
@@ -376,16 +486,25 @@ public class EggGen {
         }
 
 
-        public String toCongruenceString() {
-            return toCongruenceStringRecursive(0, "circuit");
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            return toAlphaEquivalentStringRecursive(0, qubitMap);
         }
 
+        private String toAlphaEquivalentStringRecursive(int index, Map<String, String> qubitMap) {
+            if (index >= gates.size()) {
+                return "(Nil)";
+            }
+            return String.format("(Cons %s %s)", gates.get(index).toAlphaEquivalentString(qubitMap), toAlphaEquivalentStringRecursive(index + 1, qubitMap));
+        }
+
+        public String toCongruenceString(String varName) {
+            return toCongruenceStringRecursive(0, varName);
+        }
 
         private String toCongruenceStringRecursive(int index, String varName) {
             if (index >= gates.size()) {
                 return varName;
             }
-            String currentGate = gates.get(index).toEggString();
             return String.format("(Cons %s %s)", gates.get(index).toEggString(), toCongruenceStringRecursive(index + 1, varName));
         }
 
@@ -393,11 +512,17 @@ public class EggGen {
             return toEggStringRecursive(0);
         }
 
-        private String toEggStringRecursive(int index) {
+        public String toEggStringRecursive(int index) {
             if (index >= gates.size()) {
                 return "(Nil)";
             }
             return String.format("(Cons %s %s)", gates.get(index).toEggString(), toEggStringRecursive(index + 1));
+        }
+
+        public void getQubitVars(Set<String> vars) {
+            for (Gate g : gates) {
+                g.getQubitVars(vars);
+            }
         }
     }
 
@@ -437,9 +562,14 @@ public class EggGen {
             return String.format("(CCircuit %s %s)", circuit.toEggString(), permutation.toEggString());
         }
 
-        public String toCongruenceString() {
-            return String.format("(CCircuit %s %s)", circuit.toCongruenceString(), permutation.toEggString());
+        public String toCongruenceString(String varName) {
+            return String.format("(CCircuit %s %s)", circuit.toCongruenceString(varName), permutation.toEggString());
         }
+
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            return String.format("(CCircuit %s %s)", circuit.toAlphaEquivalentString(qubitMap), permutation.toEggString());
+        }
+
     }
 
     public static class X extends Gate {
@@ -448,6 +578,17 @@ public class EggGen {
 
         
         public String toEggString() { return String.format("(X (Q \"%s\"))", qubit); }
+
+        @Override
+        public void getQubitVars(Set<String> vars) {
+            vars.add(qubit);
+        }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String var = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(X %s)", var);
+        }
     }
 
     public static class CX extends Gate {
@@ -455,6 +596,19 @@ public class EggGen {
         public final String target;
         public CX(String control, String target) { this.control = control; this.target = target; }
         public String toEggString() { return String.format("(CX (Q \"%s\") (Q \"%s\"))", control, target); }
+
+        @Override
+        public void getQubitVars(Set<String> vars) {
+            vars.add(control);
+            vars.add(target);
+        }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String controlVar = qubitMap.computeIfAbsent(control, q -> "q" + qubitMap.size());
+            String targetVar = qubitMap.computeIfAbsent(target, q -> "q" + qubitMap.size());
+            return String.format("(CX %s %s)", controlVar, targetVar);
+        }
     }
     
     public static class RZ extends Gate {
@@ -462,18 +616,47 @@ public class EggGen {
         public final Expr angle;
         public RZ(String qubit, Expr angle) { this.qubit = qubit; this.angle = angle; }
         public String toEggString() { return String.format("(RZ (Q \"%s\") %s)", qubit, angle.toEggString()); }
+
+        @Override
+        public void getQubitVars(Set<String> vars) {
+            vars.add(qubit);
+        }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(RZ %s %s)", qubitVar, angle.toEggString());
+        }
     }
     
     public static class H extends Gate {
         public final String qubit;
         public H(String qubit) { this.qubit = qubit; }
         public String toEggString() { return String.format("(H (Q \"%s\"))", qubit); }
+
+        @Override
+        public void getQubitVars(Set<String> vars) {
+            vars.add(qubit);
+        }
+
+
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String var = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(H %s)", var);
+        }
     }
 
     public static class SYMB extends Gate {
         public final int maxQubits;
         public SYMB(int maxQubits) { this.maxQubits = maxQubits; }
         public String toEggString() { return String.format("(SYMB %d)", maxQubits); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            return toEggString();
+        }
     }
 
     public static class U1 extends Gate {
@@ -481,6 +664,12 @@ public class EggGen {
         public final Expr lambda;
         public U1(String qubit, Expr lambda) { this.qubit = qubit; this.lambda = lambda; }
         public String toEggString() { return String.format("(U1 (Q \"%s\") %s)", qubit, lambda.toEggString()); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(U1 %s %s)", qubitVar, lambda.toEggString());
+        }
     }
 
     public static class U2 extends Gate {
@@ -489,6 +678,12 @@ public class EggGen {
         public final Expr lambda;
         public U2(String qubit, Expr phi, Expr lambda) { this.qubit = qubit; this.phi = phi; this.lambda = lambda; }
         public String toEggString() { return String.format("(U2 (Q \"%s\") %s %s)", qubit, phi.toEggString(), lambda.toEggString()); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(U2 %s %s %s)", qubitVar, phi.toEggString(), lambda.toEggString());
+        }
     }
 
     public static class U3 extends Gate {
@@ -498,6 +693,12 @@ public class EggGen {
         public final Expr lambda;
         public U3(String qubit, Expr theta, Expr phi, Expr lambda) { this.qubit = qubit; this.theta = theta; this.phi = phi; this.lambda = lambda; }
         public String toEggString() { return String.format("(U3 (Q \"%s\") %s %s %s)", qubit, theta.toEggString(), phi.toEggString(), lambda.toEggString()); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(U3 %s %s %s %s)", qubitVar, theta.toEggString(), phi.toEggString(), lambda.toEggString());
+        }
     }
 
     public static class RX extends Gate {
@@ -505,6 +706,12 @@ public class EggGen {
         public final Expr angle;
         public RX(String qubit, Expr angle) { this.qubit = qubit; this.angle = angle; }
         public String toEggString() { return String.format("(RX (Q \"%s\") %s)", qubit, angle.toEggString()); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(RX %s %s)", qubitVar, angle.toEggString());
+        }
     }
 
     public static class CZ extends Gate {
@@ -512,6 +719,13 @@ public class EggGen {
         public final String target;
         public CZ(String control, String target) { this.control = control; this.target = target; }
         public String toEggString() { return String.format("(CZ (Q \"%s\") (Q \"%s\"))", control, target); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String controlVar = qubitMap.computeIfAbsent(control, q -> "q" + qubitMap.size());
+            String targetVar = qubitMap.computeIfAbsent(target, q -> "q" + qubitMap.size());
+            return String.format("(CZ %s %s)", controlVar, targetVar);
+        }
     }
 
     public static class RY extends Gate {
@@ -519,6 +733,12 @@ public class EggGen {
         public final Expr angle;
         public RY(String qubit, Expr angle) { this.qubit = qubit; this.angle = angle; }
         public String toEggString() { return String.format("(RY (Q \"%s\") %s)", qubit, angle.toEggString()); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(RY %s %s)", qubitVar, angle.toEggString());
+        }
     }
 
     public static class RXX extends Gate {
@@ -527,6 +747,13 @@ public class EggGen {
         public final Expr angle;
         public RXX(String qubit1, String qubit2, Expr angle) { this.qubit1 = qubit1; this.qubit2 = qubit2; this.angle = angle; }
         public String toEggString() { return String.format("(RXX (Q \"%s\") (Q \"%s\") %s)", qubit1, qubit2, angle.toEggString()); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String qubit1Var = qubitMap.computeIfAbsent(qubit1, q -> "q" + qubitMap.size());
+            String qubit2Var = qubitMap.computeIfAbsent(qubit2, q -> "q" + qubitMap.size());
+            return String.format("(RXX %s %s %s)", qubit1Var, qubit2Var, angle.toEggString());
+        }
     }
 
     public static class GPI extends Gate {
@@ -534,6 +761,12 @@ public class EggGen {
         public final Expr phi;
         public GPI(String qubit, Expr phi) { this.qubit = qubit; this.phi = phi; }
         public String toEggString() { return String.format("(GPI (Q \"%s\") %s)", qubit, phi.toEggString()); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(GPI %s %s)", qubitVar, phi.toEggString());
+        }
     }
 
     public static class GPI2 extends Gate {
@@ -541,6 +774,12 @@ public class EggGen {
         public final Expr phi;
         public GPI2(String qubit, Expr phi) { this.qubit = qubit; this.phi = phi; }
         public String toEggString() { return String.format("(GPI2 (Q \"%s\") %s)", qubit, phi.toString()); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(GPI2 %s %s)", qubitVar, phi.toEggString());
+        }
     }
 
     public static class VZ extends Gate {
@@ -548,6 +787,12 @@ public class EggGen {
         public final Expr theta;
         public VZ(String qubit, Expr theta) { this.qubit = qubit; this.theta = theta; }
         public String toEggString() { return String.format("(VZ (Q \"%s\") %s)", qubit, theta.toString()); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(VZ %s %s)", qubitVar, theta.toEggString());
+        }
     }
 
     public static class MS extends Gate {
@@ -557,11 +802,24 @@ public class EggGen {
         public final Expr phi2;
         public MS(String qubit1, String qubit2, Expr phi1, Expr phi2) { this.qubit1 = qubit1; this.qubit2 = qubit2; this.phi1 = phi1; this.phi2 = phi2; }
         public String toEggString() { return String.format("(MS (Q \"%s\") (Q \"%s\") %s %s)", qubit1, qubit2, phi1.toString(), phi2.toString()); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String qubit1Var = qubitMap.computeIfAbsent(qubit1, q -> "q" + qubitMap.size());
+            String qubit2Var = qubitMap.computeIfAbsent(qubit2, q -> "q" + qubitMap.size());
+            return String.format("(MS %s %s %s %s)", qubit1Var, qubit2Var, phi1.toEggString(), phi2.toEggString());
+        }
     }
 
     public static class SX extends Gate {
         public final String qubit;
         public SX(String qubit) { this.qubit = qubit; }
         public String toEggString() { return String.format("(SX (Q \"%s\"))", qubit); }
+
+        @Override
+        public String toAlphaEquivalentString(Map<String, String> qubitMap) {
+            String var = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
+            return String.format("(SX %s)", var);
+        }
     }
 }
