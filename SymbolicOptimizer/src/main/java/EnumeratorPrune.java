@@ -29,6 +29,11 @@ import ast.Symbol;
 import ast.Var;
 
 public class EnumeratorPrune {
+  public long egraphTime = 0;
+  public long translateTime = 0;
+  public long chooseTime = 0;
+  public long enumerationTime = 0;
+  public long filtertime = 0;
   private static final String[] ANGLES = {"theta1", "theta2", "theta3"};
 //  private static final Expr[] symbAngles = {
 //    new Symbol("theta1"), // nam, rigetti
@@ -60,6 +65,11 @@ public class EnumeratorPrune {
   public String filename;
   public String fileSymname;
   public String gatesetName;
+  private FileWriter fw;
+  private FileWriter fw_symb;
+  private PrintWriter pw;
+  private PrintWriter pw_symb;
+
   public EnumeratorPrune(String[] gates, int maxQubits, Random rand, Expr[] symbAngles) {
     this.verifier = new Verifier(rand, maxQubits);
     this.gates = gates;
@@ -87,9 +97,13 @@ public class EnumeratorPrune {
     this.gatesetName = gatesName;
   }
 
-  public void enumerateEqsat(int numQubits, int size) {
+  public void enumerateEqsat(int numQubits, int size) throws IOException {
     this.filename = String.format("rules_%s_q%s_%s.txt", gatesetName, maxQubits, size);
     this.fileSymname = String.format("rules_%s_q%s_%s_symb.txt", gatesetName, maxQubits, size);
+    fw = new FileWriter(filename, false);
+    fw_symb = new FileWriter(fileSymname, false);
+    pw = new PrintWriter(fw);
+    pw_symb = new PrintWriter(fw_symb);
     Map<String, Double> symbolMap = getSymbolMap();
     // initialize map and reps with empty circuit
     Circuit emptyCircuit = getStart();
@@ -107,24 +121,36 @@ public class EnumeratorPrune {
     previousReps.put(emptyCircuit.getQasmString(), new ConstrainedCircuit(emptyCircuit, new ArrayList<>()));
 
     for (int i = 1; i <= size; i++) {
+      System.out.println("Enumerating size: " + i);
+      long t1 = System.currentTimeMillis();
+      long updateMapTime = 0;
       if (i == 1) {
         Circuit start = getStart();
         for (String gate : this.gates) {
           for (int q = 0; q < numQubits; q++) {
             List<Circuit> circuitsAfterApply = applyGate(start, gate, q, 2);
             for (Circuit c : circuitsAfterApply) {
+              long tmap = System.currentTimeMillis();
               updateMapEqsat(c, symbolMap);
+              long tmapafter = System.currentTimeMillis();
+              updateMapTime += tmapafter - tmap;
             }
           }
         }
       } else {
+        int j = 0;
         for (ConstrainedCircuit c : previousReps.values()) {
+          System.out.println(String.format("Enumerating circuit: %d/%d", j, previousReps.size()));
+          j++;
           // apply symb
           if (!c.getCircuit().hasQubitGreaterThan(MAX_QUBITS_SYMB) && !c.getCircuit().hasCXH()) {
             List<Circuit> circuitsAfterApplySymb = applyGate(c.getCircuit(), "symb", 0, MAX_QUBITS_SYMB);
             for (Circuit cSymb : circuitsAfterApplySymb) {
               if (previousReps.containsKey(cSymb.getQasmStringDropFirst())) { // TODO
+                long tmap = System.currentTimeMillis();
                 updateMapEqsat(cSymb, symbolMap);
+                long tmapafter = System.currentTimeMillis();
+                updateMapTime += tmapafter - tmap;
               }
             }
           }
@@ -136,48 +162,97 @@ public class EnumeratorPrune {
               List<Circuit> circuitsAfterApply = applyGate(c.getCircuit(), gate, q, Math.min(c.getCircuit().getQubits().size() + 1, numQubits));
               for (Circuit caa : circuitsAfterApply) {
                 if (previousReps.containsKey(caa.getQasmStringDropFirst())) { // TODO
+                  long tmap = System.currentTimeMillis();
                   updateMapEqsat(caa, symbolMap);
+                  long tmapafter = System.currentTimeMillis();
+                  updateMapTime += tmapafter - tmap;
                 }
               }
             }
           }
         }
       }
+      long t2 = System.currentTimeMillis();
+      this.enumerationTime += (t2 - t1) - updateMapTime;
 
       previousReps.clear();
       ecs.clear();
 
       while (true) {
+        long t3 = System.currentTimeMillis();
         for (SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule : learned_rules) {
           egraph.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())));
         }
         for (SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule : learned_symbolic_rules) {
           egraph.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())));
         }
-        egraph.runSaturation();
+        egraph.runN("opt",10);
         egraph.push();
         egraph.runSaturation("sizeanalysis");
         // get the set of terms X terms that are not devived by R.
         egraph.runSaturation("noteqfinger");
+        
         //String allterms = egraph.printFunctionCSV("CCircuit");
         String finger = egraph.printFunctionCSV("fingerprint");
         String rel = egraph.printFunctionCSV("notSameButEqfinger");
+        String bad = egraph.printFunctionCSV("bad");
         egraph.pop();
-        System.out.println("Fingers\n" + finger);
-        System.out.println("Current Relation: \n" + rel);
+        long t4 = System.currentTimeMillis();
+        this.egraphTime += (t4 - t3);
+
+        //System.out.println("Fingers\n" + finger);
+        //System.out.println("Current Relation: \n" + rel);
+        //System.out.println("Bad Relation: \n" + bad);
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> entries = egraph.parseRelation(rel);
-        if(entries.size() == 0) {
+        List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> bads = egraph.parseRelation(bad);
+        //filter out bad ones
+        TreeSet<String> badSet = new TreeSet<>();
+        for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> b : bads) {
+          badSet.add(b.getKey().toEggString() + "|" + b.getValue().toEggString());
+          badSet.add(b.getValue().toEggString() + "|" + b.getKey().toEggString());
+        }
+        List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> filtered = new ArrayList<>();
+        for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : entries) {
+          if(!badSet.contains(entry.getKey().toEggString() + "|" + entry.getValue().toEggString())) {
+            filtered.add(entry);
+          }
+        }
+        //eliminate symmetric duplicates
+        TreeSet<String> seen = new TreeSet<>();
+        List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> filtered2 = new ArrayList<>();
+        for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : filtered) {
+          String fwd = entry.getKey().toEggString() + "|" + entry.getValue().toEggString();
+          String bwd = entry.getValue().toEggString() + "|" + entry.getKey().toEggString();
+          if(!seen.contains(fwd) && !seen.contains(bwd)) {
+            seen.add(fwd);
+            seen.add(bwd);
+            filtered2.add(entry);
+          }
+        }
+
+        
+
+        if(filtered2.size() == 0) {
           break;
         }
+
+        long t7 = System.currentTimeMillis();
+        this.filtertime += (t7 - t4);
         List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> centries = new ArrayList<>();
-        for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : entries) {
+        for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : filtered2) {
           centries.add(new SimpleEntry(CircuitTranslator.translateBack(entry.getKey(), maxQubits), CircuitTranslator.translateBack(entry.getValue(), maxQubits)));
         }
+        long t8 = System.currentTimeMillis();
+        this.translateTime += (t8 - t7);
+
+        long t5 = System.currentTimeMillis();
         try {
         choose_eqs_n(centries, 2);
         } catch (IOException e) {
           e.printStackTrace();
         }
+        long t6 = System.currentTimeMillis();
+        this.chooseTime += (t6 - t5);
       }
 
       String nodes = egraph.printFunctionCSV("CCircuit");
@@ -193,7 +268,10 @@ public class EnumeratorPrune {
         //   }
         //   EquivalenceClass eclass = new EquivalenceClass(enodes, repre);
         //   ecs.add(eclass);
+        long t9 = System.currentTimeMillis();
         ConstrainedCircuit repre = CircuitTranslator.translateBack(EggAstBuilder.parse(rep), maxQubits);
+        long t10 = System.currentTimeMillis();
+        this.translateTime += (t10 - t9);
         if(repre.getCircuit().getSize() == i) {
           previousReps.putIfAbsent(repre.getCircuit().getQasmString(), repre);
         }
@@ -206,15 +284,21 @@ public class EnumeratorPrune {
         previousReps.put(circuitsAfterApplySymb.get(0).getQasmString(), new ConstrainedCircuit(circuitsAfterApplySymb.get(0), new ArrayList<>()));
       }
     }
+
+    pw.close();
+    pw_symb.close();
+    
+    System.out.println("E-graph time (ms): " + this.egraphTime);
+    System.out.println("Translation time (ms): " + this.translateTime);
+    System.out.println("Choose rules time (ms): " + this.chooseTime);
+    System.out.println("Enumeration time (ms): " + this.enumerationTime);
+    System.out.println("Filter time (ms): " + this.filtertime);
   }
 
 
   public void choose_eqs_n (List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> entries, int n) throws FileNotFoundException, IOException {
     HashMap<String, List<List<Integer>>> constraintMap = new HashMap<>();
-    FileWriter fw = new FileWriter(filename, true);
-    FileWriter fw_symb = new FileWriter(fileSymname, true);
-    PrintWriter pw = new PrintWriter(fw);
-    PrintWriter pw_symb = new PrintWriter(fw_symb);
+    Map<String, Double> symbolMap = getSymbolMap();
     for(SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> entry: entries) {
       Circuit r = entry.getKey().getCircuit();
       Circuit other = entry.getValue().getCircuit();
@@ -223,9 +307,10 @@ public class EnumeratorPrune {
         if (!hasCommonSubcircuit(r, other)) {
           if (r.hasSymb() && other.hasSymb()) {
             if (entry.getKey().getConstraint().equals(entry.getValue().getConstraint())) { // same constraint
-              if (verifier.verify(r, other, entry.getKey().getConstraint())) {
+              if (verifier.verifyv2(r, other, entry.getKey().getConstraint(), symbolMap)) {
                 learned_symbolic_rules.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
                 System.out.println("rule accepted:" + rule);
+                System.out.println("constraint:" + Arrays.toString(entry.getKey().getConstraint().toArray()));
                 if (constraintMap.containsKey(rule)) {
                   constraintMap.get(rule).add(entry.getKey().getConstraint());
                 } else {
@@ -233,15 +318,19 @@ public class EnumeratorPrune {
                 }
               } else {
                 System.out.println("rule rejected, verified failed:" + rule);
+                egraph.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
+                egraph.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
               }
             }
           } else if (!r.hasSymb() && !other.hasSymb()) {
-            if (verifier.verify(r, other, new ArrayList<>())) {
+            if (verifier.verifyv2(r, other, new ArrayList<>(), symbolMap)) {
               learned_rules.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
-              System.out.println("rule:" + rule);
+              System.out.println("rule accepted:" + rule);
               pw.println(rule);
             } else {
               System.out.println("rule rejected, verified failed:" + rule);
+              egraph.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
+              egraph.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
             }
           }
         } else {
@@ -255,9 +344,6 @@ public class EnumeratorPrune {
     for (String rule : constraintMap.keySet()) {
       pw_symb.println(rule + " | " + constraintStrings(constraintMap.get(rule)));
     }
-
-    pw.close();
-    pw_symb.close();
   }
 
   public void enumerate(int numQubits, int size) {
@@ -408,7 +494,10 @@ public class EnumeratorPrune {
   }
 
   private void updateMapEqsat(Circuit c, Map<String, Double> symbolMap) {
+    long t1 = System.currentTimeMillis();
     List<SimpleEntry<Integer, List<Integer>>> hash = verifier.hashCode(c, symbolMap);
+    long t2 = System.currentTimeMillis();
+    this.enumerationTime += (t2 - t1);
     for (SimpleEntry<Integer, List<Integer>> entry : hash) {
       ConstrainedCircuit cc = new ConstrainedCircuit(c, entry.getValue());
       EggGen.ConstrainedCircuit eggcc = CircuitTranslator.translate(cc);
@@ -416,6 +505,8 @@ public class EnumeratorPrune {
       egraph.addConstrainedCircuit(eggcc);
       egraph.setFingerprint(eggcc, entry.getKey());
     }
+    long t3 = System.currentTimeMillis();
+    this.egraphTime += (t3 - t2);
   }
 
   private void updateMap(Circuit c, Map<String, Double> symbolMap) {
@@ -861,12 +952,16 @@ public class EnumeratorPrune {
       }
 
       long time1 = System.currentTimeMillis();
-      enumerator.enumerate(maxQubits, maxSize);
-      //enumerator.enumerateEqsat(maxQubits, maxSize);
-      enumerator.pruneECS();
+      //enumerator.enumerate(maxQubits, maxSize);
+      try{
+        enumerator.enumerateEqsat(maxQubits, maxSize);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      //enumerator.pruneECS();
       long time2 = System.currentTimeMillis();
 //      System.out.println("enumerate time (s): " + ((time2-time1)/1000));
-      enumerator.gatherRules(String.format("rules_q%s_s%s_%s", maxQubits, maxSize, gateset));
+      //enumerator.gatherRules(String.format("rules_q%s_s%s_%s", maxQubits, maxSize, gateset));
       long time3 = System.currentTimeMillis();
       System.out.println(String.format("%s q%s s%s total time (s): %s", gateset, maxQubits, maxSize, ((time3-time1)/1000)));
     } catch (ParseException e) {

@@ -22,9 +22,13 @@ public class CircuitTranslator {
     }
 
     public static EggGen.ConstrainedCircuit translate(ConstrainedCircuit constrainedCircuit) {
+        if(constrainedCircuit.getCachedEgg() != null) {
+            return constrainedCircuit.getCachedEgg();
+        }
         EggGen.Circuit eggGenCircuit = translateCircuit(constrainedCircuit.getCircuit());
         EggGen.Permutation permutation = new EggGen.Permutation(constrainedCircuit.getConstraint());
         EggGen.ConstrainedCircuit eggConstrainedCircuit = new EggGen.ConstrainedCircuit(eggGenCircuit, permutation);
+        constrainedCircuit.cacheEgg(eggConstrainedCircuit);
         cache.put(eggConstrainedCircuit.toEggString(), constrainedCircuit);
         return eggConstrainedCircuit;
     }

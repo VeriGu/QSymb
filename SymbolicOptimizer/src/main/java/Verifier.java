@@ -60,7 +60,7 @@ public class Verifier {
     List<Map<String, Integer>> qubitMaps = getQubitMaps(cDiff, terms);
 
 
-    if (verifyHelper(cDiff, terms, qubitMaps, new HashMap<>(), funTerms)) {
+    if (verifyHelper(cDiff, terms, qubitMaps, new HashMap<>(), funTerms, new ArrayList<>())) {
       return new ArrayList<>();
     }
 
@@ -77,7 +77,7 @@ public class Verifier {
         reverseMap.put(sterm, j);
         j++;
       }
-      if (verifyHelper(cDiff, terms, qubitMaps, reverseMap, funTerms)) {
+      if (verifyHelper(cDiff, terms, qubitMaps, reverseMap, funTerms, perm)) {
         constraints.add(perm);
       }
     }
@@ -88,9 +88,58 @@ public class Verifier {
     return null;
   }
 
+  public boolean verifyv2(Circuit c1, Circuit c2, List<Integer> perm, Map<String, Double> symbolMap) {
+    System.out.println("Verifying equivalence of circuits:" + c1.getQasm() + "|" + c2.getQasm());
+    System.out.println("With permutation:" + perm.toString());
+    assert (c1.getQubits().size() == c2.getQubits().size());
+
+    boolean[][] terms = termsMap.get(c1.getQubits().size());
+    boolean[][] funterms = termsMap.get(Integer.max(c1.getUsedQubits().size(), c2.getUsedQubits().size()));
+    //they should have same number of qubits
+
+    List<Map<String, Integer>> qubitMaps = getQubitMaps(c1, terms);
+
+
+
+    Map<String, Integer> reverseMap = new HashMap<>();
+    int j = 0;
+    for (boolean[] term : funterms) {
+      String sterm = Arrays.toString(funterms[j]);
+      reverseMap.put(sterm, j);
+      j++;
+    }
+
+    for (int i = 0; i < qubitMaps.size(); i++) {
+      List<Concrete> evaluatedCircuit1 = evalCircuit(c1, new HashMap<>(qubitMaps.get(i)), symbolMap, reverseMap, funterms, perm);
+      List<Concrete> evaluatedCircuit2 = evalCircuit(c2, new HashMap<>(qubitMaps.get(i)), symbolMap, reverseMap, funterms, perm);
+      List<Concrete> groupedCircuit1 = groupTerms(evaluatedCircuit1, terms);
+      List<Concrete> groupedCircuit2 = groupTerms(evaluatedCircuit2, terms);
+
+      if(groupedCircuit1.size() != groupedCircuit2.size()) {
+        System.out.println("Grouped circuits have different sizes: " + groupedCircuit1.size() + " vs " + groupedCircuit2.size());
+        return false;
+      }
+
+      for(int k = 0; k < groupedCircuit1.size(); k++) {
+        Concrete con1 = groupedCircuit1.get(k);
+        Concrete con2 = groupedCircuit2.get(k);
+        if(!(con1.getPhi().subtract(con2.getPhi()).abs() < Math.pow(10, TOLERANCE))) {
+          System.out.println("Grouped circuits differ in phi: " + con1.getPhi() + " vs " + con2.getPhi());
+          return false;
+        }
+        if(!Arrays.equals(con1.getF(), con2.getF())) {
+          System.out.println("Grouped circuits differ in f: " + Arrays.toString(con1.getF()) + " vs " + Arrays.toString(con2.getF()));
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   public boolean verify(Circuit c1, Circuit c2, List<Integer> perm) {
     // c1 - c2
-    System.out.println("Verifying equivalence of circuits:" + c1.getQasm() + "|" + c2.getQasm());
+    //System.out.println("Verifying equivalence of circuits:" + c1.getQasm() + "|" + c2.getQasm());
+    //System.out.println("With permutation:" + perm.toString());
     Circuit cDiff = subtractCircuits(c1, c2);
 
     // enumerate qubits
@@ -107,7 +156,7 @@ public class Verifier {
     }
     //List<Map<String, Expr>> funMaps = getFunMaps(cDiff, funTerms, perm);
 
-    return verifyHelper(cDiff, terms, qubitMaps, reverseMap, funTerms);
+    return verifyHelper(cDiff, terms, qubitMaps, reverseMap, funTerms, perm);
   }
 
   public boolean verify(Circuit c, Map<String, Integer> qubitMap, Map<String, Boolean> expectedMap) {
@@ -153,7 +202,7 @@ public class Verifier {
     }
 
     for (int i = 0; i < qubitMaps.size(); i++) {
-      List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMaps.get(i), new HashMap<>(), new HashMap<>(), terms);
+      List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMaps.get(i), new HashMap<>(), new HashMap<>(), terms, new ArrayList<>());
       List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, termsMap.get(c.getUsedQubits().size()));
 
       for (Concrete concrete : groupedCircuit) {
@@ -174,7 +223,6 @@ public class Verifier {
 
   public List<SimpleEntry<Integer, List<Integer>>> hashCode(Circuit c, Map<String, Double> symbolMap) {
     ArrayList<SimpleEntry<Integer, List<Integer>>> result = new ArrayList<>();
-    System.out.println("Hashing Circuit: " + c.getQasmString());
     List<Map<String, Integer>> qubitMaps = getQubitMaps(c, termsMap.get(c.getQubits().size()));
     boolean[][] terms = termsMap.get(c.getUsedQubits().size());
     if (c.hasSymb()) {
@@ -182,7 +230,7 @@ public class Verifier {
       int j = 0;
       for (boolean[] term : terms) {
         String sterm = Arrays.toString(term);
-        System.out.println("reverse mapping " + sterm + " to " + j);
+        // System.out.println("reverse mapping " + sterm + " to " + j);
         reverseMap.put(sterm, j);
         j++;
       }
@@ -192,17 +240,18 @@ public class Verifier {
         ArrayList<List<Concrete>> evaluatedCircuits = new ArrayList<>();
         //List<Map<String, Expr>> funMaps = getFunMaps(c, terms, perm);
         for (int i = 0; i < qubitMaps.size(); i++) { //for every term's qubit mapping
-          List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMaps.get(i), symbolMap, reverseMap, terms);
+          List<Concrete> evaluatedCircuit = evalCircuit(c, new HashMap<>(qubitMaps.get(i)), symbolMap, reverseMap, terms, perm);
           List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, termsMap.get(c.getQubits().size()));
           evaluatedCircuits.add(groupedCircuit);
         }
+        // System.out.println("Evaluated Circuits: " + evaluatedCircuits.toString() + "with hashcode:" + evaluatedCircuits.toString().hashCode());
         // the first entry is the evaluated value of the circuit, the second entry is the current symbolic function permulation
         result.add(new SimpleEntry<>(evaluatedCircuits.toString().hashCode(), perm));
       }
     } else {
       ArrayList<List<Concrete>> evaluatedCircuits = new ArrayList<>();
       for (Map<String, Integer> qubitMap : qubitMaps) {
-        List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMap, symbolMap, new HashMap<>(), terms);
+        List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMap, symbolMap, new HashMap<>(), terms, new ArrayList<>());
         List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, termsMap.get(c.getQubits().size()));
         evaluatedCircuits.add(groupedCircuit);
       }
@@ -216,9 +265,9 @@ public class Verifier {
     return termsMap;
   }
 
-  private boolean verifyHelper(Circuit c, boolean[][] terms, List<Map<String, Integer>> qubitMaps, Map<String, Integer> reversemap, boolean[][] funTerms) {
+  private boolean verifyHelper(Circuit c, boolean[][] terms, List<Map<String, Integer>> qubitMaps, Map<String, Integer> reversemap, boolean[][] funTerms, List<Integer> perm) {
     for (int i = 0; i < qubitMaps.size(); i++) {
-      List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMaps.get(i), new HashMap<>(), reversemap, funTerms);
+      List<Concrete> evaluatedCircuit = evalCircuit(c, new HashMap<>(qubitMaps.get(i)), new HashMap<>(), reversemap, funTerms, perm);
       List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, terms);
       if (!isZero(groupedCircuit)) {
         return false;
@@ -299,10 +348,13 @@ public class Verifier {
                                      Map<String, Integer> qubitMap,
                                      Map<String, Double> symbolMap,
                                      Map<String, Integer> reversemap,
-                                     boolean[][] terms) {
+                                     boolean[][] terms,
+                                     List<Integer> perm) {
     ArrayList<Concrete> eval_circuit = new ArrayList<>();
-    System.out.println("Evaluating Circuit: " + c.getQasmString());
-    System.out.println("With qubit map: " + qubitMap.toString());
+    //System.out.println("Evaluating Circuit: " + c.getQasmString());
+    //System.out.println("With qubit map: " + qubitMap.toString());
+    //System.out.println("With perm: " + perm.toString());
+    //System.out.println("With terms: " + Arrays.deepToString(terms));
     if(!c.hasSymb()) {
       for (Symbolic s : c.getPathSum()) {
         Complex eval_phi = evalExpr(s.getPhi(), qubitMap, symbolMap);
@@ -320,9 +372,9 @@ public class Verifier {
         boolean[] eval_f = new boolean[s.getF().size()];
         Map<String, Expr> exprs = new TreeMap<>();
         for (String qubit: s.getF().keySet()) {
-          System.out.println("expr: " + s.getF().get(qubit).toString());
+          //System.out.println("before evaluating expr: " + s.getF().get(qubit).toString());
           SimpleEntry<Expr, Boolean> entry = evalExprBeforeFun(s.getF().get(qubit), qubitMap, symbolMap);
-          System.out.println("evaluating before fun: " + entry.getKey().toString() + ", has fun? " + entry.getValue());
+          //System.out.println("evaluated beforefun: " + entry.getKey().toString() + ", has fun? " + entry.getValue());
           if(c.getUsedQubits().contains(qubit)) {
             exprs.put(qubit, entry.getKey());
           }
@@ -332,21 +384,31 @@ public class Verifier {
         int i = 0;
         for(String qubit : exprs.keySet()) {
           intermediate[i] = qubitMap.get(qubit) == 1;
+          i++;
         }
-        System.out.println("term after evaluating before fun: " + Arrays.toString(intermediate));
+        //System.out.println("qubitmap after evaluating before fun: " + qubitMap.toString());
         //TODO:: now need to permute intermediate based on permutation
-
-        boolean[] after_map_term = terms[reversemap.get(Arrays.toString(intermediate))];
+        boolean[] after_map_term = terms[perm.get(reversemap.get(Arrays.toString(intermediate)))];
+        //System.out.println("term after permutation: " + Arrays.toString(after_map_term));
+        i = 0;
+        for(String qubit: exprs.keySet()) {
+          int val = after_map_term[i] ? 1 : 0;
+          qubitMap.put(qubit, val);
+          i++;
+        }
+        //System.out.println("qubitmap after permutation: " + qubitMap.toString());
 
         i = 0;
         for (Expr e : exprs.values()) {
-          System.out.println("evaluating after fun: " + e.toString());
+          // System.out.println("evaluating after fun: " + e.toString());
           eval_f[i] = assertZeroOrOne(evalExpr(e, qubitMap, symbolMap)) == 1;
           i++;
         }
+        //System.out.println("eval_f: " + Arrays.toString(eval_f));
+        eval_circuit.add(new Concrete(eval_phi, eval_f));
       }
     }
-    System.out.println("Evaluated Circuit: " + eval_circuit.toString());
+    // System.out.println("Evaluated Circuit: " + eval_circuit.toString());
     return eval_circuit;
   }
 

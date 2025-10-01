@@ -20,6 +20,7 @@ import ast.Expr;
 
 
 
+
 public class EggGen {
 
     private final StringBuilder content = new StringBuilder();
@@ -47,6 +48,7 @@ public class EggGen {
         content.append("(ruleset mergefinger)");
         content.append("(ruleset sizeanalysis)");
         content.append("(ruleset noteqfinger)");
+        content.append("(ruleset opt)");
         content.append("(rule\n" + //
                         " ((= x (Nil)))\n" + //
                         " ((set (size x) 1))\n" + //
@@ -62,16 +64,18 @@ public class EggGen {
         content.append("(relation notSameButEqfinger (ConstrainedCircuit ConstrainedCircuit))");
         content.append("(rule \n" + //
                         "(" + //
-                        " (= x (CCircuit cx p))\n" + //
-                        " (= y (CCircuit cy p))\n" + //
+                        " (= x (CCircuit cx p1))\n" + //
+                        " (= y (CCircuit cy p2))\n" + //
                         " (<= (size cx) (size cy))\n" + //
                         " (!= x y)\n" + //
                         " (= (fingerprint x) (fingerprint y))\n" + //
+                        " (= p1 p2)\n" + //
                         ")\n" + //
                         "(" + //
                         " (notSameButEqfinger x y)\n" + //
                         ")\n" + //
                         ":ruleset noteqfinger)");
+        content.append("(relation bad (ConstrainedCircuit ConstrainedCircuit))\n");
         try {
             startEgglogREPL();
         } catch (IOException e) {
@@ -116,7 +120,8 @@ public class EggGen {
         }
 
         String err = readError();
-        System.err.println(err);
+        if(!err.equals(""))
+            System.err.print(err);
         if(wait) {
             return readOutput();
         } else {
@@ -126,6 +131,11 @@ public class EggGen {
 
     public void setFingerprint(ConstrainedCircuit c, Integer fingerprint) {
         sendCommand(String.format("(set (fingerprint %s) %s)", c.toEggString(), fingerprint.toString()));
+    }
+
+    public void insertBad(ConstrainedCircuit c1, ConstrainedCircuit c2) {
+        String relation = String.format("(bad %s %s)", c1.toEggString(), c2.toEggString());
+        sendCommand(relation);
     }
 
     public void mergeFingerPrintsEQ() {
@@ -186,7 +196,14 @@ public class EggGen {
         StringBuilder output = new StringBuilder();
         // A short sleep to allow the process to start writing output
         try {
-            Thread.sleep(1000);
+            int waited = 0;
+            int timeout = 20000;
+            while (!processOutput.ready()) {
+                Thread.sleep(10);
+                waited += 10;
+                if (waited > timeout) 
+                    break;
+            }
             while (processOutput.ready()) {
                 output.append((char) processOutput.read());
             }
@@ -241,7 +258,7 @@ public class EggGen {
     }
 
     public void addRewriteRule(SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> ruleEntry) {
-        String rule = String.format("(rewrite %s %s)", ruleEntry.getKey().toEggString(), ruleEntry.getValue().toEggString());
+        String rule = String.format("(birewrite %s %s :ruleset opt)", ruleEntry.getKey().toCongruenceString(), ruleEntry.getValue().toCongruenceString());
         addRewrite(rule);
     }
 
@@ -251,6 +268,10 @@ public class EggGen {
 
     public void getSmallestRep(String eclass) {
         sendCommand(String.format("(extract %s)\n", eclass), true);
+    }
+
+    public void runN(String ruleset, int n) {
+        sendCommand(String.format("(run %s %d)\n", ruleset, n));
     }
 
     public void runSaturation() {
@@ -354,6 +375,20 @@ public class EggGen {
             this.gates = gates;
         }
 
+
+        public String toCongruenceString() {
+            return toCongruenceStringRecursive(0, "circuit");
+        }
+
+
+        private String toCongruenceStringRecursive(int index, String varName) {
+            if (index >= gates.size()) {
+                return varName;
+            }
+            String currentGate = gates.get(index).toEggString();
+            return String.format("(Cons %s %s)", gates.get(index).toEggString(), toCongruenceStringRecursive(index + 1, varName));
+        }
+
         public String toEggString() {
             return toEggStringRecursive(0);
         }
@@ -400,6 +435,10 @@ public class EggGen {
 
         public String toEggString() {
             return String.format("(CCircuit %s %s)", circuit.toEggString(), permutation.toEggString());
+        }
+
+        public String toCongruenceString() {
+            return String.format("(CCircuit %s %s)", circuit.toCongruenceString(), permutation.toEggString());
         }
     }
 
