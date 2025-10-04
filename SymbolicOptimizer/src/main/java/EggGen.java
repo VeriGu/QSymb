@@ -37,7 +37,7 @@ public class EggGen {
         content.append("\n(datatype Op\n  (EXP) (SQRT) (MINUS) (COS) (SIN) (NOT) (PLUS) (SUBTRACT) (MULT) (DIV) (POWER) (XOR) (AND) (OR))\n");
         content.append("\n(datatype Expr\n  (Bool bool) (Real f64) (Symbol String) (Var String) (Fun String Expr) (UnOp Op Expr) (BinOp Op Expr Expr))\n");
         content.append("\n(datatype Qubit (Q String))\n");
-        content.append("\n(datatype Gate\n  (X Qubit) (CX Qubit Qubit) (RZ Qubit Expr) (H Qubit) (SYMB i64) (U1 Qubit Expr) (U2 Qubit Expr Expr)\n  (U3 Qubit Expr Expr Expr) (RX Qubit Expr) (CZ Qubit Qubit) (RY Qubit Expr) (RXX Qubit Qubit Expr)\n  (GPI Qubit Expr) (GPI2 Qubit Expr) (VZ Qubit Expr) (MS Qubit Qubit Expr Expr) (SX Qubit))\n");
+        content.append("\n(datatype Gate\n  (X Qubit) (CX Qubit Qubit :cost 2) (RZ Qubit Expr) (H Qubit) (SYMB i64) (U1 Qubit Expr) (U2 Qubit Expr Expr)\n  (U3 Qubit Expr Expr Expr) (RX Qubit Expr) (CZ Qubit Qubit :cost 2) (RY Qubit Expr) (RXX Qubit Qubit Expr :cost 2)\n  (GPI Qubit Expr) (GPI2 Qubit Expr) (VZ Qubit Expr) (MS Qubit Qubit Expr Expr :cost 2) (SX Qubit))\n");
         content.append("\n(datatype Circuit (Nil) (Cons Gate Circuit))\n");
         content.append("\n(datatype Value (B bool) (R f64))\n");
         content.append("\n(datatype Permutation (PermNil) (PermCons i64 Permutation))\n");
@@ -65,7 +65,6 @@ public class EggGen {
                         "(" + //
                         " (= x (CCircuit cx p1))\n" + //
                         " (= y (CCircuit cy p2))\n" + //
-                        " (<= (size cx) (size cy))\n" + //
                         " (!= x y)\n" + //
                         " (= (fingerprint x) (fingerprint y))\n" + //
                         " (= p1 p2)\n" + //
@@ -75,6 +74,8 @@ public class EggGen {
                         ")\n" + //
                         ":ruleset noteqfinger)");
         content.append("(relation bad (ConstrainedCircuit ConstrainedCircuit))\n");
+        content.append("(relation done (String))");
+        content.append("(done \"Done\")");
         try {
             startEgglogREPL();
         } catch (IOException e) {
@@ -116,22 +117,22 @@ public class EggGen {
             System.out.println("REPL not started. Call startEgglogREPL() first.");
             return null;
         }
+        
         try {
             processInput.write(command);
+            processInput.newLine();
+            processInput.write("(print-function done :mode csv)");
             processInput.newLine();
             processInput.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        String err = readError();
-        if(!err.equals(""))
-            System.err.print(err);
-        if(wait) {
-            return readOutput();
-        } else {
-            return "";
-        }
+        // String err = readError();
+        // if(!err.equals(""))
+        //     System.err.print(err);
+        
+        return readOutput();
     }
 
     public void setFingerprint(ConstrainedCircuit c, Integer fingerprint) {
@@ -202,7 +203,7 @@ public class EggGen {
         // A short sleep to allow the process to start writing output
         try {
             int waited = 0;
-            int timeout = 20000;
+            int timeout = 30000;
             while (!processOutput.ready()) {
                 Thread.sleep(10);
                 waited += 10;
@@ -217,6 +218,20 @@ public class EggGen {
             e.printStackTrace();
         }
         return output.toString();
+    }
+
+
+    public boolean check(String predicate) {
+        System.out.println(predicate);
+        String output = sendCommand(String.format("(check %s)",predicate), true);
+        if(output.contains("failed")) {
+            System.out.println(output);
+            System.out.println("false");
+            return false;
+        }
+        System.out.println(output);
+        System.out.println("true");
+        return true;
     }
 
     private String readError() {
@@ -351,18 +366,59 @@ public class EggGen {
         String rhsCanonical = circuitToGeneralizedString(rhsCircuit, qubitToVar, congruenceVar);
 
        
-        if (rhsVarsAreSubsetOfLhs && lhsVarsAreSubsetOfRhs) {
+        if (rhsVarsAreSubsetOfLhs) {
             // Generalized rule
-            qubitToVar.clear();
-            String rule = String.format("(birewrite (CCircuit %s %s) (CCircuit %s %s) :ruleset opt)",
-                lhsCanonical, ruleEntry.getKey().permutation.toEggString(),
-                rhsCanonical, ruleEntry.getValue().permutation.toEggString());
-            addRewrite(rule);
-        } else {
-            // Concrete rule
-            String rule = String.format("(birewrite %s %s :ruleset opt)",
-                ruleEntry.getKey().toCongruenceString("c"), ruleEntry.getValue().toCongruenceString("c"));
-            addRewrite(rule);
+            if(ruleEntry.getKey().circuit.gates.size() > ruleEntry.getValue().circuit.gates.size()) {
+                if(ruleEntry.getKey().permutation.perm.isEmpty()) {
+                    String rule = String.format("(rewrite %s %s :ruleset opt)",
+                    lhsCanonical,
+                    rhsCanonical);
+                    addRewrite(rule);
+                } else {
+                    String rule = String.format("(birewrite (CCircuit %s %s) (CCircuit %s %s) :ruleset opt)",
+                    lhsCanonical, ruleEntry.getKey().permutation.toEggString(),
+                    rhsCanonical, ruleEntry.getValue().permutation.toEggString());
+                    addRewrite(rule);
+                }
+            } else {
+                if(ruleEntry.getKey().permutation.perm.isEmpty()) {
+                    String rule = String.format("(rewrite %s %s :ruleset opt)",
+                    lhsCanonical,
+                    rhsCanonical);
+                    addRewrite(rule);
+                } else {
+                    String rule = String.format("(birewrite (CCircuit %s %s) (CCircuit %s %s) :ruleset opt)",
+                    lhsCanonical, ruleEntry.getKey().permutation.toEggString(),
+                    rhsCanonical, ruleEntry.getValue().permutation.toEggString());
+                    addRewrite(rule);
+                }
+            }
+        } else if(lhsVarsAreSubsetOfRhs) {
+            if(ruleEntry.getKey().circuit.gates.size() < ruleEntry.getKey().circuit.gates.size()) {
+                if(ruleEntry.getKey().permutation.perm.isEmpty()) {
+                    String rule = String.format("(rewrite %s %s :ruleset opt)",
+                    rhsCanonical,
+                    lhsCanonical);
+                    addRewrite(rule);
+                } else {
+                    String rule = String.format("(birewrite (CCircuit %s %s) (CCircuit %s %s) :ruleset opt)",
+                    rhsCanonical, ruleEntry.getKey().permutation.toEggString(),
+                    lhsCanonical, ruleEntry.getValue().permutation.toEggString());
+                    addRewrite(rule);
+                }
+            } else {
+                if(ruleEntry.getKey().permutation.perm.isEmpty()) {
+                    String rule = String.format("(rewrite %s %s :ruleset opt)",
+                    rhsCanonical,
+                    lhsCanonical);
+                    addRewrite(rule);
+                } else {
+                    String rule = String.format("(birewrite (CCircuit %s %s) (CCircuit %s %s) :ruleset opt)",
+                    rhsCanonical, ruleEntry.getKey().permutation.toEggString(),
+                    lhsCanonical, ruleEntry.getValue().permutation.toEggString());
+                    addRewrite(rule);
+                }
+            }
         }
     }
 
@@ -386,14 +442,45 @@ public class EggGen {
         sendCommand(String.format("(run-schedule (saturate (run %s)))\n", ruleSet));
     }
 
+
     public String printFunctionCSV(String name) {
         String output = sendCommand(String.format("(print-function %s :mode csv)", name), true);
+        System.out.println("original output:" +  output);
+        int lastNewline = output.lastIndexOf('\n');
+        if(lastNewline > 0) {
+            output = output.substring(0, lastNewline).trim();
+            lastNewline = output.lastIndexOf('\n');
+        } else {
+            return "";
+        }
+        if(lastNewline > 0) {
+            output = output.substring(0, lastNewline).trim();
+        }
+        else{
+            return "";
+        }
+        System.out.println("truncated output:" +  output);
         return output;
     }
 
  
     public String printFunctionListCSV(List<String> list) {             
         String output = sendCommand(String.format("(print-function %s :mode csv)", list.toArray()), true);
+        int lastNewline = output.lastIndexOf('\n');
+        if(lastNewline > 0) {
+            output = output.substring(0, lastNewline).trim();
+            lastNewline = output.lastIndexOf('\n');
+        } else {
+            return "";
+        }
+
+        if(lastNewline > 0) {
+            output = output.substring(0, lastNewline).trim();
+        }
+        else{
+            return "";
+        }
+        System.out.println("truncated output:" +  output);
         return output; 
     }
 

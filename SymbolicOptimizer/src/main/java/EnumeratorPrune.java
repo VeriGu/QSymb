@@ -7,9 +7,12 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -65,6 +68,101 @@ public class EnumeratorPrune {
   public String filename;
   public String fileSymname;
   public String gatesetName;
+  private Set<String> canonicalCircuits = new HashSet<>();
+
+  private class RuleWithPriority implements Comparable<RuleWithPriority> {
+    SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule;
+    int sizeDiff;
+    int totalSize;
+    boolean isSymbolic;
+
+    public RuleWithPriority(SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule) {
+        this.rule = rule;
+        Circuit lhs = rule.getKey().getCircuit();
+        Circuit rhs = rule.getValue().getCircuit();
+        this.sizeDiff = Math.abs(lhs.getSize() - rhs.getSize());
+        this.totalSize = lhs.getSize() + rhs.getSize();
+        this.isSymbolic = lhs.hasSymb() || rhs.hasSymb();
+    }
+
+    @Override
+    public int compareTo(RuleWithPriority other) {
+        // 1. Symbolic rules first
+        if (this.isSymbolic != other.isSymbolic) {
+            return this.isSymbolic ? -1 : 1;
+        }
+
+        // 3. Smaller total size first
+        if (this.totalSize != other.totalSize) {
+          return this.totalSize - other.totalSize;
+        }
+
+        // 2. Larger size difference first
+        
+        return other.sizeDiff - this.sizeDiff;
+        
+    }
+  }
+
+  private String circuitToAlphaEquivalentString(Circuit circuit) {
+    Map<String, String> qubitMap = new HashMap<>();
+    List<String> canonicalGates = new ArrayList<>();
+    for (EggGen.Gate gate : circuit.getGates()) {
+        canonicalGates.add(gateToAlphaEquivalentString(gate, qubitMap));
+    }
+    return String.join(";", canonicalGates);
+  }
+
+  private String gateToAlphaEquivalentString(EggGen.Gate gate, Map<String, String> qubitMap) {
+    if (gate instanceof EggGen.X) return String.format("(X %s)", qubitMap.computeIfAbsent(((EggGen.X) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.H) return String.format("(H %s)", qubitMap.computeIfAbsent(((EggGen.H) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.SX) return String.format("(SX %s)", qubitMap.computeIfAbsent(((EggGen.SX) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.RZ) return String.format("(RZ %s %s)", qubitMap.computeIfAbsent(((EggGen.RZ) gate).qubit, q -> "q" + qubitMap.size()), ((EggGen.RZ) gate).angle.toEggString());
+    if (gate instanceof EggGen.RX) return String.format("(RX %s %s)", qubitMap.computeIfAbsent(((EggGen.RX) gate).qubit, q -> "q" + qubitMap.size()), ((EggGen.RX) gate).angle.toEggString());
+    if (gate instanceof EggGen.RY) return String.format("(RY %s %s)", qubitMap.computeIfAbsent(((EggGen.RY) gate).qubit, q -> "q" + qubitMap.size()), ((EggGen.RY) gate).angle.toEggString());
+    if (gate instanceof EggGen.U1) return String.format("(U1 %s %s)", qubitMap.computeIfAbsent(((EggGen.U1) gate).qubit, q -> "q" + qubitMap.size()), ((EggGen.U1) gate).lambda.toEggString());
+    if (gate instanceof EggGen.U2) return String.format("(U2 %s %s %s)", qubitMap.computeIfAbsent(((EggGen.U2) gate).qubit, q -> "q" + qubitMap.size()), ((EggGen.U2) gate).phi.toEggString(), ((EggGen.U2) gate).lambda.toEggString());
+    if (gate instanceof EggGen.U3) return String.format("(U3 %s %s %s %s)", qubitMap.computeIfAbsent(((EggGen.U3) gate).qubit, q -> "q" + qubitMap.size()), ((EggGen.U3) gate).theta.toEggString(), ((EggGen.U3) gate).phi.toEggString(), ((EggGen.U3) gate).lambda.toEggString());
+    if (gate instanceof EggGen.GPI) return String.format("(GPI %s %s)", qubitMap.computeIfAbsent(((EggGen.GPI) gate).qubit, q -> "q" + qubitMap.size()), ((EggGen.GPI) gate).phi.toEggString());
+    if (gate instanceof EggGen.GPI2) return String.format("(GPI2 %s %s)", qubitMap.computeIfAbsent(((EggGen.GPI2) gate).qubit, q -> "q" + qubitMap.size()), ((EggGen.GPI2) gate).phi.toEggString());
+    if (gate instanceof EggGen.VZ) return String.format("(VZ %s %s)", qubitMap.computeIfAbsent(((EggGen.VZ) gate).qubit, q -> "q" + qubitMap.size()), ((EggGen.VZ) gate).theta.toEggString());
+    if (gate instanceof EggGen.CX) return String.format("(CX %s %s)", qubitMap.computeIfAbsent(((EggGen.CX) gate).control, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((EggGen.CX) gate).target, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.CZ) return String.format("(CZ %s %s)", qubitMap.computeIfAbsent(((EggGen.CZ) gate).control, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((EggGen.CZ) gate).target, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.RXX) return String.format("(RXX %s %s %s)", qubitMap.computeIfAbsent(((EggGen.RXX) gate).qubit1, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((EggGen.RXX) gate).qubit2, q -> "q" + qubitMap.size()), ((EggGen.RXX) gate).angle.toEggString());
+    if (gate instanceof EggGen.MS) return String.format("(MS %s %s %s %s)", qubitMap.computeIfAbsent(((EggGen.MS) gate).qubit1, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((EggGen.MS) gate).qubit2, q -> "q" + qubitMap.size()), ((EggGen.MS) gate).phi1.toEggString(), ((EggGen.MS) gate).phi2.toEggString());
+    return gate.toEggString();
+  }
+
+  private String circuitToQasmCanonicalString(Circuit circuit) {
+    Map<String, String> qubitMap = new HashMap<>();
+    List<String> canonicalGates = new ArrayList<>();
+    for (EggGen.Gate gate : circuit.getGates()) {
+        canonicalGates.add(gateToQasmCanonicalString(gate, qubitMap));
+    }
+    return String.join(" ", canonicalGates);
+  }
+
+  private String gateToQasmCanonicalString(EggGen.Gate gate, Map<String, String> qubitMap) {
+    if (gate instanceof EggGen.X) return String.format("x %s;", qubitMap.computeIfAbsent(((EggGen.X) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.H) return String.format("h %s;", qubitMap.computeIfAbsent(((EggGen.H) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.SX) return String.format("sx %s;", qubitMap.computeIfAbsent(((EggGen.SX) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.RZ) return String.format("rz(%s) %s;", ((EggGen.RZ) gate).angle.toString(), qubitMap.computeIfAbsent(((EggGen.RZ) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.RX) return String.format("rx(%s) %s;", ((EggGen.RX) gate).angle.toString(), qubitMap.computeIfAbsent(((EggGen.RX) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.RY) return String.format("ry(%s) %s;", ((EggGen.RY) gate).angle.toString(), qubitMap.computeIfAbsent(((EggGen.RY) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.U1) return String.format("u1(%s) %s;", ((EggGen.U1) gate).lambda.toString(), qubitMap.computeIfAbsent(((EggGen.U1) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.U2) return String.format("u2(%s,%s) %s;", ((EggGen.U2) gate).phi.toString(), ((EggGen.U2) gate).lambda.toString(), qubitMap.computeIfAbsent(((EggGen.U2) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.U3) return String.format("u3(%s,%s,%s) %s;", ((EggGen.U3) gate).theta.toString(), ((EggGen.U3) gate).phi.toString(), ((EggGen.U3) gate).lambda.toString(), qubitMap.computeIfAbsent(((EggGen.U3) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.GPI) return String.format("gpi(%s) %s;", ((EggGen.GPI) gate).phi.toString(), qubitMap.computeIfAbsent(((EggGen.GPI) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.GPI2) return String.format("gpi2(%s) %s;", ((EggGen.GPI2) gate).phi.toString(), qubitMap.computeIfAbsent(((EggGen.GPI2) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.VZ) return String.format("vz(%s) %s;", ((EggGen.VZ) gate).theta.toString(), qubitMap.computeIfAbsent(((EggGen.VZ) gate).qubit, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.CX) return String.format("cx %s, %s;", qubitMap.computeIfAbsent(((EggGen.CX) gate).control, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((EggGen.CX) gate).target, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.CZ) return String.format("cz %s, %s;", qubitMap.computeIfAbsent(((EggGen.CZ) gate).control, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((EggGen.CZ) gate).target, q -> "q" + qubitMap.size()));
+    if (gate instanceof EggGen.RXX) return String.format("rxx(%s) %s, %s;", ((EggGen.RXX) gate).angle.toString(), qubitMap.computeIfAbsent(((EggGen.RXX) gate).qubit1, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((EggGen.RXX) gate).qubit2, q -> "q[" + qubitMap.size()));
+    if (gate instanceof EggGen.MS) return String.format("ms(%s,%s) %s, %s;", ((EggGen.MS) gate).phi1.toString(), ((EggGen.MS) gate).phi2.toString(), qubitMap.computeIfAbsent(((EggGen.MS) gate).qubit1, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((EggGen.MS) gate).qubit2, q -> "q" + qubitMap.size()));
+    return gate.toString();
+  }
+
+
   private FileWriter fw;
   private FileWriter fw_symb;
   private PrintWriter pw;
@@ -149,22 +247,28 @@ public class EnumeratorPrune {
             for (Circuit cSymb : circuitsAfterApplySymb) {
               if (previousReps.containsKey(cSymb.getQasmStringDropFirst())) { // TODO
                 long tmap = System.currentTimeMillis();
-                updateMapEqsat(cSymb, symbolMap);
+                //updateMapEqsat(cSymb, symbolMap);
+                updateMapSymbEqsat(cSymb, symbolMap);
                 long tmapafter = System.currentTimeMillis();
                 updateMapTime += tmapafter - tmap;
               }
             }
           }
+
           // apply other gates
           for (String gate : this.gates) {
             if ((gate.equals("cx") || gate.equals("cz")) && c.getCircuit().hasSymb()) { continue; }
             for (int q = 0; q <= Math.min(c.getCircuit().getQubits().size(), numQubits - 1); q++) {
-              if (c.getCircuit().hasSymb() && q >= MAX_QUBITS_SYMB) { continue; }
+              if (c.getCircuit().hasSymb()) { continue; }
               List<Circuit> circuitsAfterApply = applyGate(c.getCircuit(), gate, q, Math.min(c.getCircuit().getQubits().size() + 1, numQubits));
               for (Circuit caa : circuitsAfterApply) {
                 if (previousReps.containsKey(caa.getQasmStringDropFirst())) { // TODO
                   long tmap = System.currentTimeMillis();
-                  updateMapEqsat(caa, symbolMap);
+                  if(caa.hasSymb()) {
+                    updateMapSymbEqsat(caa, symbolMap);
+                  } else {
+                    updateMapEqsat(caa, symbolMap);
+                  }
                   long tmapafter = System.currentTimeMillis();
                   updateMapTime += tmapafter - tmap;
                 }
@@ -187,21 +291,21 @@ public class EnumeratorPrune {
         for (SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule : learned_symbolic_rules) {
           egraph.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())));
         }
-        egraph.runN("opt",10);
         egraph.push();
-        egraph.runSaturation("sizeanalysis");
+        egraph.runSaturation("opt");
+        //egraph.runSaturation("sizeanalysis");
         // get the set of terms X terms that are not devived by R.
         egraph.runSaturation("noteqfinger");
         
         //String allterms = egraph.printFunctionCSV("CCircuit");
-        String finger = egraph.printFunctionCSV("fingerprint");
+        //String finger = egraph.printFunctionCSV("fingerprint");
         String rel = egraph.printFunctionCSV("notSameButEqfinger");
         String bad = egraph.printFunctionCSV("bad");
         egraph.pop();
         long t4 = System.currentTimeMillis();
         this.egraphTime += (t4 - t3);
 
-        System.out.println("Fingers\n" + finger);
+        //System.out.println("Fingers\n" + finger);
         System.out.println("Current Relation: \n" + rel);
         System.out.println("Bad Relation: \n" + bad);
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> entries = egraph.parseRelation(rel);
@@ -279,16 +383,20 @@ public class EnumeratorPrune {
       }
 
       // add symb as first op so it can be added onto in future iteration but we don't want this in the hash table
-      if (i == 1) {
-        Circuit start = getStart();
-        List<Circuit> circuitsAfterApplySymb = applyGate(start, "symb", 0, MAX_QUBITS_SYMB);
-        previousReps.put(circuitsAfterApplySymb.get(0).getQasmString(), new ConstrainedCircuit(circuitsAfterApplySymb.get(0), new ArrayList<>()));
-      }
+      // if (i == 1) {
+      //   Circuit start = getStart();
+      //   List<Circuit> circuitsAfterApplySymb = applyGate(start, "symb", 0, MAX_QUBITS_SYMB);
+      //   previousReps.put(circuitsAfterApplySymb.get(0).getQasmString(), new ConstrainedCircuit(circuitsAfterApplySymb.get(0), new ArrayList<>()));
+      // }
     }
-
+    List<String> rules = egraph.getAllRewriteRules();
+    for(String rule : rules) {
+      pw.println(rule);
+    }
     pw.close();
     pw_symb.close();
     egraph.pop();
+    egraph.stopEgglogREPL();
     System.out.println("E-graph time (ms): " + this.egraphTime);
     System.out.println("Translation time (ms): " + this.translateTime);
     System.out.println("Choose rules time (ms): " + this.chooseTime);
@@ -298,52 +406,97 @@ public class EnumeratorPrune {
 
 
   public void choose_eqs_n (List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> entries, int n) throws FileNotFoundException, IOException {
+    PriorityQueue<RuleWithPriority> pq = new PriorityQueue<>();
     HashMap<String, List<List<Integer>>> constraintMap = new HashMap<>();
     Map<String, Double> symbolMap = getSymbolMap();
-    for(SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> entry: entries) {
-      Circuit r = entry.getKey().getCircuit();
-      Circuit other = entry.getValue().getCircuit();
-      String rule = r.getQasmString() + " | " + other.getQasmString();
-      if (!r.getQasmString().equals(other.getQasmString())) {
-        if (!hasCommonSubcircuit(r, other)) {
-          if (r.hasSymb() && other.hasSymb()) {
-            if (entry.getKey().getConstraint().equals(entry.getValue().getConstraint())) { // same constraint
-              if (verifier.verifyv2(r, other, entry.getKey().getConstraint(), symbolMap)) {
-                learned_symbolic_rules.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
-                System.out.println("rule accepted:" + rule);
-                System.out.println("constraint:" + Arrays.toString(entry.getKey().getConstraint().toArray()));
-                if (constraintMap.containsKey(rule)) {
-                  constraintMap.get(rule).add(entry.getKey().getConstraint());
+    
+    int step_size = 30;
+    List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> entries_copy = new ArrayList<>(entries);
+
+    while(!entries_copy.isEmpty()) {
+      System.out.println("Entry Size:" + entries_copy.size());
+      for (int i = 0; i < Integer.min(entries_copy.size(), step_size); i++) {
+        pq.add(new RuleWithPriority(entries_copy.get(i)));
+      }
+      while (!pq.isEmpty()) {
+        System.out.println("PQ size: " + pq.size());
+        SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> entry = pq.poll().rule;
+        entries_copy.remove(entry);
+        Circuit r = entry.getKey().getCircuit();
+        Circuit other = entry.getValue().getCircuit();
+        String rule = r.getQasmString() + " | " + other.getQasmString();
+        if (!r.getQasmString().equals(other.getQasmString())) {
+          if (!hasCommonSubcircuit(r, other)) {
+            if (r.hasSymb() && other.hasSymb()) {
+              if (entry.getKey().getConstraint().equals(entry.getValue().getConstraint())) { // same constraint
+                if (verifier.verifyv2(r, other, entry.getKey().getConstraint(), symbolMap)) {
+                  learned_symbolic_rules.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
+                  System.out.println("rule accepted:" + rule);
+                  System.out.println("constraint:" + Arrays.toString(entry.getKey().getConstraint().toArray()));
+                  if (constraintMap.containsKey(rule)) {
+                    constraintMap.get(rule).add(entry.getKey().getConstraint());
+                  } else {
+                    constraintMap.put(rule, new ArrayList<>(Arrays.asList(entry.getKey().getConstraint())));
+                  }
                 } else {
-                  constraintMap.put(rule, new ArrayList<>(Arrays.asList(entry.getKey().getConstraint())));
+                  System.out.println("rule rejected, verified failed:" + rule);
+                  egraph.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
+                  egraph.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
                 }
+              }
+            } else if (!r.hasSymb() && !other.hasSymb()) {
+              if (verifier.verifyv2(r, other, new ArrayList<>(), symbolMap)) {
+                learned_rules.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
+                System.out.println("rule accepted:" + rule);
+                //pw.println(rule);
               } else {
                 System.out.println("rule rejected, verified failed:" + rule);
                 egraph.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
                 egraph.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
               }
             }
-          } else if (!r.hasSymb() && !other.hasSymb()) {
-            if (verifier.verifyv2(r, other, new ArrayList<>(), symbolMap)) {
-              learned_rules.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
-              System.out.println("rule accepted:" + rule);
-              pw.println(rule);
-            } else {
-              System.out.println("rule rejected, verified failed:" + rule);
-              egraph.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
-              egraph.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
-            }
+          } else {
+            System.out.println("rule rejected, has common subcircuit:" + rule);
           }
         } else {
-          System.out.println("rule rejected, has common subcircuit:" + rule);
+          System.out.println("rule rejected, lhs = rhs" + rule);
         }
-      } else {
-        System.out.println("rule rejected, lhs = rhs" + rule);
       }
-    }
 
-    for (String rule : constraintMap.keySet()) {
-      pw_symb.println(rule + " | " + constraintStrings(constraintMap.get(rule)));
+      for (String rule : constraintMap.keySet()) {
+        pw_symb.println(rule + " | " + constraintStrings(constraintMap.get(rule)));
+      }
+
+      //shrink the entries.
+      EggGen egg = new EggGen();
+      // Set<String> canonicals = new HashSet<>();
+      for(SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> entry: entries_copy) {
+        egg.addConstrainedCircuit(CircuitTranslator.translate(entry.getKey()));
+        System.out.println("Add Term" + CircuitTranslator.translate(entry.getKey()).toEggString());
+        
+        egg.addConstrainedCircuit(CircuitTranslator.translate(entry.getValue()));
+        System.out.println("Add Term" + CircuitTranslator.translate(entry.getValue()).toEggString());
+      }
+      System.out.println("Added Terms in C");
+      for (SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule : learned_rules) {
+        egg.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())));
+      }
+      for (SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule : learned_symbolic_rules) {
+        egg.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())));
+      }
+      System.out.println("Added rules in C");
+      egg.runSaturation("opt");
+      System.out.println("runs saturation");
+      List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> new_entries_copy = new ArrayList<>();
+      for(SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> entry: entries_copy) {
+        if(!egg.check(String.format("(= %s %s)", CircuitTranslator.translate(entry.getKey()).toEggString(), CircuitTranslator.translate(entry.getValue()).toEggString()))) {
+          new_entries_copy.add(entry);
+        }
+      }
+      
+      System.out.println("new entries computed, size: " + new_entries_copy.size());
+      egg.stopEgglogREPL();
+      entries_copy = new_entries_copy;
     }
   }
 
@@ -495,6 +648,13 @@ public class EnumeratorPrune {
   }
 
   private void updateMapEqsat(Circuit c, Map<String, Double> symbolMap) {
+    // String canonicalString = circuitToAlphaEquivalentString(c);
+    // System.out.println("Add Term:" + canonicalString);
+    // if (canonicalCircuits.contains(canonicalString)) {
+    //     return;
+    // }
+    // canonicalCircuits.add(canonicalString);
+
     long t1 = System.currentTimeMillis();
     List<SimpleEntry<Integer, List<Integer>>> hash = verifier.hashCode(c, symbolMap);
     long t2 = System.currentTimeMillis();
@@ -506,6 +666,23 @@ public class EnumeratorPrune {
       egraph.addConstrainedCircuit(eggcc);
       egraph.setFingerprint(eggcc, entry.getKey());
     }
+    long t3 = System.currentTimeMillis();
+    this.egraphTime += (t3 - t2);
+  }
+
+
+  private void updateMapSymbEqsat(Circuit c, Map<String, Double> symbolMap) {
+    long t1 = System.currentTimeMillis();
+    List<SimpleEntry<Integer, List<Integer>>> hash = verifier.hashCode(c, symbolMap);
+    long t2 = System.currentTimeMillis();
+    this.enumerationTime += (t2 - t1);
+    // for (SimpleEntry<Integer, List<Integer>> entry : hash) {
+    //   ConstrainedCircuit cc = new ConstrainedCircuit(c, entry.getValue());
+    //   EggGen.ConstrainedCircuit eggcc = CircuitTranslator.translate(cc);
+    //   //System.out.println("Adding to egraph: " + eggcc.toEggString() + " with fingerprint " + entry.getKey());
+    //   egraph.addConstrainedCircuit(eggcc);
+    //   egraph.setFingerprint(eggcc, entry.getKey());
+    // }
     long t3 = System.currentTimeMillis();
     this.egraphTime += (t3 - t2);
   }

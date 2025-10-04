@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -17,6 +18,15 @@ public class Circuit {
     this.pathSum = pathSum;
     this.qasm = qasm;
     this.gates = gates;
+  }
+
+
+   public Circuit(Circuit c) {
+    this.qubits = c.qubits;
+    this.usedQubits = c.usedQubits;
+    this.pathSum = c.pathSum;
+    this.qasm = c.qasm;
+    this.gates = new ArrayList<>(c.gates);
   }
 
   public List<String> getQubits() {
