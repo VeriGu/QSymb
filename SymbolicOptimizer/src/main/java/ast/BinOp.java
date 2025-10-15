@@ -1,5 +1,9 @@
 package ast;
 
+import java.util.Set;
+
+import ast.Expr.Op;
+
 public final class BinOp extends Expr {
   private Op op;
   private Expr e1;
@@ -40,6 +44,10 @@ public final class BinOp extends Expr {
       return "*";
     } else if (op.equals(Op.DIV)) {
       return "/";
+    } else if (op.equals(Op.PLUS)) {
+      return "+";
+    } else if (op.equals(Op.MINUS)) {
+      return "-";
     } else {
       return op.toString();
     }
@@ -58,6 +66,9 @@ public final class BinOp extends Expr {
     return String.format("(BinOp %s %s %s)", op.toEggString(), e1.toEggString(), e2.toEggString());
   }
 
-
-
+  @Override
+  public void getAllSymbols(Set<String> vars) {
+    e1.getAllSymbols(vars);
+    e2.getAllSymbols(vars);
+  }
 }

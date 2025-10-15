@@ -22,6 +22,6 @@ public final class Var extends Expr {
 
   @Override
   public String toEggString() {
-    return String.format("(Var \"%s\")", id);
+    return String.format("%s", id);
   }
 }

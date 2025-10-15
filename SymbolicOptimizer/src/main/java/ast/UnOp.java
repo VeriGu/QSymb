@@ -1,5 +1,9 @@
 package ast;
 
+import java.util.Set;
+
+import ast.Expr.Op;
+
 public final class UnOp extends Expr {
   private Op op;
   private Expr e;
@@ -41,5 +45,9 @@ public final class UnOp extends Expr {
   @Override
   public String toEggString() {
     return String.format("(UnOp %s %s)", op.toEggString(), e.toEggString());
+  }
+
+  public void getAllSymbols(Set<String> vars) {
+    e.getAllSymbols(vars);
   }
 }

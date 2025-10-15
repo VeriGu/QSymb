@@ -1,5 +1,7 @@
 package ast;
 
+import java.util.Set;
+
 public sealed class Expr 
   permits Bool, Real, Symbol, Var, Fun, UnOp, BinOp {
   public enum Op {
@@ -36,5 +38,10 @@ public sealed class Expr
 
   public String toEggString() {
     return "(Expr )";
+  }
+
+
+  public void getAllSymbols(Set<String> vars) {
+    
   }
 }

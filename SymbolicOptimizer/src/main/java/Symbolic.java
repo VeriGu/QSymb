@@ -6,12 +6,12 @@ import java.util.TreeMap;
 import ast.BinOp;
 import ast.Bool;
 import ast.Expr;
+import ast.Expr.Op;
 import ast.Fun;
 import ast.Real;
 import ast.Symbol;
 import ast.UnOp;
 import ast.Var;
-import ast.Expr.Op;
 
 public class Symbolic {
   private Expr phi;
@@ -60,7 +60,7 @@ public class Symbolic {
       s.getF().put(qubit, new UnOp(Op.NOT, s.getF().get(qubit)));
     }
 
-    String qasm = String.format("x %s", qubit);
+    String qasm = String.format("x q[%s]", qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.X(qubit));
   }
@@ -73,7 +73,7 @@ public class Symbolic {
       s.getF().put(target, new BinOp(Op.XOR, s.getF().get(control), s.getF().get(target)));
     }
 
-    String qasm = String.format("cx %s, %s", control, target);
+    String qasm = String.format("cx q[%s], q[%s]", control.replace("q", ""), target.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.CX(control, target));
   }
@@ -85,7 +85,7 @@ public class Symbolic {
       s.setPhi(new BinOp(Op.MULT, s.phi, new UnOp(Op.EXP, new BinOp(Op.MULT, new BinOp(Op.DIV, angle, new Real(2)), new BinOp(Op.SUBTRACT, new BinOp(Op.MULT, new Real(2), s.getF().get(qubit)), new Real(1))))));
     }
 
-    String qasm = String.format("rz(%s) %s", angle, qubit);
+    String qasm = String.format("rz(%s) q[%s]", angle, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.RZ(qubit, angle));
   }
@@ -109,7 +109,7 @@ public class Symbolic {
     }
     circuit.setPathSum(newPathSum);
 
-    String qasm = String.format("h %s", qubit);
+    String qasm = String.format("h q[%s]", qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.H(qubit));
   }
@@ -140,7 +140,7 @@ public class Symbolic {
       s.setPhi(new BinOp(Op.MULT, s.phi, new UnOp(Op.EXP, new BinOp(Op.MULT, lambda, s.getF().get(qubit)))));
     }
 
-    String qasm = String.format("u1(%s) %s", lambda, qubit);
+    String qasm = String.format("u1(%s) q[%s]", lambda, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.U1(qubit, lambda));
   }
@@ -164,7 +164,7 @@ public class Symbolic {
     }
     circuit.setPathSum(newPathSum);
 
-    String qasm = String.format("u2(%s,%s) %s", phi, lambda, qubit);
+    String qasm = String.format("u2(%s,%s) q[%s]", phi, lambda, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.U2(qubit, phi, lambda));
   }
@@ -188,7 +188,7 @@ public class Symbolic {
     }
     circuit.setPathSum(newPathSum);
 
-    String qasm = String.format("u3(%s,%s,%s) %s", theta, phi, lambda, qubit);
+    String qasm = String.format("u3(%s,%s,%s) q[%s]", theta, phi, lambda, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.U3(qubit, theta, phi, lambda));
   }
@@ -212,7 +212,7 @@ public class Symbolic {
     }
     circuit.setPathSum(newPathSum);
 
-    String qasm = String.format("rx(%s) %s", angle, qubit);
+    String qasm = String.format("rx(%s) q[%s]", angle, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.RX(qubit, angle));
   }
@@ -225,7 +225,7 @@ public class Symbolic {
       s.setPhi(new BinOp(Op.MULT, s.phi, new UnOp(Op.EXP, new BinOp(Op.MULT, PI, new BinOp(Op.MULT, s.getF().get(control), s.getF().get(target))))));
     }
 
-    String qasm = String.format("cz %s, %s", control, target);
+    String qasm = String.format("cz q[%s], q[%s]", control.replace("q", ""), target.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.CZ(control, target));
   }
@@ -249,7 +249,7 @@ public class Symbolic {
     }
     circuit.setPathSum(newPathSum);
 
-    String qasm = String.format("ry(%s) %s", angle, qubit);
+    String qasm = String.format("ry(%s) q[%s]", angle, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.RY(qubit, angle));
   }
@@ -275,7 +275,7 @@ public class Symbolic {
     }
     circuit.setPathSum(newPathSum);
 
-    String qasm = String.format("rxx(%s) %s, %s", angle, qubit1, qubit2);
+    String qasm = String.format("rxx(%s) q[%s], q[%s]", angle, qubit1.replace("q", ""), qubit2.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.RXX(qubit1, qubit2, angle));
   }
@@ -288,7 +288,7 @@ public class Symbolic {
       s.getF().put(qubit, new UnOp(Op.NOT, s.getF().get(qubit)));
     }
 
-    String qasm = String.format("gpi(%s) %s", phi, qubit);
+    String qasm = String.format("gpi(%s) q[%s]", phi, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.GPI(qubit, phi));
   }
@@ -312,7 +312,7 @@ public class Symbolic {
     }
     circuit.setPathSum(newPathSum);
 
-    String qasm = String.format("gpi2(%s) %s", phi, qubit);
+    String qasm = String.format("gpi2(%s) q[%s]", phi, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.GPI2(qubit, phi));
   }
@@ -324,7 +324,7 @@ public class Symbolic {
       s.setPhi(new BinOp(Op.MULT, s.phi, new UnOp(Op.EXP, new BinOp(Op.MULT, new BinOp(Op.DIV, theta, new Real(2)), new BinOp(Op.SUBTRACT, new BinOp(Op.MULT, new Real(2), s.getF().get(qubit)), new Real(1))))));
     }
 
-    String qasm = String.format("rz(%s) %s", theta, qubit);
+    String qasm = String.format("rz(%s) q[%s]", theta, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.VZ(qubit, theta));
   }
@@ -350,7 +350,7 @@ public class Symbolic {
     }
     circuit.setPathSum(newPathSum);
 
-    String qasm = String.format("ms (%s,%s) %s, %s", phi1, phi2, qubit1, qubit2);
+    String qasm = String.format("ms (%s,%s) q[%s], q[%s]", phi1, phi2, qubit1.replace("q", ""), qubit2.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.MS(qubit1, qubit2, phi1, phi2));
   }
@@ -374,7 +374,7 @@ public class Symbolic {
     }
     circuit.setPathSum(newPathSum);
 
-    String qasm = String.format("sx %s", qubit);
+    String qasm = String.format("sx q[%s]", qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
     circuit.getGates().add(new EggGen.SX(qubit));
   }

@@ -1,5 +1,7 @@
 package ast;
 
+import java.util.Set;
+
 public final class Bool extends Expr {
   private boolean bool;
 
@@ -23,5 +25,10 @@ public final class Bool extends Expr {
   @Override
   public String toEggString() {
     return String.format("(Bool %s)", bool);
+  }
+
+  @Override
+  public void getAllSymbols(Set<String> vars) {
+    
   }
 }

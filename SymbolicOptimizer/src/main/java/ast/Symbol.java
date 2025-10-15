@@ -1,5 +1,7 @@
 package ast;
 
+import java.util.Set;
+
 public final class Symbol extends Expr {
   private String symbol;
 
@@ -23,5 +25,11 @@ public final class Symbol extends Expr {
   @Override
   public String toEggString() {
     return String.format("(Symbol \"%s\")", symbol);
+  }
+
+
+  @Override
+  public void getAllSymbols(Set<String> vars) {
+    vars.add(symbol);
   }
 }
