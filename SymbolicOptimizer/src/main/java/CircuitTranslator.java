@@ -47,7 +47,7 @@ public class CircuitTranslator {
         return newConstrainedCircuit;
     }
 
-    private static Circuit translateCircuitBack(EggGen.Circuit eggCircuit, int maxQubits) {
+    public static Circuit translateCircuitBack(EggGen.Circuit eggCircuit, int maxQubits) {
         return reconstructCircuit(eggCircuit, maxQubits);
     }
 
