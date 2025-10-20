@@ -1,8 +1,11 @@
 import ast.Expr;
-
+import org.apache.commons.collections4.CollectionUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import java.util.stream.Collectors;
 
 public class Node {
 
@@ -15,10 +18,10 @@ public class Node {
 
     private String id;
     private Type type;
-    private String[] qubits;
+    private List<String> qubits;
     private List<Expr> angles;
 
-    public Node(String id, Type type, String[] qubits, List<Expr> angles) {
+    public Node(String id, Type type, List<String> qubits, List<Expr> angles) {
         this.id = id;
         this.type = type;
         this.qubits = qubits;
@@ -41,11 +44,11 @@ public class Node {
         this.type = type;
     }
 
-    public String[] getQubits() {
+    public List<String> getQubits() {
         return qubits;
     }
 
-    public void setQubits(String[] qubits) {
+    public void setQubits(List<String> qubits) {
         this.qubits = qubits;
     }
 
@@ -81,14 +84,48 @@ public class Node {
         return this.id.equals("ccz");
     }
 
+    public boolean is2QGate() {
+        return this.isGate() && this.qubits.size() == 2;
+    }
+
+    public boolean isTGate() {
+        return this.isGate() && (this.id.equals("t") || this.id.equals("tdg") || (this.id.equals("rz") && Math.abs((CircuitDAG.eval(this.getAngles().get(0)) / Math.PI) % 0.5) == 0.25));
+    }
+
+
+
     public int hash() {
         int result = Objects.hash(id, type, angles);
-        result = 31 * result + Arrays.hashCode(qubits);
+        result = 31 * result + (qubits != null ? qubits.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return id + " " + Arrays.toString(qubits) + " " + type + " " + angles;
+        return toStringHelper(HashBiMap.create());
+    }
+
+
+    public String toString(BiMap<String, String> qubitRenameMap) {
+        return toStringHelper(qubitRenameMap);
+    }
+
+    private String toStringHelper(BiMap<String, String> qubitRenameMap) {
+        String result = id;
+
+        if (isQubit()) {
+            return id + " " + type;
+        }
+
+        if (angles != null && !angles.isEmpty()) {
+            result = result.concat("(");
+            result = result.concat(String.join(",", angles.stream().map(Expr::toString).collect(Collectors.toList())));
+            result = result.concat(")");
+        }
+
+        result = result.concat(" ");
+        result = result.concat(String.join(",", qubits.stream().map(q -> qubitRenameMap.inverse().getOrDefault(q, "q" + "["+q.replaceAll("q", "")+"]")).collect(Collectors.toList())));
+
+        return result;
     }
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -17,6 +18,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.antlr.v4.runtime.tree.Tree;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -25,9 +27,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.collections4.map.HashedMap;
-
-
-import java.util.IdentityHashMap;
 
 import ast.BinOp;
 import ast.Expr;
@@ -81,7 +80,8 @@ public class EnumeratorPrune {
   private SymbolicSolve solver;
   private Map<String, List<Circuit>> eigenmap;
   private List<Circuit> symbccs;
-  
+  private Set<String> badrules;
+  private Set<String> goodRules;
   
 
   private class RuleWithPriority implements Comparable<RuleWithPriority> {
@@ -123,8 +123,9 @@ public class EnumeratorPrune {
   private PrintWriter pw;
   private PrintWriter pw_symb;
   private PrintWriter pw_symb_nm;
+  private boolean genSymb;
 
-  public EnumeratorPrune(String[] gates, int maxQubits, Random rand, Expr[] symbAngles) {
+  public EnumeratorPrune(String[] gates, int maxQubits, Random rand, Expr[] symbAngles, boolean genSymb) {
     this.verifier = new Verifier(rand, maxQubits);
     this.gates = gates;
     this.symbAngles = symbAngles;
@@ -142,9 +143,12 @@ public class EnumeratorPrune {
     this.symbmap = new HashMap<>();
     this.symbecs = new ArrayList<>();
     this.symbccs = new ArrayList<>();
+    this.badrules = new TreeSet<>();
+    this.genSymb = genSymb;
+    this.goodRules = new HashSet<>();
   }
 
-  public EnumeratorPrune(String[] gates, int maxQubits, Random rand, Expr[] symbAngles, String gatesName) {
+  public EnumeratorPrune(String[] gates, int maxQubits, Random rand, Expr[] symbAngles, String gatesName, boolean genSymb) {
     this.verifier = new Verifier(rand, maxQubits);
     this.gates = gates;
     this.symbAngles = symbAngles;
@@ -163,6 +167,9 @@ public class EnumeratorPrune {
     this.symbmap = new HashMap<>();
     this.symbecs = new ArrayList<>();
     this.symbccs = new ArrayList<>();
+    this.badrules = new TreeSet<>();
+    this.genSymb = genSymb;
+    this.goodRules = new HashSet<>();
   }
 
 
@@ -269,8 +276,10 @@ public class EnumeratorPrune {
     Map<String, ConstrainedCircuit> previousReps = new HashMap<>();
     ConstrainedCircuit emptyCCircuit = new ConstrainedCircuit(emptyCircuit, emptyCircuitHashEntry.getValue());
     EggGen.ConstrainedCircuit eggcc = CircuitTranslator.translate(emptyCCircuit);
-    egraph.setFingerprint(eggcc, emptyCircuitHashEntry.getKey());
-    egraph.addConstrainedCircuit(eggcc);
+    equiv.add(emptyCCircuit);
+    map.put(emptyCircuitHashEntry.getKey(), equiv);
+    //egraph.setFingerprint(eggcc, emptyCircuitHashEntry.getKey());
+    //egraph.addConstrainedCircuit(eggcc);
 
     previousReps.put(emptyCircuit.getQasmString(), new ConstrainedCircuit(emptyCircuit, new ArrayList<>()));
 
@@ -297,18 +306,18 @@ public class EnumeratorPrune {
           System.out.println(String.format("Enumerating circuit: %d/%d", j, previousReps.size()));
           j++;
           // apply symb
-          if (!c.getCircuit().hasQubitGreaterThan(MAX_QUBITS_SYMB)) {
-            List<Circuit> circuitsAfterApplySymb = applyGate(c.getCircuit(), "symb", 0, MAX_QUBITS_SYMB);
-            for (Circuit cSymb : circuitsAfterApplySymb) {
-              //if (previousReps.containsKey(cSymb.getQasmStringDropFirst())) { // TODO
-                long tmap = System.currentTimeMillis();
-                //updateMapEqsat(cSymb, symbolMap);
-                updateMapSymbEqsat(cSymb, symbolMap);
-                long tmapafter = System.currentTimeMillis();
-                updateMapTime += tmapafter - tmap;
-              //}
-            }
-          }
+          // if (!c.getCircuit().hasQubitGreaterThan(MAX_QUBITS_SYMB)) {
+          //   List<Circuit> circuitsAfterApplySymb = applyGate(c.getCircuit(), "symb", 0, MAX_QUBITS_SYMB);
+          //   for (Circuit cSymb : circuitsAfterApplySymb) {
+          //     //if (previousReps.containsKey(cSymb.getQasmStringDropFirst())) { // TODO
+          //       long tmap = System.currentTimeMillis();
+          //       //updateMapEqsat(cSymb, symbolMap);
+          //       updateMapSymbEqsat(cSymb, symbolMap);
+          //       long tmapafter = System.currentTimeMillis();
+          //       updateMapTime += tmapafter - tmap;
+          //     //}
+          //   }
+          // }
 
           // apply other gates
           for (String gate : this.gates) {
@@ -345,41 +354,39 @@ public class EnumeratorPrune {
       ecs.clear();
       symbecs.clear();
 
-      //TODO: choose symbolic rules
+      // if(i <= size) {
+      //   while (true) {
+      //     long t3 = System.currentTimeMillis();
+      //     // for (SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule : learned_rules) {
+      //     //   egraph.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())), false);
+      //     //   egraph.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())), true);
+      //     // }
+          
+      //     List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> filtered2 = retriveEqfingers(egraph);
+          
+      //     if(filtered2.isEmpty()) {
+      //       break;
+      //     }
+          
+      //     long t7 = System.currentTimeMillis();
+      //     this.filtertime += (t7 - t2);
+      //     List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> centries = new ArrayList<>();
+      //     for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : filtered2) {
+      //       centries.add(new SimpleEntry(CircuitTranslator.translateBack(entry.getKey(), maxQubits), CircuitTranslator.translateBack(entry.getValue(), maxQubits)));
+      //     }
+      //     long t8 = System.currentTimeMillis();
+      //     this.translateTime += (t8 - t7);
 
-      if(i <= size) {
-        while (true) {
-          long t3 = System.currentTimeMillis();
-          for (SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule : learned_rules) {
-            egraph.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())), false);
-            egraph.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())), true);
-          }
-          
-          List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> filtered2 = retriveEqfingers(egraph);
-          
-          if(filtered2.isEmpty()) {
-            break;
-          }
-          
-          long t7 = System.currentTimeMillis();
-          this.filtertime += (t7 - t2);
-          List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> centries = new ArrayList<>();
-          for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : filtered2) {
-            centries.add(new SimpleEntry(CircuitTranslator.translateBack(entry.getKey(), maxQubits), CircuitTranslator.translateBack(entry.getValue(), maxQubits)));
-          }
-          long t8 = System.currentTimeMillis();
-          this.translateTime += (t8 - t7);
-
-          long t5 = System.currentTimeMillis();
-          try {
-          choose_eqs_n(centries, 2, false);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-          long t6 = System.currentTimeMillis();
-          this.chooseTime += (t6 - t5);
-        }
-      }
+      //     long t5 = System.currentTimeMillis();
+      //     try {
+      //     choose_eqs_n(centries, 2, false);
+      //     } catch (IOException e) {
+      //       e.printStackTrace();
+      //     }
+      //     long t6 = System.currentTimeMillis();
+      //     this.chooseTime += (t6 - t5);
+      //   }
+      // }
 
 
       // while(true) {
@@ -428,29 +435,40 @@ public class EnumeratorPrune {
         }
       }
 
-      for (List<ConstrainedCircuit> possibleEC : symbmap.values()) {
-        // pick smallest
-        ConstrainedCircuit smallest = pickSmallest(possibleEC);
-        symbecs.add(new EquivalenceClass(possibleEC, smallest));
-      }
-
-      for(Circuit c : symbccs){
-        if (c.getSize() == i && c.getGates().get(0) instanceof EggGen.SYMB) {
-          previousReps.putIfAbsent(c.getQasmString(), new ConstrainedCircuit(c, new ArrayList<>()));
+      while(true) {
+        List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> filtered2 = retriveEqfingers(egraph);
+        if(filtered2.isEmpty()) {
+          break;
+        }
+        List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> centries = new ArrayList<>();
+        for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : filtered2) {
+          centries.add(new SimpleEntry(CircuitTranslator.translateBack(entry.getKey(), maxQubits), CircuitTranslator.translateBack(entry.getValue(), maxQubits)));
+        }
+        try {
+          choose_eqs_n(centries, 2, false);
+        } catch (IOException e) {
+          e.printStackTrace();
         }
       }
+
+      
+      // for(Circuit c : symbccs){
+      //   if (c.getSize() == i && c.getGates().get(0) instanceof EggGen.SYMB) {
+      //     previousReps.putIfAbsent(c.getQasmString(), new ConstrainedCircuit(c, new ArrayList<>()));
+      //   }
+      // }
 
       //add symb as first op so it can be added onto in future iteration but we don't want this in the hash table
       if (i == 1) {
         Circuit start = getStart();
         List<Circuit> circuitsAfterApplySymb = applyGate(start, "symb", 0, MAX_QUBITS_SYMB);
         previousReps.put(circuitsAfterApplySymb.get(0).getQasmString(), new ConstrainedCircuit(circuitsAfterApplySymb.get(0), new ArrayList<>()));
+        symbccs.add(circuitsAfterApplySymb.get(0));
       }
     }
 
     //gathering rules for symbolic rules, each class are ccs that are same for some permutation matrix
     //should we also collect mononial rules, or we just collect it altogether
-
     System.out.println("Gathering Monomial Symb Rules");
     HashMap<String, List<List<Integer>>> constraintMap = new HashMap<>();
     for(EquivalenceClass ec : symbecs) {
@@ -482,71 +500,88 @@ public class EnumeratorPrune {
     for (String rule : constraintMap.keySet()) {
       pw_symb.println(rule + " | " + constraintStrings(constraintMap.get(rule)));
     }
-
-    // gathering non-monomial rules.
-    // first generate an C X C set
-    // group by L;S and R;S
-    List<Circuit> lforms = new ArrayList<>();
-    List<Circuit> rforms = new ArrayList<>();
-    for(int i = 0; i < symbccs.size(); i++) {
-      Circuit c = symbccs.get(i);
-      if(c.getGates().get(0) instanceof EggGen.SYMB) {
-        //right
-        rforms.add(c);
-      } else if(c.getGates().get(c.getGates().size()-1) instanceof EggGen.SYMB) {
-        //left
-        lforms.add(c);
-      }
-    }
-
-    System.out.println("Filtering Symbolic Candidates:" );
-    List<SimpleEntry<Circuit, Circuit>> symbenties = new ArrayList<>();
-    int z = 0;
-    for(int i = 0; i < lforms.size(); i++) {
-      for(int j = 0; j < rforms.size();j++) {
-        System.out.println("Filtering Symbolic Candidates:" + z + "/" + lforms.size() * rforms.size());
-        z++;
-        Circuit cc1 = symbccs.get(i);
-        Circuit cc2 = symbccs.get(j);
-        if (!hasCommonSubcircuit(cc1, cc2)) {
-          EggGen.Circuit cce1 = CircuitTranslator.translate(cc1).circuit;
-          EggGen.Circuit cce2 = CircuitTranslator.translate(cc2).circuit;
-          Set<String> symbols1 = new HashSet<>();
-          Set<String> symbols2 = new HashSet<>();
-          cce1.getAllSymbols(symbols1);
-          cce2.getAllSymbols(symbols2);
-          if(symbols1.containsAll(symbols2) && symbols2.containsAll(symbols1)) {
-            if(solver.checkBig(cce1, cce2, maxQubits)) {
-              symbenties.add(new SimpleEntry<>(cc1, cc2));
-            }
-          }
-        }
-      }
-    }
-    System.out.println("Symb Candidates Size:" + symbenties.size());
-    List<SimpleEntry<Circuit, Circuit>> canonicalSymbEntries = canonicalizeSymbEntries(symbenties);
-    infer_symb(canonicalSymbEntries, MAX_QUBITS_SYMB);
-    Set<String> added = new HashSet<>();
-    for(MatrixConstrainedRule rule: learned_matrix_constrained) {
-      String ruleString = rule.toString();
-      if(!added.contains(ruleString)) {
-        pw_symb_nm.println(ruleString);
-        added.add(ruleString);
-      }
-    }
+    pw_symb.close();
 
     List<String> rules = egraph.getAllRewriteRulesOpt();
     for(String rule : rules) {
       pw.println(rule);
     }
-   
     pw.close();
-    pw_symb.close();
+
+    // gathering non-monomial rules.
+    // first generate an C X C set
+    // group by L;S and R;S
+    if(genSymb) {
+      List<Circuit> lforms = new ArrayList<>();
+      List<Circuit> rforms = new ArrayList<>();
+      for(EquivalenceClass ec : ecs) {
+        ConstrainedCircuit repre = ec.getRepresentative();
+        if(repre.getCircuit().getGates().size() < size) {
+          if(repre.getCircuit().hasQubitGreaterThan(MAX_QUBITS_SYMB)) {
+            continue;
+          }
+          
+          List<EggGen.Gate> gatesleft = repre.getCircuit().getGates();
+          gatesleft.add(0, new EggGen.SYMB(MAX_QUBITS_SYMB));
+          EggGen.Circuit eggCircuitleft = new EggGen.Circuit(gatesleft);
+          Circuit lcircuit = CircuitTranslator.translateCircuitBack(eggCircuitleft, numQubits);
+          lforms.add(lcircuit);
+          List<EggGen.Gate> gatesright = repre.getCircuit().getGates();
+          gatesright.add(new EggGen.SYMB(MAX_QUBITS_SYMB));
+          EggGen.Circuit eggCircuitright = new EggGen.Circuit(gatesright);
+          Circuit rcircuit = CircuitTranslator.translateCircuitBack(eggCircuitright, numQubits);
+          rforms.add(rcircuit);
+        }
+      }
+
+      System.out.println("Filtering Symbolic Candidates:" );
+      List<SimpleEntry<Circuit, Circuit>> symbenties = new ArrayList<>();
+      int z = 0;
+      for(int i = 0; i < lforms.size(); i++) {
+        for(int j = 0; j < rforms.size();j++) {
+          System.out.println("Filtering Symbolic Candidates:" + z + "/" + lforms.size() * rforms.size());
+          z++;
+          Circuit cc1 = lforms.get(i);
+          Circuit cc2 = rforms.get(j);
+          if(cc1.getSize() == cc2.getSize()) {
+            continue;
+          }
+          System.out.println(cc1.getQasmString() + "|" + cc2.getQasmString());
+          if (!hasCommonSubcircuit(cc1, cc2)) {
+            EggGen.Circuit cce1 = CircuitTranslator.translate(cc1).circuit;
+            EggGen.Circuit cce2 = CircuitTranslator.translate(cc2).circuit;
+            Set<String> symbols1 = new HashSet<>();
+            Set<String> symbols2 = new HashSet<>();
+            cce1.getAllSymbols(symbols1);
+            cce2.getAllSymbols(symbols2);
+            if(symbols1.containsAll(symbols2) && symbols2.containsAll(symbols1)) {
+              if(solver.checkBig(cce1, cce2, maxQubits)) {
+                symbenties.add(new SimpleEntry<>(cc1, cc2));
+                System.out.println("Choosed!");
+              }
+            }
+          }
+        }
+      }
+      System.out.println("Symb Candidates Size:" + symbenties.size());
+      List<SimpleEntry<Circuit, Circuit>> canonicalSymbEntries = canonicalizeSymbEntries(symbenties);
+      infer_symb(canonicalSymbEntries, MAX_QUBITS_SYMB);
+      Set<String> added = new HashSet<>();
+      for(MatrixConstrainedRule rule: learned_matrix_constrained) {
+        String ruleString = rule.toString();
+        if(!added.contains(ruleString)) {
+          pw_symb_nm.println(ruleString);
+          added.add(ruleString);
+        }
+      }
+    }
+   
+    pw_symb_nm.close();
     egraph.pop();
     Map<String, Long> data = egraph.getProfilingData();
     egraph.stopEgglogREPL();
     System.out.println("Concrete Rule sizes: " + rules.size());
-    System.out.println("Symbolic Rule sizes: " + added.size());
+    //System.out.println("Symbolic Rule sizes: " + added.size());
     System.out.println("E-graph time (ms): " + this.egraphTime);
     System.out.println("Translation time (ms): " + this.translateTime);
     System.out.println("Choose rules time (ms): " + this.chooseTime);
@@ -563,30 +598,44 @@ public class EnumeratorPrune {
 
   public List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> retriveEqfingers(EggGen egg) {
         egg.push();
-        egg.runN("opt",10);
-        egg.runSaturation("noteqfinger");
-        String rel = egg.printFunctionCSV("notSameButEqfinger");
-        String bad = egg.printFunctionCSV("bad");
-        egg.pop();
-        // System.out.println("Current Relation: " + rel);
-        // System.out.println("Bad: " + bad);
-        List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> entries = egg.parseRelation(rel);
-        List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> bads = egg.parseRelation(bad);
-        TreeSet<String> badSet = new TreeSet<>();
-        for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> b : bads) {
-          badSet.add(b.getKey().toEggString() + "|" + b.getValue().toEggString());
-          badSet.add(b.getValue().toEggString() + "|" + b.getKey().toEggString());
+        egg.clearRules();
+        for (SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule : learned_rules) {
+          egg.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())), false);
+          egg.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())), true);
         }
-        List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> filtered = new ArrayList<>();
-        for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : entries) {
-          if(!badSet.contains(entry.getKey().toEggString() + "|" + entry.getValue().toEggString())) {
-            filtered.add(entry);
+        List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> entries = new ArrayList<>();
+        for(EquivalenceClass ec: ecs) {
+          List<ConstrainedCircuit> circuits = ec.getCircuits();
+          ConstrainedCircuit repre = ec.getRepresentative();
+          egg.push();
+          for(ConstrainedCircuit candidate : circuits) {
+            egg.addConstrainedCircuit(CircuitTranslator.translate(candidate));
           }
+          egg.runN("opt",15);
+          for(ConstrainedCircuit candidate : circuits) {
+            EggGen.ConstrainedCircuit repreegg = CircuitTranslator.translate(repre);
+            EggGen.ConstrainedCircuit candidateEgg = CircuitTranslator.translate(candidate);
+            if(!goodRules.contains(repreegg.toEggString() + "|" + candidateEgg.toEggString()) && !goodRules.contains(candidateEgg.toEggString() + "|" + repreegg.toEggString())) {
+              if(!badrules.contains(repreegg.toEggString() + "|" + candidateEgg.toEggString()) && !badrules.contains(candidateEgg.toEggString() + "|" + repreegg.toEggString())) {
+                if (!repreegg.toEggString().equals(candidateEgg.toEggString())) {
+                  if(!egg.check(String.format("(= %s %s)", repreegg.toEggString(), candidateEgg.toEggString()))){
+                    entries.add(new SimpleEntry<>(repreegg, candidateEgg));
+                  } else {
+                    goodRules.add(repreegg.toEggString() + "|" + candidateEgg.toEggString());
+                    goodRules.add(candidateEgg.toEggString() + "|" + repreegg.toEggString());
+                  }
+                }
+              }
+            }
+          }
+          egg.pop();
         }
+        egg.pop();
+
         //eliminate symmetric duplicates
         TreeSet<String> seen = new TreeSet<>();
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> filtered2 = new ArrayList<>();
-        for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : filtered) {
+        for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : entries) {
           String fwd = entry.getKey().toEggString() + "|" + entry.getValue().toEggString();
           String bwd = entry.getValue().toEggString() + "|" + entry.getKey().toEggString();
           if(!seen.contains(fwd) && !seen.contains(bwd)) {
@@ -595,9 +644,6 @@ public class EnumeratorPrune {
             filtered2.add(entry);
           }
         }
-        System.out.println("Fingerprint: ");
-        String fingerprint = egg.printFunctionCSV("fingerprint");
-        System.err.println(fingerprint);
         System.out.println("Current Entry:");
         for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : filtered2) {
           System.out.println(entry.getKey().toEggString() + ", " + entry.getValue().toEggString());
@@ -646,7 +692,7 @@ public class EnumeratorPrune {
     HashMap<String, List<List<Integer>>> constraintMap = new HashMap<>();
     Map<String, Double> symbolMap = getSymbolMap();
     
-    int step_size = 30;
+    int step_size = 5;
     List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> entries_copy = new ArrayList<>(entries);
     List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> learned = new ArrayList<>();
     while(!entries_copy.isEmpty()) {
@@ -679,8 +725,10 @@ public class EnumeratorPrune {
                   }
                 } else {
                   System.out.println("rule rejected, verified failed:" + rule);
-                  egraphSymb.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
-                  egraphSymb.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
+                  badrules.add(CircuitTranslator.translate(r).toEggString() + "|" + CircuitTranslator.translate(other).toEggString());
+                  badrules.add(CircuitTranslator.translate(other).toEggString() + "|" + CircuitTranslator.translate(r).toEggString());
+                  // egraphSymb.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
+                  // egraphSymb.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
                 }
               }
             } else if (!r.hasSymb() && !other.hasSymb()) {
@@ -693,14 +741,18 @@ public class EnumeratorPrune {
                 //pw.println(rule);
               } else {
                 System.out.println("rule rejected, verified failed:" + rule);
-                egraph.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
-                egraph.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
-                egraphSymb.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
-                egraphSymb.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
+                badrules.add(CircuitTranslator.translate(r).toEggString() + "|" + CircuitTranslator.translate(other).toEggString());
+                badrules.add(CircuitTranslator.translate(other).toEggString() + "|" + CircuitTranslator.translate(r).toEggString());
+                // egraph.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
+                // egraph.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
+                // egraphSymb.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
+                // egraphSymb.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
               }
             }
           } else {
             System.out.println("rule rejected, has common subcircuit:" + rule);
+            badrules.add(CircuitTranslator.translate(r).toEggString() + "|" + CircuitTranslator.translate(other).toEggString());
+            badrules.add(CircuitTranslator.translate(other).toEggString() + "|" + CircuitTranslator.translate(r).toEggString());
           }
         } else {
           System.out.println("rule rejected, lhs = rhs" + rule);
@@ -738,12 +790,17 @@ public class EnumeratorPrune {
         }
       }
       System.out.println("Added rules in C");
-      egg.runSaturation("opt");
+      egg.runN("opt", 5);
       System.out.println("runs saturation");
       List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> new_entries_copy = new ArrayList<>();
       for(SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> entry: entries_copy) {
-        if(!egg.check(String.format("(= %s %s)", CircuitTranslator.translate(entry.getKey()).toEggString(), CircuitTranslator.translate(entry.getValue()).toEggString()))) {
-          new_entries_copy.add(entry);
+        if(!goodRules.contains(CircuitTranslator.translate(entry.getKey()).toEggString() + "|" + CircuitTranslator.translate(entry.getValue()).toEggString()) && !goodRules.contains(CircuitTranslator.translate(entry.getValue()).toEggString() + "|" + CircuitTranslator.translate(entry.getKey()).toEggString())) {
+          if(!egg.check(String.format("(= %s %s)", CircuitTranslator.translate(entry.getKey()).toEggString(), CircuitTranslator.translate(entry.getValue()).toEggString()))) {
+            new_entries_copy.add(entry);
+          } else {
+            goodRules.add(CircuitTranslator.translate(entry.getKey()).toEggString() + "|" + CircuitTranslator.translate(entry.getValue()).toEggString());
+            goodRules.add(CircuitTranslator.translate(entry.getValue()).toEggString() + "|" + CircuitTranslator.translate(entry.getKey()).toEggString());
+          }
         }
       }
       
@@ -850,7 +907,7 @@ public class EnumeratorPrune {
   public void gatherRules(String filename) throws FileNotFoundException, UnsupportedEncodingException {
     PrintWriter writer = new PrintWriter(String.format("%s.txt", filename), "UTF-8");
     PrintWriter writerSymb = new PrintWriter(String.format("%s_symb.txt", filename), "UTF-8");
-
+    
     int makeCircuitSmaller = 0;
     int haveSymb = 0;
     int total = 0;
@@ -919,8 +976,8 @@ public class EnumeratorPrune {
       EggGen.ConstrainedCircuit eggcc = CircuitTranslator.translate(cc);
       //System.out.println("Adding to egraph: " + eggcc.toEggString() + " with fingerprint " + entry.getKey());
       if(addEgraph) {
-        egraph.addConstrainedCircuit(eggcc);
-        egraph.setFingerprint(eggcc, entry.getKey());
+        //egraph.addConstrainedCircuit(eggcc);
+        //egraph.setFingerprint(eggcc, entry.getKey());
       }
       if (map.containsKey(entry.getKey())) {
         map.get(entry.getKey()).add(cc);
@@ -1345,6 +1402,10 @@ public class EnumeratorPrune {
     maxSizeO.setRequired(true);
     options.addOption(maxSizeO);
 
+    Option gensSymb = new Option("symb", "gensymb", true, "Generate Symb or not");
+    gensSymb.setRequired(true);
+    options.addOption(gensSymb);
+
     CommandLineParser parser = new DefaultParser();
     HelpFormatter formatter = new HelpFormatter();
 
@@ -1353,7 +1414,7 @@ public class EnumeratorPrune {
       String gateset = cmd.getOptionValue("gateSet");
       Integer maxQubits = Integer.parseInt(cmd.getOptionValue("maxQubits"));
       Integer maxSize = Integer.parseInt(cmd.getOptionValue("maxSize"));
-
+      boolean genSymb = Boolean.parseBoolean(cmd.getOptionValue("gensymb"));
       Random rand = new Random();
       EnumeratorPrune enumerator = null;
       switch (gateset) {
@@ -1364,7 +1425,7 @@ public class EnumeratorPrune {
                   new Symbol("theta2"),
                   new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2"))
           };
-          enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset);
+          enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset, genSymb);
           break;
         }
         case "ibm": {
@@ -1376,7 +1437,7 @@ public class EnumeratorPrune {
                   new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2")),
                   new BinOp(Op.PLUS, new Symbol("theta1"), new BinOp(Op.PLUS, new Symbol("theta2"), new Symbol("theta3")))
           };
-          enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset);
+          enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset, genSymb);
           break;
         }
         case "rigetti": {
@@ -1387,7 +1448,7 @@ public class EnumeratorPrune {
                   new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2")),
                   new BinOp(Op.SUBTRACT, new BinOp(Op.MULT, new Real(4), new Symbol("pi")), new Symbol("theta1"))
           };
-          enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset);
+          enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset, genSymb);
           break;
         }
         case "ion": {
@@ -1400,8 +1461,18 @@ public class EnumeratorPrune {
                   new Symbol("pi"),
                   new BinOp(Op.DIV, new Symbol("pi"), new Real(2))
           };
-          enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset);
+          enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset, genSymb);
           break;
+        }
+        case "ibmnew": {
+                    String[] gates = {"cx", "rz", "x", "sx"};
+                    Expr[] symbAngles = {
+                            new Symbol("theta1"),
+                            new Symbol("theta2"),
+                            new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2"))
+                    };
+            enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset, genSymb);
+            break;
         }
         default: throw new RuntimeException("unreachable");
       }

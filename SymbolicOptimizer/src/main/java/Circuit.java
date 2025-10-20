@@ -38,7 +38,16 @@ public class Circuit {
   }
 
   public List<EggGen.Gate> getGates() {
-    return gates;
+    return new ArrayList<>(gates);
+  }
+
+
+  public void addGate(int index, EggGen.Gate gate) {
+    this.gates.add(index, gate);
+  }
+
+  public void addGate(EggGen.Gate gate) {
+    this.gates.add(gate);
   }
 
   public Set<String> getUsedQubits() {

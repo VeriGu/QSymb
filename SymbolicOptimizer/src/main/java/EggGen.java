@@ -38,6 +38,13 @@ public class EggGen {
     private long printFunctionTime;
     private long addRewriteRuleTime;
     private long checkEqualityTime;
+    private long ematchingTime;
+    private long ematchingSetupTime;
+    private long ematchingSaturationTime;
+    private long ematchingPrefixTime;
+    private long ematchingSuffixTime;
+    private long ematchingRuleApplicationTime;
+    private long ematchingResultParsingTime;
 
     private Process egglogProcess;
     private BufferedWriter processInput;
@@ -78,6 +85,13 @@ public class EggGen {
         printFunctionTime = 0;
         addRewriteRuleTime = 0;
         checkEqualityTime = 0;
+        ematchingTime = 0;
+        ematchingSetupTime = 0;
+        ematchingSaturationTime = 0;
+        ematchingPrefixTime = 0;
+        ematchingSuffixTime = 0;
+        ematchingRuleApplicationTime = 0;
+        ematchingResultParsingTime = 0;
         // Add standard datatype and function definitions from qast.egg
         content.append("\n(datatype Op\n  (EXP) (SQRT) (MINUS) (COS) (SIN) (NOT) (PLUS) (SUBTRACT) (MULT) (DIV) (POWER) (XOR) (AND) (OR))\n");
         content.append("\n(datatype Expr\n  (Bool bool) (Real f64) (Symbol String) (Var String) (Fun String Expr) (UnOp Op Expr) (BinOp Op Expr Expr))\n");
@@ -351,6 +365,12 @@ public class EggGen {
         sendCommand("(pop)");
     }
 
+
+    public void clearRules() { 
+        rules.clear();
+        optrules.clear();
+    }
+
     public String addCircuit(Circuit circuit) {
         Permutation emptyPermutation = new Permutation(new ArrayList<>());
         ConstrainedCircuit constrainedCircuit = new ConstrainedCircuit(circuit, emptyPermutation);
@@ -369,7 +389,7 @@ public class EggGen {
     public void addRewrite(String rule){
         if(!rules.contains(rule)) {
             long startTime = System.nanoTime();
-            //System.out.println(rule);
+            System.out.println(rule);
             rules.add(rule);
             sendCommand(rule);
             addRewriteRuleTime += System.nanoTime() - startTime;
@@ -377,7 +397,7 @@ public class EggGen {
     }
 
 
-    private List<String> preprocessRule(String rule) {
+    public List<String> preprocessRule(String rule) {
         String[] compo = rule.split("\\|");
         String lhs = compo[0];
         String rhs = compo[1];
@@ -410,7 +430,9 @@ public class EggGen {
 
         if (type.equals("rewrite")) {
             String newRule = String.format("(rule (%s (= e %s)) ((union e %s)) :ruleset %s)", constraintString, lhs, rhs, "opt");
+            String newRule1 = String.format("(rule (%s (= e %s)) ((union e %s)) :ruleset %s)", constraintString, rhs, lhs, "opt");
             processed.add(newRule);
+            processed.add(newRule1);
         } else if (type.equals("birewrite")) {
             // Generate two rewrite rules for birewrite
             String rule1 = String.format("(rule (%s (= e %s)) ((union e %s)) :ruleset %s)", constraintString, lhs, rhs, "opt");
@@ -603,7 +625,7 @@ public class EggGen {
                         candidateExpr,
                         prefixCircuit.toEggString(),
                         suffixCircuit.toEggString());
-                    System.out.println(unionCmd);
+                    
                     sendCommand(unionCmd);
                 }
             }
@@ -625,8 +647,8 @@ public class EggGen {
         pop();
         
 
-        System.out.print("expressions that have suffix " + matchExpr + ":\n");
-        System.out.println(suffixCsv);
+        //System.out.print("expressions that have suffix " + matchExpr + ":\n");
+        //System.out.println(suffixCsv);
         if (suffixCsv == null || suffixCsv.isEmpty()) {
             return;
         }
@@ -666,12 +688,14 @@ public class EggGen {
                         candidateExpr,
                         prefixExpr,
                         matched.toEggString());
-                    System.out.println(unionCmd);
+                    
                     sendCommand(unionCmd);
                 }
             }
         }
     }
+
+
 
 
     public static String circuitToGeneralizedString(Circuit circuit, Map<String, String> qubitMap, String congruenceVar, boolean replaceSymbol) {
@@ -730,6 +754,8 @@ public class EggGen {
         }
     };
 
+   
+
     
     public void addRewriteRule(SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> ruleEntry, boolean isopt) {
         Circuit lhsCircuit = ruleEntry.getKey().circuit;
@@ -745,7 +771,7 @@ public class EggGen {
         String lhsCanonical = circuitToGeneralizedString(lhsCircuit, qubitToVar, congruenceVar, isopt);
         String rhsCanonical = circuitToGeneralizedString(rhsCircuit, qubitToVar, congruenceVar, isopt);
         if(ruleEntry.getKey().circuit.gates.size() > ruleEntry.getValue().circuit.gates.size() && rhsVarsAreSubsetOfLhs) {
-            if(ruleEntry.getKey().permutation.perm.isEmpty()) {
+            if(ruleEntry.getKey().permutation.perm.isEmpty() && ruleEntry.getValue().permutation.perm.isEmpty()) {
                 if(isopt){
                     String rule = String.format("%s|%s|rewrite",
                     lhsCanonical,
@@ -826,25 +852,25 @@ public class EggGen {
             if(ruleEntry.getKey().permutation.perm.isEmpty()) {
                 if(isopt){
                     String rule = String.format("%s|%s|rewrite",
-                    lhsCircuit.toCongruenceString("c"),
-                    rhsCircuit.toCongruenceString("c"));
+                    lhsCanonical,
+                    rhsCanonical);
                     addOptRules(rule);
                 } else {
                     String rule = String.format("(rewrite %s %s :ruleset opt)",
-                    lhsCircuit.toCongruenceString("c"),
-                    rhsCircuit.toCongruenceString("c"));
+                    lhsCanonical,
+                    rhsCanonical);
                     addRewrite(rule);
                 }
             } else {
                 if(isopt){
-                String rule = String.format("(CCircuit %s %s)|(CCircuit %s %s)|rewrite",
-                lhsCircuit.toCongruenceString("c"), ruleEntry.getKey().permutation.toEggString(),
-                rhsCircuit.toCongruenceString("c"), ruleEntry.getValue().permutation.toEggString());
+                    String rule = String.format("(CCircuit %s %s)|(CCircuit %s %s)|rewrite",
+                    lhsCircuit.toCongruenceString("c"), ruleEntry.getKey().permutation.toEggString(),
+                    rhsCircuit.toCongruenceString("c"), ruleEntry.getValue().permutation.toEggString());
                     addOptRules(rule);
                 } else {
-                     String rule = String.format("(rewrite (CCircuit %s %s) (CCircuit %s %s) :ruleset opt)",
-                lhsCircuit.toCongruenceString("c"), ruleEntry.getKey().permutation.toEggString(),
-                rhsCircuit.toCongruenceString("c"), ruleEntry.getValue().permutation.toEggString());
+                    String rule = String.format("(rewrite (CCircuit %s %s) (CCircuit %s %s) :ruleset opt)",
+                    lhsCircuit.toCongruenceString("c"), ruleEntry.getKey().permutation.toEggString(),
+                    rhsCircuit.toCongruenceString("c"), ruleEntry.getValue().permutation.toEggString());
                     addRewrite(rule);
                 }
             }
@@ -904,6 +930,28 @@ public class EggGen {
         return output;
     }
 
+    public String printFunctionCSVn(String name, int n) {
+        long startTime = System.nanoTime();
+        String output = sendCommand(String.format("(print-function %s %d :mode csv)", name, n), true);
+        //System.out.println("original output:" +  output);
+        int lastNewline = output.lastIndexOf('\n');
+        if(lastNewline > 0) {
+            output = output.substring(0, lastNewline).trim();
+            lastNewline = output.lastIndexOf('\n');
+        } else {
+            return "";
+        }
+        if(lastNewline > 0) {
+            output = output.substring(0, lastNewline).trim();
+        }
+        else{
+            return "";
+        }
+        //System.out.println("truncated output:" +  output);
+        printFunctionTime += System.nanoTime() - startTime;
+        return output;
+    }
+
  
     public String printFunctionListCSV(List<String> list) {             
         long startTime = System.nanoTime();
@@ -928,9 +976,11 @@ public class EggGen {
     }
 
     public List<Triple<EggGen.Circuit, EggGen.Circuit, EggGen.Circuit>> ematching(String lhs, String rhs, int n) {
+        long ematchingStartTime = System.nanoTime();
         System.out.println("LHS:" + lhs);
         System.out.println("RHS:" + rhs);
         // replace SYMB with a variable
+        long setupStartTime = System.nanoTime();
         Set<String> qubitVars = new HashSet<>();
         Pattern qubitPattern = Pattern.compile("q\\d+");
 
@@ -959,64 +1009,72 @@ public class EggGen {
         Pattern pattern = Pattern.compile("\\(Cons \\(SYMB \\d+\\)\\s+c\\)");
         Matcher matcher = pattern.matcher(lhs);
         String matchPrefix = null;
-        while(matcher.find()) {
-            String match = matcher.group();
-            matchPrefix = lhs.replace(match, "c");
-            lhs = lhs.replace(match, "(list-append s c)");
-        }
-
-        matcher = pattern.matcher(rhs);
-        while(matcher.find()) {
-            String match = matcher.group();
-            matchPrefix = rhs.replace(match, "c");
-            rhs = rhs.replace(match, "(list-append s c)");
-        }
-
         Pattern pattern2 = Pattern.compile("\\(Cons \\(SYMB \\d+\\)\\s+(.*)\\)");
         Matcher matcher2 = pattern2.matcher(lhs);
         String matchExpr = null;
-        if (matcher2.find()) {
-            matchExpr = matcher2.group(1).trim();
-            lhs = "(list-append s " + matchExpr + ")";
-        }
-
-        matcher2 = pattern2.matcher(rhs);
-        if (matcher2.find()) {
-            String rhsMatchExpr = matcher2.group(1).trim();
-            rhs = "(list-append s " + rhsMatchExpr + ")";
-            if (matchExpr == null) {
-                matchExpr = rhsMatchExpr;
+        if(matcher.find()) {
+            String match = matcher.group();
+            matchPrefix = lhs.replace(match, "c");
+            lhs = lhs.replace(match, "(list-append s c)");
+        } else {
+            if (matcher2.find()) {
+                matchExpr = matcher2.group(1).trim();
+                lhs = "(list-append s " + matchExpr + ")";
             }
         }
-       
+
+        matcher = pattern.matcher(rhs);
+        if(matcher.find()) {
+            String match = matcher.group();
+            rhs = rhs.replace(match, "(list-append s c)");
+        } else {
+            matcher2 = pattern2.matcher(rhs);
+            if (matcher2.find()) {
+                String rhsMatchExpr = matcher2.group(1).trim();
+                rhs = "(list-append s " + rhsMatchExpr + ")";
+            }
+        }
+
+        ematchingSetupTime += System.nanoTime() - setupStartTime;
 
         System.out.println("Replaced lhs:" + lhs);
         System.out.println("Replaced rhs:" + rhs);
-        System.out.println("Match expr:" + matchExpr);
-
         
         push();
         if (matchExpr != null) {
+            long suffixTime = System.nanoTime();
             addListAppendViewsForMatch(matchExpr);
+            ematchingSuffixTime += System.nanoTime() - suffixTime;
         }
+        long saturationTime = System.nanoTime();
         runSaturation("list-ruleset");
+        ematchingSaturationTime += System.nanoTime() - saturationTime;
         if(matchPrefix != null) {
+            long prefixTime = System.nanoTime();
             addListAppendViewForMatchPrefix(matchPrefix);
+            ematchingPrefixTime += System.nanoTime() - prefixTime;
         }
+        saturationTime = System.nanoTime();
         runSaturation("list-ruleset");
+        ematchingSaturationTime += System.nanoTime() - saturationTime;
         String list_append = printFunctionCSV("list-append");
         sendCommand("(ruleset ematchset)");
         sendCommand("(relation ematch (Circuit Circuit Circuit))");
-        String rule = String.format("(rule (%s (= %s e)) ((ematch s e %s)) :ruleset ematchset)", constraintString, lhs, rhs);
+        String rule = String.format("(rule (%s (= %s e)) ((ematch s %s %s)) :ruleset ematchset)", constraintString, lhs, lhs, rhs);
         System.out.println("Symb rule:" + rule);
         String out = sendCommand(rule);
-        runSaturation("ematchset");
+        saturationTime = System.nanoTime();
+        runN("ematchset", 10);
         runSaturation("list-ruleset");
-        String output = printFunctionCSV("ematch");
+        ematchingSaturationTime += System.nanoTime() - saturationTime;
+        long resultParsingTime = System.nanoTime();
+        String output = printFunctionCSVn("ematch", n);
         pop();
 
-        System.out.println("Matches:" + output);
-        return parseCircuitThreeRelation(output);
+        List<Triple<EggGen.Circuit, EggGen.Circuit, EggGen.Circuit>> result = parseCircuitThreeRelation(output);
+        ematchingResultParsingTime += System.nanoTime() - resultParsingTime;
+        ematchingTime += System.nanoTime() - ematchingStartTime;
+        return result;
     }
 
    
@@ -1027,6 +1085,13 @@ public class EggGen {
         profilingData.put("printFunctionTime", printFunctionTime);
         profilingData.put("addRewriteRuleTime", addRewriteRuleTime);
         profilingData.put("checkEqualityTime", checkEqualityTime);
+        profilingData.put("ematchingTime", ematchingTime);
+        profilingData.put("ematchingSetupTime", ematchingSetupTime);
+        profilingData.put("ematchingSaturationTime", ematchingSaturationTime);
+        profilingData.put("ematchingPrefixTime", ematchingPrefixTime);
+        profilingData.put("ematchingSuffixTime", ematchingSuffixTime);
+        profilingData.put("ematchingRuleApplicationTime", ematchingRuleApplicationTime);
+        profilingData.put("ematchingResultParsingTime", ematchingResultParsingTime);
         return profilingData;
     }
 
@@ -1106,6 +1171,10 @@ public class EggGen {
             return "Gate";
         }
 
+        public int getTwoQubitsCount() {
+            return 0;
+        }
+
         public void getQubitVars(Set<String> vars) {}
 
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
@@ -1125,6 +1194,14 @@ public class EggGen {
         public final List<Gate> gates;
         public Circuit(List<Gate> gates) {
             this.gates = gates;
+        }
+
+        public int getTwoQubitsCount() {
+            int count = 0;
+            for(Gate g: gates) {
+                count += g.getTwoQubitsCount();
+            }
+            return count;
         }
 
 
@@ -1236,6 +1313,10 @@ public class EggGen {
         
         public String toEggString() { return String.format("(X (Q \"%s\"))", qubit); }
 
+        public int getTwoQubitsCount() {
+            return 0;
+        }
+
         @Override
         public void getQubitVars(Set<String> vars) {
             vars.add(qubit);
@@ -1258,6 +1339,11 @@ public class EggGen {
         public final String target;
         public CX(String control, String target) { this.control = control; this.target = target; }
         public String toEggString() { return String.format("(CX (Q \"%s\") (Q \"%s\"))", control, target); }
+
+        @Override
+        public int getTwoQubitsCount() {
+            return 1;
+        }
 
         @Override
         public void getQubitVars(Set<String> vars) {
@@ -1292,6 +1378,11 @@ public class EggGen {
         public String toEggString() { return String.format("(RZ (Q \"%s\") %s)", qubit, angle.toEggString()); }
 
         @Override
+        public int getTwoQubitsCount() {
+            return 0;
+        }
+
+        @Override
         public void getQubitVars(Set<String> vars) {
             vars.add(qubit);
         }
@@ -1318,6 +1409,11 @@ public class EggGen {
         public final String qubit;
         public H(String qubit) { this.qubit = qubit; }
         public String toEggString() { return String.format("(H (Q \"%s\"))", qubit); }
+
+        @Override
+        public int getTwoQubitsCount() {
+            return 0;
+        }
 
         @Override
         public void getQubitVars(Set<String> vars) {
@@ -1362,6 +1458,11 @@ public class EggGen {
         public String toEggString() { return String.format("(U1 (Q \"%s\") %s)", qubit, lambda.toEggString()); }
 
         @Override
+        public int getTwoQubitsCount() {
+            return 0;
+        }
+
+        @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
             String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
             return String.format("(U1 %s %s)", qubitVar, lambda.toEggString());
@@ -1385,6 +1486,11 @@ public class EggGen {
         public final Expr lambda;
         public U2(String qubit, Expr phi, Expr lambda) { this.qubit = qubit; this.phi = phi; this.lambda = lambda; }
         public String toEggString() { return String.format("(U2 (Q \"%s\") %s %s)", qubit, phi.toEggString(), lambda.toEggString()); }
+
+        @Override
+        public int getTwoQubitsCount() {
+            return 0;
+        }
 
         @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
@@ -1413,6 +1519,11 @@ public class EggGen {
         public String toEggString() { return String.format("(U3 (Q \"%s\") %s %s %s)", qubit, theta.toEggString(), phi.toEggString(), lambda.toEggString()); }
 
         @Override
+        public int getTwoQubitsCount() {
+            return 0;
+        }
+
+        @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
             String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
             return String.format("(U3 %s %s %s %s)", qubitVar, theta.toEggString(), phi.toEggString(), lambda.toEggString());
@@ -1436,6 +1547,11 @@ public class EggGen {
         public final Expr angle;
         public RX(String qubit, Expr angle) { this.qubit = qubit; this.angle = angle; }
         public String toEggString() { return String.format("(RX (Q \"%s\") %s)", qubit, angle.toEggString()); }
+
+        @Override
+        public int getTwoQubitsCount() {
+            return 0;
+        }
 
         @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
@@ -1465,6 +1581,10 @@ public class EggGen {
             vars.add(control);
             vars.add(target);
         }
+        @Override
+        public int getTwoQubitsCount() {
+            return 1;
+        }
 
         @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
@@ -1484,6 +1604,11 @@ public class EggGen {
         public final Expr angle;
         public RY(String qubit, Expr angle) { this.qubit = qubit; this.angle = angle; }
         public String toEggString() { return String.format("(RY (Q \"%s\") %s)", qubit, angle.toEggString()); }
+
+        @Override
+        public int getTwoQubitsCount() {
+            return 0;
+        }
 
         @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
@@ -1507,6 +1632,11 @@ public class EggGen {
         public final Expr angle;
         public RXX(String qubit1, String qubit2, Expr angle) { this.qubit1 = qubit1; this.qubit2 = qubit2; this.angle = angle; }
         public String toEggString() { return String.format("(RXX (Q \"%s\") (Q \"%s\") %s)", qubit1, qubit2, angle.toEggString()); }
+
+        @Override
+        public int getTwoQubitsCount() {
+            return 1;
+        }
 
         @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
@@ -1534,6 +1664,11 @@ public class EggGen {
         public String toEggString() { return String.format("(GPI (Q \"%s\") %s)", qubit, phi.toEggString()); }
 
         @Override
+        public int getTwoQubitsCount() {
+            return 0;
+        }
+
+        @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
             String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
             return String.format("(GPI %s %s)", qubitVar, phi.toEggString());
@@ -1558,6 +1693,11 @@ public class EggGen {
         public String toEggString() { return String.format("(GPI2 (Q \"%s\") %s)", qubit, phi.toString()); }
 
         @Override
+        public int getTwoQubitsCount() {
+            return 0;
+        }
+
+        @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
             String qubitVar = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
             return String.format("(GPI2 %s %s)", qubitVar, phi.toEggString());
@@ -1579,6 +1719,11 @@ public class EggGen {
         public final Expr theta;
         public VZ(String qubit, Expr theta) { this.qubit = qubit; this.theta = theta; }
         public String toEggString() { return String.format("(VZ (Q \"%s\") %s)", qubit, theta.toString()); }
+
+        @Override
+        public int getTwoQubitsCount() {
+            return 0;
+        }
 
         @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
@@ -1607,6 +1752,11 @@ public class EggGen {
         public String toEggString() { return String.format("(MS (Q \"%s\") (Q \"%s\") %s %s)", qubit1, qubit2, phi1.toString(), phi2.toString()); }
 
         @Override
+        public int getTwoQubitsCount() {
+            return 1;
+        }
+
+        @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
             String qubit1Var = qubitMap.computeIfAbsent(qubit1, q -> "q" + qubitMap.size());
             String qubit2Var = qubitMap.computeIfAbsent(qubit2, q -> "q" + qubitMap.size());
@@ -1630,6 +1780,11 @@ public class EggGen {
         public final String qubit;
         public SX(String qubit) { this.qubit = qubit; }
         public String toEggString() { return String.format("(SX (Q \"%s\"))", qubit); }
+
+        @Override
+        public int getTwoQubitsCount() {
+            return 0;
+        }
 
         @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {

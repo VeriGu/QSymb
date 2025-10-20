@@ -62,7 +62,7 @@ public class Symbolic {
 
     String qasm = String.format("x q[%s]", qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.X(qubit));
+    circuit.addGate(new EggGen.X(qubit));
   }
 
   public static void cx(Circuit circuit, String control, String target) {
@@ -75,7 +75,7 @@ public class Symbolic {
 
     String qasm = String.format("cx q[%s], q[%s]", control.replace("q", ""), target.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.CX(control, target));
+    circuit.addGate(new EggGen.CX(control, target));
   }
 
   public static void rz(Circuit circuit, String qubit, Expr angle) {
@@ -87,7 +87,7 @@ public class Symbolic {
 
     String qasm = String.format("rz(%s) q[%s]", angle, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.RZ(qubit, angle));
+    circuit.addGate(new EggGen.RZ(qubit, angle));
   }
 
   public static void h(Circuit circuit, String qubit) {
@@ -111,7 +111,7 @@ public class Symbolic {
 
     String qasm = String.format("h q[%s]", qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.H(qubit));
+    circuit.addGate(new EggGen.H(qubit));
   }
 
   public static void symb(Circuit circuit, int maxQubits) {
@@ -130,7 +130,7 @@ public class Symbolic {
     }
 
     circuit.getQasm().add(SYMB);
-    circuit.getGates().add(new EggGen.SYMB(maxQubits));
+    circuit.addGate(new EggGen.SYMB(maxQubits));
   }
 
   public static void u1(Circuit circuit, String qubit, Expr lambda) {
@@ -142,7 +142,7 @@ public class Symbolic {
 
     String qasm = String.format("u1(%s) q[%s]", lambda, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.U1(qubit, lambda));
+    circuit.addGate(new EggGen.U1(qubit, lambda));
   }
 
   public static void u2(Circuit circuit, String qubit, Expr phi, Expr lambda) {
@@ -166,7 +166,7 @@ public class Symbolic {
 
     String qasm = String.format("u2(%s,%s) q[%s]", phi, lambda, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.U2(qubit, phi, lambda));
+    circuit.addGate(new EggGen.U2(qubit, phi, lambda));
   }
 
   public static void u3(Circuit circuit, String qubit, Expr theta, Expr phi, Expr lambda) {
@@ -190,7 +190,7 @@ public class Symbolic {
 
     String qasm = String.format("u3(%s,%s,%s) q[%s]", theta, phi, lambda, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.U3(qubit, theta, phi, lambda));
+    circuit.addGate(new EggGen.U3(qubit, theta, phi, lambda));
   }
 
   public static void rx(Circuit circuit, String qubit, Expr angle) {
@@ -214,7 +214,7 @@ public class Symbolic {
 
     String qasm = String.format("rx(%s) q[%s]", angle, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.RX(qubit, angle));
+    circuit.addGate(new EggGen.RX(qubit, angle));
   }
 
   public static void cz(Circuit circuit, String control, String target) {
@@ -227,7 +227,7 @@ public class Symbolic {
 
     String qasm = String.format("cz q[%s], q[%s]", control.replace("q", ""), target.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.CZ(control, target));
+    circuit.addGate(new EggGen.CZ(control, target));
   }
 
   public static void ry(Circuit circuit, String qubit, Expr angle) {
@@ -251,7 +251,7 @@ public class Symbolic {
 
     String qasm = String.format("ry(%s) q[%s]", angle, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.RY(qubit, angle));
+    circuit.addGate(new EggGen.RY(qubit, angle));
   }
 
   public static void rxx(Circuit circuit, String qubit1, String qubit2, Expr angle) {
@@ -277,7 +277,7 @@ public class Symbolic {
 
     String qasm = String.format("rxx(%s) q[%s], q[%s]", angle, qubit1.replace("q", ""), qubit2.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.RXX(qubit1, qubit2, angle));
+    circuit.addGate(new EggGen.RXX(qubit1, qubit2, angle));
   }
 
   public static void gpi(Circuit circuit, String qubit, Expr phi) {
@@ -290,7 +290,7 @@ public class Symbolic {
 
     String qasm = String.format("gpi(%s) q[%s]", phi, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.GPI(qubit, phi));
+    circuit.addGate(new EggGen.GPI(qubit, phi));
   }
 
   public static void gpi2(Circuit circuit, String qubit, Expr phi) {
@@ -314,7 +314,7 @@ public class Symbolic {
 
     String qasm = String.format("gpi2(%s) q[%s]", phi, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.GPI2(qubit, phi));
+    circuit.addGate(new EggGen.GPI2(qubit, phi));
   }
 
   public static void vz(Circuit circuit, String qubit, Expr theta) {
@@ -326,7 +326,7 @@ public class Symbolic {
 
     String qasm = String.format("rz(%s) q[%s]", theta, qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.VZ(qubit, theta));
+    circuit.addGate(new EggGen.VZ(qubit, theta));
   }
 
   public static void ms(Circuit circuit, String qubit1, String qubit2, Expr phi1, Expr phi2) {
@@ -352,7 +352,7 @@ public class Symbolic {
 
     String qasm = String.format("ms (%s,%s) q[%s], q[%s]", phi1, phi2, qubit1.replace("q", ""), qubit2.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.MS(qubit1, qubit2, phi1, phi2));
+    circuit.addGate(new EggGen.MS(qubit1, qubit2, phi1, phi2));
   }
 
   public static void sx(Circuit circuit, String qubit) {
@@ -376,7 +376,7 @@ public class Symbolic {
 
     String qasm = String.format("sx q[%s]", qubit.replace("q", ""));
     circuit.getQasm().add(qasm);
-    circuit.getGates().add(new EggGen.SX(qubit));
+    circuit.addGate(new EggGen.SX(qubit));
   }
 
   // for testing

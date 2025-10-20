@@ -161,7 +161,7 @@ public class Applier {
                 qubits[1] = split3[1];
                 qubits[2] = split3[2];
 
-                Node gateNode = new Node(gate, Node.Type.GATE, qubits, null);
+                Node gateNode = new Node(gate, Node.Type.GATE, Arrays.asList(qubits), null);
                 dag.addVertex(gateNode);
                 addEdges(dag, qubitToLeaf, qubitNodes, gateNode);
             } else if (op.contains("cx") || op.contains("cz")) {
@@ -171,7 +171,7 @@ public class Applier {
                 qubits[0] = split3[0];
                 qubits[1] = split3[1];
 
-                Node gateNode = new Node(gate, Node.Type.GATE, qubits, null);
+                Node gateNode = new Node(gate, Node.Type.GATE, Arrays.asList(qubits), null);
                 dag.addVertex(gateNode);
                 addEdges(dag, qubitToLeaf, qubitNodes, gateNode);
             } else if (op.contains("rxx")) {
@@ -189,8 +189,8 @@ public class Applier {
                         continue;
                     }
                 }
-
-                Node gateNode = new Node(gate, Node.Type.GATE, qubits, angles);
+ 
+                Node gateNode = new Node(gate, Node.Type.GATE, Arrays.asList(qubits), angles);
                 dag.addVertex(gateNode);
                 addEdges(dag, qubitToLeaf, qubitNodes, gateNode);
             } else {
@@ -208,7 +208,7 @@ public class Applier {
                     }
                 }
 
-                Node gateNode = new Node(gate, Node.Type.GATE, qubits, angles);
+                Node gateNode = new Node(gate, Node.Type.GATE, Arrays.asList(qubits), angles);
                 dag.addVertex(gateNode);
                 addEdges(dag, qubitToLeaf, qubitNodes, gateNode);
             }
@@ -248,22 +248,22 @@ public class Applier {
     private String gateNodeToQasm(Node node) {
         if (node.isCX()) {
             if (node.getId().equals("rxx")) {
-                return String.format("%s(%s) %s, %s", node.getId(), node.getAngles().get(0), node.getQubits()[0], node.getQubits()[1]);
+                return String.format("%s(%s) %s, %s", node.getId(), node.getAngles().get(0), node.getQubits().get(0), node.getQubits().get(1));
             }
-            return String.format("%s %s, %s", node.getId(), node.getQubits()[0], node.getQubits()[1]);
+            return String.format("%s %s, %s", node.getId(), node.getQubits().get(0), node.getQubits().get(1));
         } else if (node.isCCZ()) {
-            return String.format("%s %s, %s, %s", node.getId(), node.getQubits()[0], node.getQubits()[1], node.getQubits()[2]);
+            return String.format("%s %s, %s, %s", node.getId(), node.getQubits().get(0), node.getQubits().get(1), node.getQubits().get(2));
         } else if (node.getAngles() != null) {
             if (node.getAngles().size() == 1) {
-                return String.format("%s(%s) %s", node.getId(), node.getAngles().get(0), node.getQubits()[0]);
+                return String.format("%s(%s) %s", node.getId(), node.getAngles().get(0), node.getQubits().get(0));
             } else if (node.getAngles().size() == 2) {
-                return String.format("%s(%s,%s) %s", node.getId(), node.getAngles().get(0), node.getAngles().get(1), node.getQubits()[0]);
+                return String.format("%s(%s,%s) %s", node.getId(), node.getAngles().get(0), node.getAngles().get(1), node.getQubits().get(0));
             } else if (node.getAngles().size() == 3) {
-                return String.format("%s(%s,%s,%s) %s", node.getId(), node.getAngles().get(0), node.getAngles().get(1), node.getAngles().get(2), node.getQubits()[0]);
+                return String.format("%s(%s,%s,%s) %s", node.getId(), node.getAngles().get(0), node.getAngles().get(1), node.getAngles().get(2), node.getQubits().get(0));
             }
             throw new RuntimeException("angles");
         } else {
-            return String.format("%s %s", node.getId(), node.getQubits()[0]);
+            return String.format("%s %s", node.getId(), node.getQubits().get(0));
         }
     }
 
@@ -366,10 +366,10 @@ public class Applier {
     }
 
     private String getCommonQubit(Node n1, Node n2) {
-        if (n1.getQubits()[0].equals(n2.getQubits()[0]) || n1.getQubits()[0].equals(n2.getQubits()[1])) {
-            return n1.getQubits()[0];
-        } else if (n1.getQubits()[1].equals(n2.getQubits()[1]) || n1.getQubits()[1].equals(n2.getQubits()[0])) {
-            return n1.getQubits()[1];
+        if (n1.getQubits().get(0).equals(n2.getQubits().get(0)) || n1.getQubits().get(0).equals(n2.getQubits().get(1))) {
+            return n1.getQubits().get(0);
+        } else if (n1.getQubits().get(1).equals(n2.getQubits().get(1)) || n1.getQubits().get(1).equals(n2.getQubits().get(0))) {
+            return n1.getQubits().get(1);
         }
         return null;
     }
@@ -485,7 +485,7 @@ public class Applier {
     }
 
     private boolean sameQubits(Node n1, Node n2) {
-        return Arrays.equals(n1.getQubits(), n2.getQubits()) || (n1.getQubits()[0].equals(n2.getQubits()[1]) && n1.getQubits()[1].equals(n2.getQubits()[0]));
+        return n1.getQubits().equals(n2.getQubits()) || (n1.getQubits() .get(0).equals(n2.getQubits().get(1)) && n1.getQubits().get(1).equals(n2.getQubits().get(0)));
     }
 
     private boolean sameAngle(Expr angle1, Expr angle2) {
@@ -755,13 +755,13 @@ public class Applier {
     public Map<String, String> patternToCircuitQubit(Map<Node, Node> patternToCirc) {
         Map<String, String> result = new HashMap<>();
         for (Node patternNode : patternToCirc.keySet()) {
-            result.put(patternNode.getQubits()[0], patternToCirc.get(patternNode).getQubits()[0]);
+            result.put(patternNode.getQubits().get(0), patternToCirc.get(patternNode).getQubits().get(0));
             if (patternNode.isCX()) {
-                result.put(patternNode.getQubits()[1], patternToCirc.get(patternNode).getQubits()[1]);
+                result.put(patternNode.getQubits().get(1), patternToCirc.get(patternNode).getQubits().get(1));
             } else if (patternNode.isCCZ()) {
                 // TODO improve
-                result.put(patternNode.getQubits()[1], patternToCirc.get(patternNode).getQubits()[1]);
-                result.put(patternNode.getQubits()[2], patternToCirc.get(patternNode).getQubits()[2]);
+                result.put(patternNode.getQubits().get(1), patternToCirc.get(patternNode).getQubits().get(1));
+                result.put(patternNode.getQubits().get(2), patternToCirc.get(patternNode).getQubits().get(2));
             }
         }
         return result;
@@ -839,30 +839,30 @@ public class Applier {
         Edge.Label sourceLabel = Edge.Label.NONE;
         Edge.Label targetLabel = Edge.Label.NONE;
         if (source.isCX()) {
-            if (qubit.equals(source.getQubits()[0])) {
+            if (qubit.equals(source.getQubits().get(0))) {
                 sourceLabel = Edge.Label.CONTROL;
             } else {
                 sourceLabel = Edge.Label.TARGET;
             }
         } else if (source.isCCZ()) {
-            if (qubit.equals(source.getQubits()[0])) {
+            if (qubit.equals(source.getQubits().get(0))) {
                 sourceLabel = Edge.Label.CONTROL;
-            } else if (qubit.equals(source.getQubits()[1])) {
+            } else if (qubit.equals(source.getQubits().get(1))) {
                 sourceLabel = Edge.Label.CONTROL2;
             } else {
                 sourceLabel = Edge.Label.TARGET;
             }
         }
         if (target.isCX()) {
-            if (qubit.equals(target.getQubits()[0])) {
+            if (qubit.equals(target.getQubits().get(0))) {
                 targetLabel = Edge.Label.CONTROL;
             } else {
                 targetLabel = Edge.Label.TARGET;
             }
         } else if (target.isCCZ()) {
-            if (qubit.equals(target.getQubits()[0])) {
+            if (qubit.equals(target.getQubits().get(0))) {
                 targetLabel = Edge.Label.CONTROL;
-            } else if (qubit.equals(target.getQubits()[1])) {
+            } else if (qubit.equals(target.getQubits().get(1))) {
                 targetLabel = Edge.Label.CONTROL2;
             } else {
                 targetLabel = Edge.Label.TARGET;
@@ -938,8 +938,8 @@ public class Applier {
         Node b = symb.get(0);
         Node a = symb.get(symb.size()-1);
 
-        map.put(b.getQubits()[0], findBefore.substring(findBefore.indexOf("q"), findBefore.indexOf(";")));
-        map.put(a.getQubits()[0], findAfter.substring(findAfter.indexOf("q"), findAfter.indexOf(";")));
+        map.put(b.getQubits().get(0), findBefore.substring(findBefore.indexOf("q"), findBefore.indexOf(";")));
+        map.put(a.getQubits().get(0), findAfter.substring(findAfter.indexOf("q"), findAfter.indexOf(";")));
         return map;
     }
 
@@ -961,202 +961,202 @@ public class Applier {
         for (Node op : ops) {
             switch (op.getId()) {
                 case "h": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.h(c, op.getQubits()[0]);
+                    Symbolic.h(c, op.getQubits().get(0));
                     break;
                 }
                 case "sx": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.sx(c, op.getQubits()[0]);
+                    Symbolic.sx(c, op.getQubits().get(0));
                     break;
                 }
                 case "t": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.rz(c, op.getQubits()[0], new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(4)));
+                    Symbolic.rz(c, op.getQubits().get(0), new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(4)));
                     break;
                 }
                 case "tdg": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.rz(c, op.getQubits()[0], new BinOp(Expr.Op.DIV, new BinOp(Expr.Op.MULT, new Real(7), new Symbol("pi")), new Real(4)));
+                    Symbolic.rz(c, op.getQubits().get(0), new BinOp(Expr.Op.DIV, new BinOp(Expr.Op.MULT, new Real(7), new Symbol("pi")), new Real(4)));
                     break;
                 }
                 case "s": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.rz(c, op.getQubits()[0], new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(2)));
+                    Symbolic.rz(c, op.getQubits().get(0), new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(2)));
                     break;
                 }
                 case "sdg": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.rz(c, op.getQubits()[0], new BinOp(Expr.Op.DIV, new BinOp(Expr.Op.MULT, new Real(3), new Symbol("pi")), new Real(2)));
+                    Symbolic.rz(c, op.getQubits().get(0), new BinOp(Expr.Op.DIV, new BinOp(Expr.Op.MULT, new Real(3), new Symbol("pi")), new Real(2)));
                     break;
                 }
                 case "rz": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.rz(c, op.getQubits()[0], op.getAngles().get(0));
+                    Symbolic.rz(c, op.getQubits().get(0), op.getAngles().get(0));
                     break;
                 }
                 case "rx": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.rx(c, op.getQubits()[0], op.getAngles().get(0));
+                    Symbolic.rx(c, op.getQubits().get(0), op.getAngles().get(0));
                     break;
                 }
                 case "ry": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.ry(c, op.getQubits()[0], op.getAngles().get(0));
+                    Symbolic.ry(c, op.getQubits().get(0), op.getAngles().get(0));
                     break;
                 }
                 case "rxx": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    if (!c.hasQubit(op.getQubits()[1])) {
+                    if (!c.hasQubit(op.getQubits().get(1))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[1], new Var(op.getQubits()[1]));
+                            symb.getF().put(op.getQubits().get(1), new Var(op.getQubits().get(1)));
                         }
                     }
-                    Symbolic.rxx(c, op.getQubits()[0], op.getQubits()[1], op.getAngles().get(0));
+                    Symbolic.rxx(c, op.getQubits().get(0), op.getQubits().get(1), op.getAngles().get(0));
                     break;
                 }
                 case "u1": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.u1(c, op.getQubits()[0], op.getAngles().get(0));
+                    Symbolic.u1(c, op.getQubits().get(0), op.getAngles().get(0));
                     break;
                 }
                 case "u2": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.u2(c, op.getQubits()[0], op.getAngles().get(0), op.getAngles().get(1));
+                    Symbolic.u2(c, op.getQubits().get(0), op.getAngles().get(0), op.getAngles().get(1));
                     break;
                 }
                 case "u3": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.u3(c, op.getQubits()[0], op.getAngles().get(0), op.getAngles().get(1), op.getAngles().get(2));
+                    Symbolic.u3(c, op.getQubits().get(0), op.getAngles().get(0), op.getAngles().get(1), op.getAngles().get(2));
                     break;
                 }
                 case "x": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.x(c, op.getQubits()[0]);
+                    Symbolic.x(c, op.getQubits().get(0));
                     break;
                 }
                 case "z": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    Symbolic.rz(c, op.getQubits()[0], new Symbol("pi"));
+                    Symbolic.rz(c, op.getQubits().get(0), new Symbol("pi"));
                     break;
                 }
                 case "cx": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    if (!c.hasQubit(op.getQubits()[1])) {
+                    if (!c.hasQubit(op.getQubits().get(1))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[1], new Var(op.getQubits()[1]));
+                            symb.getF().put(op.getQubits().get(1), new Var(op.getQubits().get(1)));
                         }
                     }
-                    Symbolic.cx(c, op.getQubits()[0], op.getQubits()[1]);
+                    Symbolic.cx(c, op.getQubits().get(0), op.getQubits().get(1));
                     break;
                 }
                 case "cz": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    if (!c.hasQubit(op.getQubits()[1])) {
+                    if (!c.hasQubit(op.getQubits().get(1))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[1], new Var(op.getQubits()[1]));
+                            symb.getF().put(op.getQubits().get(1), new Var(op.getQubits().get(1)));
                         }
                     }
-                    Symbolic.cz(c, op.getQubits()[0], op.getQubits()[1]);
+                    Symbolic.cz(c, op.getQubits().get(0), op.getQubits().get(1));
                     break;
                 }
                 case "ccz": {
-                    if (!c.hasQubit(op.getQubits()[0])) {
+                    if (!c.hasQubit(op.getQubits().get(0))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[0], new Var(op.getQubits()[0]));
+                            symb.getF().put(op.getQubits().get(0), new Var(op.getQubits().get(0)));
                         }
                     }
-                    if (!c.hasQubit(op.getQubits()[1])) {
+                    if (!c.hasQubit(op.getQubits().get(1))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[1], new Var(op.getQubits()[1]));
+                            symb.getF().put(op.getQubits().get(1), new Var(op.getQubits().get(1)));
                         }
                     }
-                    if (!c.hasQubit(op.getQubits()[2])) {
+                    if (!c.hasQubit(op.getQubits().get(2))) {
                         for (Symbolic symb : c.getPathSum()) {
-                            symb.getF().put(op.getQubits()[2], new Var(op.getQubits()[2]));
+                            symb.getF().put(op.getQubits().get(2), new Var(op.getQubits().get(2)));
                         }
                     }
-                    Symbolic.cx(c, op.getQubits()[1], op.getQubits()[2]);
-                    Symbolic.rz(c, op.getQubits()[2], new BinOp(Expr.Op.DIV, new BinOp(Expr.Op.MULT, new Real(7), new Symbol("pi")), new Real(4)));
-                    Symbolic.cx(c, op.getQubits()[0], op.getQubits()[2]);
-                    Symbolic.rz(c, op.getQubits()[2], new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(4)));
-                    Symbolic.cx(c, op.getQubits()[1], op.getQubits()[2]);
-                    Symbolic.rz(c, op.getQubits()[2], new BinOp(Expr.Op.DIV, new BinOp(Expr.Op.MULT, new Real(7), new Symbol("pi")), new Real(4)));
-                    Symbolic.cx(c, op.getQubits()[0], op.getQubits()[2]);
-                    Symbolic.cx(c, op.getQubits()[0], op.getQubits()[1]);
-                    Symbolic.rz(c, op.getQubits()[1], new BinOp(Expr.Op.DIV, new BinOp(Expr.Op.MULT, new Real(7), new Symbol("pi")), new Real(4)));
-                    Symbolic.cx(c, op.getQubits()[0], op.getQubits()[1]);
-                    Symbolic.rz(c, op.getQubits()[0], new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(4)));
-                    Symbolic.rz(c, op.getQubits()[1], new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(4)));
-                    Symbolic.rz(c, op.getQubits()[2], new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(4)));
+                    Symbolic.cx(c, op.getQubits().get(1), op.getQubits().get(2));
+                    Symbolic.rz(c, op.getQubits().get(2), new BinOp(Expr.Op.DIV, new BinOp(Expr.Op.MULT, new Real(7), new Symbol("pi")), new Real(4)));
+                    Symbolic.cx(c, op.getQubits().get(0), op.getQubits().get(2));
+                    Symbolic.rz(c, op.getQubits().get(2), new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(4)));
+                    Symbolic.cx(c, op.getQubits().get(1), op.getQubits().get(2));
+                    Symbolic.rz(c, op.getQubits().get(2), new BinOp(Expr.Op.DIV, new BinOp(Expr.Op.MULT, new Real(7), new Symbol("pi")), new Real(4)));
+                    Symbolic.cx(c, op.getQubits().get(0), op.getQubits().get(2));
+                    Symbolic.cx(c, op.getQubits().get(0), op.getQubits().get(1));
+                    Symbolic.rz(c, op.getQubits().get(1), new BinOp(Expr.Op.DIV, new BinOp(Expr.Op.MULT, new Real(7), new Symbol("pi")), new Real(4)));
+                    Symbolic.cx(c, op.getQubits().get(0), op.getQubits().get(1));
+                    Symbolic.rz(c, op.getQubits().get(0), new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(4)));
+                    Symbolic.rz(c, op.getQubits().get(1), new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(4)));
+                    Symbolic.rz(c, op.getQubits().get(2), new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(4)));
                     break;
                 }
                 default: throw new RuntimeException(String.format("unimplemented gate: %s", op.getId()));
@@ -1244,7 +1244,7 @@ public class Applier {
         Node patternBeforeStart = beforeRoots.get(0);
         List<Node> afterRoots = getCircuitRoots(patternAfter);
         Node patternAfterStart = afterRoots.get(0);
-        boolean sameQubit = Arrays.equals(patternBeforeStart.getQubits(), patternAfterStart.getQubits());
+        boolean sameQubit = patternBeforeStart.getQubits().equals(patternAfterStart.getQubits());
 
         List<List<Node>> circuitTopo = topoSort(circuit);
 
@@ -1263,7 +1263,7 @@ public class Applier {
                     while (!next.isSinkQubit()) {
                         boolean foundMatchInner = false;
                         for (Node circN3 : circuitTopo.get(i+s)) {
-                            if (circN3.isGate() && circN3.getId().equals(next.getId()) && Arrays.equals(circN.getQubits(), circN3.getQubits())) {
+                            if (circN3.isGate() && circN3.getId().equals(next.getId()) && circN.getQubits().equals(circN3.getQubits())) {
                                 if (next.getAngles() != null) {
                                     if (matchAngles(circN3, next, angleMap)) {
                                         foundMatchInner = true;
@@ -1298,16 +1298,16 @@ public class Applier {
                         circNext = Graphs.successorListOf(circuit, circNext).get(0);
                         next = Graphs.successorListOf(patternBefore, next).get(0);
                     }
-                    trackedQubits.add(circN.getQubits()[0]);
+                    trackedQubits.add(circN.getQubits().get(0));
                     for (int j = i + s; j < circuitTopo.size(); j++) {
                         if (trackedQubits.size() > maxSymbQubits || symb.size() > maxSymbSize) {
                             break;
                         }
                         for (Node circN2 : circuitTopo.get(j)) {
                             if (!circN2.isGate()) { continue; }
-                            if (trackedQubits.contains(circN2.getQubits()[0]) || trackedQubits.contains(circN2.getQubits()[1])) {
-                                if (circN2.getQubits()[0] != null) { trackedQubits.add(circN2.getQubits()[0]); }
-                                if (circN2.getQubits()[1] != null) { trackedQubits.add(circN2.getQubits()[1]); }
+                            if (trackedQubits.contains(circN2.getQubits().get(0)) || trackedQubits.contains(circN2.getQubits().get(1))) {
+                                if (circN2.getQubits().get(0) != null) { trackedQubits.add(circN2.getQubits().get(0)); }
+                                if (circN2.getQubits().get(1) != null) { trackedQubits.add(circN2.getQubits().get(1)); }
 
                                 if (trackedQubits.size() > maxSymbQubits || symb.size() > maxSymbSize) {
                                     break;
@@ -1315,7 +1315,7 @@ public class Applier {
 
                                 boolean match = false;
                                 if (sameQubit) {
-                                    if (!blockedQubits.contains(circN2.getQubits()[0]) && Arrays.equals(circN.getQubits(), circN2.getQubits()) && circN2.getId().equals(patternAfterStart.getId())) {
+                                    if (!blockedQubits.contains(circN2.getQubits().get(0)) && circN.getQubits().equals(circN2.getQubits()) && circN2.getId().equals(patternAfterStart.getId())) {
                                         if (patternAfterStart.getAngles() != null) {
                                             if (matchAngles(circN2, patternAfterStart, angleMap)) {
                                                 Node nextA = Graphs.successorListOf(patternAfter, patternAfterStart).get(0);
@@ -1324,7 +1324,7 @@ public class Applier {
                                                 while (!nextA.isSinkQubit()) {
                                                     boolean foundMatchInnerA = false;
                                                     for (Node circN4 : circuitTopo.get(j+t)) {
-                                                        if (circN4.isGate() && circN4.getId().equals(nextA.getId()) && Arrays.equals(circN4.getQubits(), circN2.getQubits())) {
+                                                        if (circN4.isGate() && circN4.getId().equals(nextA.getId()) && circN4.getQubits().equals(circN2.getQubits())) {
                                                             if (nextA.getAngles() != null) {
                                                                 if (matchAngles(circN4, nextA, angleMap)) {
                                                                     foundMatchInnerA = true;
@@ -1354,7 +1354,7 @@ public class Applier {
                                             while (!nextA.isSinkQubit()) {
                                                 boolean foundMatchInnerA = false;
                                                 for (Node circN4 : circuitTopo.get(j+t)) {
-                                                    if (circN4.isGate() && circN4.getId().equals(nextA.getId()) && Arrays.equals(circN4.getQubits(), circN2.getQubits())) {
+                                                    if (circN4.isGate() && circN4.getId().equals(nextA.getId()) && circN4.getQubits().equals(circN2.getQubits())) {
                                                         if (nextA.getAngles() != null) {
                                                             if (matchAngles(circN4, nextA, angleMap)) {
                                                                 foundMatchInnerA = true;
@@ -1379,7 +1379,7 @@ public class Applier {
                                         }
                                     }
                                 } else {
-                                    if (!blockedQubits.contains(circN2.getQubits()[0]) && !Arrays.equals(circN.getQubits(), circN2.getQubits()) && circN2.getId().equals(patternAfterStart.getId())) {
+                                    if (!blockedQubits.contains(circN2.getQubits().get(0)) && !circN.getQubits().equals(circN2.getQubits()) && circN2.getId().equals(patternAfterStart.getId())) {
                                         if (patternAfterStart.getAngles() != null) {
                                             if (matchAngles(circN2, patternAfterStart, angleMap)) {
                                                 Node nextA = Graphs.successorListOf(patternAfter, patternAfterStart).get(0);
@@ -1388,7 +1388,7 @@ public class Applier {
                                                 while (!nextA.isSinkQubit()) {
                                                     boolean foundMatchInnerA = false;
                                                     for (Node circN4 : circuitTopo.get(j+t)) {
-                                                        if (circN4.isGate() && circN4.getId().equals(nextA.getId()) && Arrays.equals(circN4.getQubits(), circN2.getQubits())) {
+                                                        if (circN4.isGate() && circN4.getId().equals(nextA.getId()) && circN4.getQubits().equals(circN2.getQubits())) {
                                                             if (nextA.getAngles() != null) {
                                                                 if (matchAngles(circN4, nextA, angleMap)) {
                                                                     foundMatchInnerA = true;
@@ -1418,7 +1418,7 @@ public class Applier {
                                             while (!nextA.isSinkQubit()) {
                                                 boolean foundMatchInnerA = false;
                                                 for (Node circN4 : circuitTopo.get(j+t)) {
-                                                    if (circN4.isGate() && circN4.getId().equals(nextA.getId()) && Arrays.equals(circN4.getQubits(), circN2.getQubits())) {
+                                                    if (circN4.isGate() && circN4.getId().equals(nextA.getId()) && circN4.getQubits().equals(circN2.getQubits())) {
                                                         if (nextA.getAngles() != null) {
                                                             if (matchAngles(circN4, nextA, angleMap)) {
                                                                 foundMatchInnerA = true;
@@ -1453,21 +1453,21 @@ public class Applier {
                                             for (Map.Entry<boolean[], boolean[]> e : constraint.entrySet()) {
                                                 Map<String, Integer> qubitMap = new HashMap<>();
                                                 Map<String, Boolean> expectedMap = new HashMap<>();
-                                                if (patternBeforeStart.getQubits()[0].equals("q0")) {
-                                                    qubitMap.put(circN.getQubits()[0], e.getKey()[0] ? 1 : 0);
-                                                    expectedMap.put(circN.getQubits()[0], e.getValue()[0]);
+                                                if (patternBeforeStart.getQubits().get(0).equals("q0")) {
+                                                    qubitMap.put(circN.getQubits().get(0), e.getKey()[0] ? 1 : 0);
+                                                    expectedMap.put(circN.getQubits().get(0), e.getValue()[0]);
                                                 }
-                                                if (patternAfterStart.getQubits()[0].equals("q0")) {
-                                                    qubitMap.put(circN2.getQubits()[0], e.getKey()[0] ? 1 : 0);
-                                                    expectedMap.put(circN2.getQubits()[0], e.getValue()[0]);
+                                                if (patternAfterStart.getQubits().get(0).equals("q0")) {
+                                                    qubitMap.put(circN2.getQubits().get(0), e.getKey()[0] ? 1 : 0);
+                                                    expectedMap.put(circN2.getQubits().get(0), e.getValue()[0]);
                                                 }
-                                                if (patternBeforeStart.getQubits()[0].equals("q1")) {
-                                                    qubitMap.put(circN.getQubits()[0], e.getKey()[1] ? 1 : 0);
-                                                    expectedMap.put(circN.getQubits()[0], e.getValue()[1]);
+                                                if (patternBeforeStart.getQubits().get(0).equals("q1")) {
+                                                    qubitMap.put(circN.getQubits().get(1), e.getKey()[1] ? 1 : 0);
+                                                    expectedMap.put(circN.getQubits().get(1), e.getValue()[1]);
                                                 }
-                                                if (patternAfterStart.getQubits()[0].equals("q1")) {
-                                                    qubitMap.put(circN2.getQubits()[0], e.getKey()[1] ? 1 : 0);
-                                                    expectedMap.put(circN2.getQubits()[0], e.getValue()[1]);
+                                                if (patternAfterStart.getQubits().get(0).equals("q1")) {
+                                                    qubitMap.put(circN2.getQubits().get(1), e.getKey()[1] ? 1 : 0);
+                                                    expectedMap.put(circN2.getQubits().get(1), e.getValue()[1]);
                                                 }
                                                 if (!verifier.verify(symbCirc, qubitMap, expectedMap)) {
                                                     satisfiesConstraint = false;
@@ -1495,31 +1495,31 @@ public class Applier {
 
                                 if (goToElse) {
                                     if (circN2.getId().equals("h")) {
-                                        blockedQubits.add(circN2.getQubits()[0]);
+                                        blockedQubits.add(circN2.getQubits().get(0));
 //                                        removeSuccs(circuit, symb, circN2);
                                         symbToReplace.add(circN2);
                                     } else {
-                                        if (!symbToReplace.contains(circN2) && !blockedQubits.contains(circN2.getQubits()[0]) && !blockedQubits.contains(circN2.getQubits()[1]) && !blockedQubits.contains(circN2.getQubits()[2])) {
+                                        if (!symbToReplace.contains(circN2) && !blockedQubits.contains(circN2.getQubits().get(0)) && !blockedQubits.contains(circN2.getQubits().get(1)) && !blockedQubits.contains(circN2.getQubits().get(2))) {
                                             symb.add(circN2);
                                             symbToReplace.add(circN2);
                                         } else {
                                             if (circN2.isCCZ()) {
-                                                if (!blockedQubits.contains(circN2.getQubits()[2])) {
+                                                if (!blockedQubits.contains(circN2.getQubits().get(2))) {
                                                     // target in border, exclude qubit and successors
-                                                    blockedQubits.add(circN2.getQubits()[2]);
+                                                    blockedQubits.add(circN2.getQubits().get(2));
                                                     symbToReplace.add(circN2);
 //                                                removeSuccs(circuit, symb, circN2);
-                                                } else if (blockedQubits.contains(circN2.getQubits()[2])) {
+                                                } else if (blockedQubits.contains(circN2.getQubits().get(2))) {
                                                     // control in border, ignore
                                                     symbToReplace.add(circN2);
                                                 }
                                             } else if (circN2.isCX()) {
-                                                if (blockedQubits.contains(circN2.getQubits()[0])) {
+                                                if (blockedQubits.contains(circN2.getQubits().get(0))) {
                                                     // target in border, exclude qubit and successors
-                                                    blockedQubits.add(circN2.getQubits()[1]);
+                                                    blockedQubits.add(circN2.getQubits().get(1));
                                                     symbToReplace.add(circN2);
 //                                                removeSuccs(circuit, symb, circN2);
-                                                } else if (blockedQubits.contains(circN2.getQubits()[1])) {
+                                                } else if (blockedQubits.contains(circN2.getQubits().get(1))) {
                                                     // control in border, ignore
                                                     symbToReplace.add(circN2);
                                                 }
@@ -1633,8 +1633,8 @@ public class Applier {
         Set<String> pairs = new HashSet<>();
         for (Node n : circuit.vertexSet()) {
             if (n.isCX()) {
-                String qubit1 = n.getQubits()[0];
-                String qubit2 = n.getQubits()[1];
+                String qubit1 = n.getQubits().get(0);
+                String qubit2 = n.getQubits().get(1);
                 int comp = qubit1.compareTo(qubit2);
                 if (comp > 0) {
                     pairs.add(qubit2+qubit1);
