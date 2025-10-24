@@ -93,14 +93,14 @@ public class EggGen {
         ematchingRuleApplicationTime = 0;
         ematchingResultParsingTime = 0;
         // Add standard datatype and function definitions from qast.egg
-        content.append("\n(datatype Op\n  (EXP) (SQRT) (MINUS) (COS) (SIN) (NOT) (PLUS) (SUBTRACT) (MULT) (DIV) (POWER) (XOR) (AND) (OR))\n");
-        content.append("\n(datatype Expr\n  (Bool bool) (Real f64) (Symbol String) (Var String) (Fun String Expr) (UnOp Op Expr) (BinOp Op Expr Expr))\n");
-        content.append("\n(datatype Qubit (Q String))\n");
-        content.append("\n(datatype Gate\n  (X Qubit) (CX Qubit Qubit :cost 2) (RZ Qubit Expr) (H Qubit) (SYMB i64) (U1 Qubit Expr) (U2 Qubit Expr Expr)\n  (U3 Qubit Expr Expr Expr) (RX Qubit Expr) (CZ Qubit Qubit :cost 2) (RY Qubit Expr) (RXX Qubit Qubit Expr :cost 2)\n  (GPI Qubit Expr) (GPI2 Qubit Expr) (VZ Qubit Expr) (MS Qubit Qubit Expr Expr :cost 2) (SX Qubit))\n");
-        content.append("\n(datatype Circuit (Nil) (Cons Gate Circuit))\n");
-        content.append("\n(datatype Value (B bool) (R f64))\n");
-        content.append("\n(datatype Permutation (PermNil) (PermCons i64 Permutation))\n");
-        content.append("\n(datatype ConstrainedCircuit (CCircuit Circuit Permutation))\n");
+        content.append("\n(datatype Op\n  (EXP :cost 0) (SQRT :cost 0) (MINUS :cost 0) (COS :cost 0) (SIN :cost 0) (NOT :cost 0) (PLUS :cost 0) (SUBTRACT :cost 0) (MULT :cost 0) (DIV :cost 0) (POWER :cost 0) (XOR :cost 0) (AND :cost 0) (OR :cost 0))\n");
+        content.append("\n(datatype Expr\n  (Bool bool :cost 0) (Real f64 :cost 0) (Symbol String :cost 0) (Var String :cost 0) (Fun String Expr :cost 0) (UnOp Op Expr :cost 0) (BinOp Op Expr Expr :cost 0))\n");
+        content.append("\n(datatype Qubit (Q String :cost 0))\n");
+        content.append("\n(datatype Gate\n  (X Qubit :cost 1) (CX Qubit Qubit :cost 1000) (RZ Qubit Expr :cost 1) (H Qubit :cost 1) (SYMB i64 :cost 0) (U1 Qubit Expr :cost 1) (U2 Qubit Expr Expr :cost 1)\n  (U3 Qubit Expr Expr Expr :cost 1) (RX Qubit Expr :cost 1) (CZ Qubit Qubit :cost 10) (RY Qubit Expr :cost 1) (RXX Qubit Qubit Expr :cost 10)\n  (GPI Qubit Expr :cost 1) (GPI2 Qubit Expr :cost 1) (VZ Qubit Expr :cost 1) (MS Qubit Qubit Expr Expr :cost 10) (SX Qubit :cost 1))\n");
+        content.append("\n(datatype Circuit (Nil :cost 0) (Cons Gate Circuit :cost 0))\n");
+        content.append("\n(datatype Value (B bool :cost 0) (R f64 :cost 0))\n");
+        content.append("\n(datatype Permutation (PermNil :cost 0) (PermCons i64 Permutation :cost 0))\n");
+        content.append("\n(datatype ConstrainedCircuit (CCircuit Circuit Permutation :cost 0))\n");
         content.append("\n(function fingerprint (ConstrainedCircuit) i64 :merge new)\n");
         content.append("\n(function size (Circuit) i64 :merge (min old new))\n");
         content.append("(ruleset mergefinger)\n");
@@ -138,6 +138,17 @@ public class EggGen {
         "(constructor list-append (Circuit Circuit) Circuit)\n" + 
         "(rewrite (list-append (Nil) list) list :ruleset list-ruleset)\n" + 
         "(rewrite (list-append (Cons head tail) list) (Cons head (list-append tail list)) :ruleset list-ruleset)\n");
+        content.append("(ruleset const)\n");
+        content.append("(rewrite (BinOp (PLUS) (Real x) (Real y)) (Real (+ x y)) :ruleset const)\n");
+        content.append("(rewrite (BinOp (SUBTRACT) (Real x) (Real y)) (Real (- x y)) :ruleset const)\n");
+        content.append("(rewrite (BinOp (PLUS) (Real 0.0) x) x :ruleset const)\n");
+        content.append("(rewrite (BinOp (MULT) (Real 0.0) x) (Real 0.0) :ruleset const)\n");
+        content.append("(rewrite (BinOp (PLUS) x y) (BinOp (PLUS) y x) :ruleset const)\n");
+        content.append("(rewrite (BinOp (PLUS) (BinOp (MULT) (Real x) (Symbol z)) (BinOp (MULT) (Real y) (Symbol z))) (BinOp (MULT) (Real (+ x y)) (Symbol z)) :ruleset const)\n");
+        content.append("(rewrite (BinOp (MULT) x y) (BinOp (MULT) y x) :ruleset const)\n");
+        content.append("(rewrite (BinOp (DIV) (Symbol x) (Real y)) (BinOp (MULT) (Real (/ 1.0 y)) (Symbol x)) :ruleset const)\n");
+        content.append("(rewrite (BinOp (DIV) (UnOp (MINUS) (Symbol x)) (Real y)) (BinOp (MULT) (Real (/ -1.0 y)) (Symbol x)) :ruleset const)\n");
+        System.out.println(content.toString());
         try {
             startEgglogREPL();
         } catch (IOException e) {
@@ -150,15 +161,29 @@ public class EggGen {
 
     public ConstrainedCircuit extract(String name) {
         String output = sendCommand(String.format("(extract %s)", name), true);
-        System.out.println(output);
+        output = processPrintedOutput(output);
         EggGen.ConstrainedCircuit c = EggAstBuilder.parse(output);
         return c;
     }
 
+    public List<ConstrainedCircuit> extract(String name, int n) {
+        String output = sendCommand(String.format("(extract %s %d)", name, n), true);
+        output = processPrintedOutput(output);
+        System.out.println(output);
+        List<EggGen.ConstrainedCircuit> list = new ArrayList<>();
+        String[] lines = output.substring(1, output.length()-1).trim().split("\\n");
+        for(String line: lines) {
+            System.out.println(line);
+            list.add(EggAstBuilder.parse(line));
+        }
+        return list;
+    }
+
     public void startEgglogREPL() throws IOException {
-        ProcessBuilder pb = new ProcessBuilder("egglog");
+        ProcessBuilder pb = new ProcessBuilder("egglog-experimental");
         pb.environment().put("RUST_LOG", "ERROR");
         pb.redirectErrorStream(true);
+        //the program output should be redirected to my buffer reader
         this.egglogProcess = pb.start();
         this.processInput = new BufferedWriter(new OutputStreamWriter(egglogProcess.getOutputStream()));
         this.processError = new BufferedReader(new InputStreamReader(egglogProcess.getErrorStream()));
@@ -191,10 +216,6 @@ public class EggGen {
             e.printStackTrace();
         }
 
-        // String err = readError();
-        // if(!err.equals(""))
-        //     System.err.print(err);
-        
         return readOutput();
     }
 
@@ -323,6 +344,20 @@ public class EggGen {
         return map;
     }
 
+
+    private String readError() {
+        StringBuilder error = new StringBuilder();
+        String line;
+        try {
+            while ((line = processError.readLine()) != null) {
+                error.append(line).append('\n');
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return error.toString();
+    }
+
     private String readOutput() {
         StringBuilder output = new StringBuilder();
         // A short sleep to allow the process to start writing output
@@ -346,13 +381,13 @@ public class EggGen {
         System.out.println(predicate);
         String output = sendCommand(String.format("(check %s)",predicate), true);
         if(output.contains("failed")) {
-            System.out.println(output);
+            //System.out.println(output);
             System.out.println("false");
             checkEqualityTime += System.nanoTime() - startTime;
             return false;
         }
         System.out.println(output);
-        System.out.println("true");
+        //System.out.println("true");
         checkEqualityTime += System.nanoTime() - startTime;
         return true;
     }
@@ -389,9 +424,10 @@ public class EggGen {
     public void addRewrite(String rule){
         if(!rules.contains(rule)) {
             long startTime = System.nanoTime();
-            System.out.println(rule);
+            System.out.println("Egg: Add Rewrite Rule:" + rule);
             rules.add(rule);
-            sendCommand(rule);
+            String output = sendCommand(rule);
+            System.out.println(output);
             addRewriteRuleTime += System.nanoTime() - startTime;
         }
     }
@@ -889,6 +925,10 @@ public class EggGen {
         sendCommand(String.format("(run %s %d)\n", ruleset, n));
     }
 
+    public void runBackoff(String ruleset, int n) {
+        String output = sendCommand(String.format("(run-schedule (let-scheduler bo (back-off)) (repeat %d (saturate (run const)) (run-with bo %s)))", n, ruleset));
+        System.out.println("Run Backoff Output: " + output);
+    }
     public void runSaturation() {
         long startTime = System.nanoTime();
         sendCommand("(run-schedule (saturate (run)))\n");
@@ -904,6 +944,20 @@ public class EggGen {
 
     public String printSize(String name) {
         String output = sendCommand(String.format("(print-size %s)", name));
+        System.out.println(output);
+        int lastNewline = output.lastIndexOf('\n');
+        if(lastNewline > 0) {
+            output = output.substring(0, lastNewline).trim();
+            lastNewline = output.lastIndexOf('\n');
+        } else {
+            return "";
+        }
+        if(lastNewline > 0) {
+            output = output.substring(0, lastNewline).trim();
+        }
+        else{
+            return "";
+        }
         return output;
     }
 
@@ -930,10 +984,8 @@ public class EggGen {
         return output;
     }
 
-    public String printFunctionCSVn(String name, int n) {
-        long startTime = System.nanoTime();
-        String output = sendCommand(String.format("(print-function %s %d :mode csv)", name, n), true);
-        //System.out.println("original output:" +  output);
+
+    private String processPrintedOutput(String output) {
         int lastNewline = output.lastIndexOf('\n');
         if(lastNewline > 0) {
             output = output.substring(0, lastNewline).trim();
@@ -941,12 +993,22 @@ public class EggGen {
         } else {
             return "";
         }
+
         if(lastNewline > 0) {
             output = output.substring(0, lastNewline).trim();
         }
         else{
             return "";
         }
+
+        return output;
+    }
+
+    public String printFunctionCSVn(String name, int n) {
+        long startTime = System.nanoTime();
+        String output = sendCommand(String.format("(print-function %s %d :mode csv)", name, n), true);
+        //System.out.println("original output:" +  output);
+        output = processPrintedOutput(output);
         //System.out.println("truncated output:" +  output);
         printFunctionTime += System.nanoTime() - startTime;
         return output;
@@ -1188,10 +1250,15 @@ public class EggGen {
         public void getAllSymbols(Set<String> vars){
     
         }
+
+        public String toQASM() {
+            return "";
+        }
     }
 
     public static class Circuit implements EggExpr {
         public final List<Gate> gates;
+        private String qasm;
         public Circuit(List<Gate> gates) {
             this.gates = gates;
         }
@@ -1202,6 +1269,18 @@ public class EggGen {
                 count += g.getTwoQubitsCount();
             }
             return count;
+        }
+
+
+        public String toQASM() {
+            if(qasm != null) {
+                return qasm;
+            }
+            qasm = "";
+            for(Gate g: gates) {
+                qasm += g.toQASM();
+            }
+            return qasm;
         }
 
 
@@ -1311,6 +1390,7 @@ public class EggGen {
         public X(String qubit) { this.qubit = qubit; }
 
         
+
         public String toEggString() { return String.format("(X (Q \"%s\"))", qubit); }
 
         public int getTwoQubitsCount() {
@@ -1326,6 +1406,11 @@ public class EggGen {
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
             String var = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
             return String.format("(X %s)", var);
+        }
+
+        @Override
+        public String toQASM() {
+            return String.format("x q[%s];\n", qubit.replaceAll("q", ""));
         }
 
         @Override
@@ -1369,6 +1454,11 @@ public class EggGen {
         public void getAllSymbols(Set<String> vars) {
 
         }
+
+        @Override
+        public String toQASM() {
+            return String.format("cx q[%s],q[%s];\n", control.replaceAll("q", ""), target.replaceAll("q", ""));
+        }
     }
     
     public static class RZ extends Gate {
@@ -1403,6 +1493,11 @@ public class EggGen {
         public void getAllSymbols(Set<String> vars) {
             angle.getAllSymbols(vars);
         }
+
+        @Override
+        public String toQASM() {
+            return String.format("rz(%s) q[%s];\n", angle.toString(), qubit.replaceAll("q", ""));
+        }
     }
     
     public static class H extends Gate {
@@ -1432,6 +1527,11 @@ public class EggGen {
         public int getMaxQubits(){
             return Integer.valueOf(qubit.replaceAll("q", ""));
         }
+
+        @Override
+        public String toQASM() {
+            return String.format("h q[%s];\n", qubit.replaceAll("q", ""));
+        }
         
     }
 
@@ -1448,6 +1548,11 @@ public class EggGen {
         @Override
         public int getMaxQubits(){
             return maxQubits-1;
+        }
+
+        @Override
+        public String toQASM() {
+            return "";
         }
     }
 
@@ -1478,6 +1583,11 @@ public class EggGen {
         public void getAllSymbols(Set<String> vars) {
             lambda.getAllSymbols(vars);
         }
+
+        @Override
+        public String toQASM() {
+            return String.format("u1(%s) q[%s];\n", lambda.toString(), qubit.replaceAll("q", ""));
+        }
     }
 
     public static class U2 extends Gate {
@@ -1507,6 +1617,11 @@ public class EggGen {
         public void getAllSymbols(Set<String> vars) {
             phi.getAllSymbols(vars);
             lambda.getAllSymbols(vars);
+        }
+
+        @Override
+        public String toQASM() {
+            return String.format("u2(%s,%s) q[%s];\n", phi.toString(), lambda.toEggString(), qubit.replaceAll("q", ""));
         }
     }
 
@@ -1540,6 +1655,11 @@ public class EggGen {
             phi.getAllSymbols(vars);
             lambda.getAllSymbols(vars);
         }
+
+        @Override
+        public String toQASM() {
+            return String.format("u3(%s,%s,%s) q[%s];\n", theta.toString(), phi.toString(), lambda.toString(), qubit.replaceAll("q", ""));
+        }
     }
 
     public static class RX extends Gate {
@@ -1567,6 +1687,11 @@ public class EggGen {
         @Override
         public void getAllSymbols(Set<String> vars) {
             angle.getAllSymbols(vars);
+        }
+
+        @Override
+        public String toQASM() {
+            return String.format("rx(%s) q[%s];\n", angle.toEggString(), qubit.replaceAll("q", ""));
         }
     }
 
@@ -1596,6 +1721,11 @@ public class EggGen {
        @Override
         public int getMaxQubits(){
             return Integer.max(Integer.valueOf(control.replaceAll("q", "")), Integer.valueOf(target.replaceAll("q", "")));
+        }
+
+        @Override
+        public String toQASM() {
+            return String.format("cz q[%s],q[%s];\n", control.replaceAll("q", ""), target.replaceAll("q", ""));
         }
     }
 
@@ -1651,9 +1781,13 @@ public class EggGen {
         }
 
 
-        @Override
         public void getAllSymbols(Set<String> vars) {
             angle.getAllSymbols(vars);
+        }
+
+        @Override
+        public String toQASM() {
+            return String.format("rxx(%s) q[%s],q[%s];\n", angle.toString(), qubit1.replaceAll("q", ""), qubit2.replaceAll("q", ""));
         }
     }
 
@@ -1684,13 +1818,18 @@ public class EggGen {
         public void getAllSymbols(Set<String> vars) {
             phi.getAllSymbols(vars);
         }
+
+        @Override
+        public String toQASM() {
+            return String.format("gpi(%s) q[%s];\n", phi.toString(), qubit.replaceAll("q", ""));
+        }
     }
 
     public static class GPI2 extends Gate {
         public final String qubit;
         public final Expr phi;
         public GPI2(String qubit, Expr phi) { this.qubit = qubit; this.phi = phi; }
-        public String toEggString() { return String.format("(GPI2 (Q \"%s\") %s)", qubit, phi.toString()); }
+        public String toEggString() { return String.format("(GPI2 (Q \"%s\") %s)", qubit, phi.toEggString()); }
 
         @Override
         public int getTwoQubitsCount() {
@@ -1712,13 +1851,18 @@ public class EggGen {
         public void getAllSymbols(Set<String> vars) {
             phi.getAllSymbols(vars);
         }
+
+        @Override
+        public String toQASM() {
+            return String.format("gpi2(%s) q[%s];\n", phi.toString(), qubit.replaceAll("q", ""));
+        }
     }
 
     public static class VZ extends Gate {
         public final String qubit;
         public final Expr theta;
         public VZ(String qubit, Expr theta) { this.qubit = qubit; this.theta = theta; }
-        public String toEggString() { return String.format("(VZ (Q \"%s\") %s)", qubit, theta.toString()); }
+        public String toEggString() { return String.format("(VZ (Q \"%s\") %s)", qubit, theta.toEggString()); }
 
         @Override
         public int getTwoQubitsCount() {
@@ -1741,6 +1885,11 @@ public class EggGen {
         public void getAllSymbols(Set<String> vars) {
             theta.getAllSymbols(vars);
         }
+
+        @Override
+        public String toQASM() {
+            return String.format("vz(%s) q[%s];\n", theta.toString(), qubit.replaceAll("q", ""));
+        }
     }
 
     public static class MS extends Gate {
@@ -1749,7 +1898,7 @@ public class EggGen {
         public final Expr phi1;
         public final Expr phi2;
         public MS(String qubit1, String qubit2, Expr phi1, Expr phi2) { this.qubit1 = qubit1; this.qubit2 = qubit2; this.phi1 = phi1; this.phi2 = phi2; }
-        public String toEggString() { return String.format("(MS (Q \"%s\") (Q \"%s\") %s %s)", qubit1, qubit2, phi1.toString(), phi2.toString()); }
+        public String toEggString() { return String.format("(MS (Q \"%s\") (Q \"%s\") %s %s)", qubit1, qubit2, phi1.toEggString(), phi2.toEggString()); }
 
         @Override
         public int getTwoQubitsCount() {
@@ -1774,6 +1923,11 @@ public class EggGen {
             phi1.getAllSymbols(vars);
             phi2.getAllSymbols(vars);
         }
+
+        @Override
+        public String toQASM() {
+            return String.format("ms(%s,%s) q[%s],q[%s];\n", phi1.toString(), phi2.toString(), qubit1.replaceAll("q", ""), qubit2.replaceAll("q", ""));
+        }
     }
 
     public static class SX extends Gate {
@@ -1796,6 +1950,11 @@ public class EggGen {
         @Override
         public int getMaxQubits(){
             return Integer.valueOf(qubit.replaceAll("q", ""));
+        }
+
+        @Override
+        public String toQASM() {
+            return String.format("sx q[%s];\n", qubit.replaceAll("q", ""));
         }
     }
 }

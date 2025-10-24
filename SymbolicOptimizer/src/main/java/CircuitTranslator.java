@@ -17,7 +17,7 @@ public class CircuitTranslator {
         EggGen.Circuit eggGenCircuit = translateCircuit(circuit);
         EggGen.Permutation emptyPermutation = new EggGen.Permutation(new ArrayList<>());
         EggGen.ConstrainedCircuit eggConstrainedCircuit = new EggGen.ConstrainedCircuit(eggGenCircuit, emptyPermutation);
-        cache.put(eggConstrainedCircuit.toEggString(), new ConstrainedCircuit(circuit, new ArrayList<>()));
+        //cache.put(eggConstrainedCircuit.toEggString(), new ConstrainedCircuit(circuit, new ArrayList<>()));
         return eggConstrainedCircuit;
     }
 
@@ -28,22 +28,22 @@ public class CircuitTranslator {
         EggGen.Circuit eggGenCircuit = translateCircuit(constrainedCircuit.getCircuit());
         EggGen.Permutation permutation = new EggGen.Permutation(constrainedCircuit.getConstraint());
         EggGen.ConstrainedCircuit eggConstrainedCircuit = new EggGen.ConstrainedCircuit(eggGenCircuit, permutation);
-        constrainedCircuit.cacheEgg(eggConstrainedCircuit);
-        cache.put(eggConstrainedCircuit.toEggString(), constrainedCircuit);
+        //constrainedCircuit.cacheEgg(eggConstrainedCircuit);
+        //cache.put(eggConstrainedCircuit.toEggString(), constrainedCircuit);
         return eggConstrainedCircuit;
     }
 
     public static ConstrainedCircuit translateBack(EggGen.ConstrainedCircuit eggCircuit, int maxQubits) {
-        String eggString = eggCircuit.toEggString();
-        if (cache.containsKey(eggString)) {
-            return cache.get(eggString);
-        }
+        //String eggString = eggCircuit.toEggString();
+        // if (cache.containsKey(eggString)) {
+        //     return cache.get(eggString);
+        // }
 
         // If not in cache, it's a new circuit from egglog, so we construct it.
         Circuit circuit = translateCircuitBack(eggCircuit.circuit, maxQubits);
         List<Integer> permutation = eggCircuit.permutation.perm;
         ConstrainedCircuit newConstrainedCircuit = new ConstrainedCircuit(circuit, permutation);
-        cache.put(eggString, newConstrainedCircuit);
+        //cache.put(eggString, newConstrainedCircuit);
         return newConstrainedCircuit;
     }
 

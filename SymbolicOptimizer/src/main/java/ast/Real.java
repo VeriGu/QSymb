@@ -22,6 +22,9 @@ public final class Real extends Expr {
 
   @Override
   public String toEggString() {
-    return String.format("(Real %s)", number);
+    if(number == Math.floor(number) && !Double.isInfinite(number)) {
+      return String.format("(Real %.1f)", number);
+    }
+    return String.format("(Real %f)", number);
   }
 }

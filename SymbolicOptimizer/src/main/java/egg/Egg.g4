@@ -57,7 +57,7 @@ LPAREN        : '(';
 RPAREN        : ')';
 STRING        : '"' (WORD)* '"';
 INTEGER       : [0-9]+;
-NUMBER        : '-'? [0-9]+ ('.' [0-9]+);
+NUMBER        : '-'? [0-9]+ ('.' [0-9]+)?;
 WORD          : (LETTER | '_') (LETTER | DIGIT | '_')*;
 WHITESPACE    : [ \t\r\n]+ -> skip;
 

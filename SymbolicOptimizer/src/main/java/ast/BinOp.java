@@ -56,7 +56,7 @@ public final class BinOp extends Expr {
   @Override
   public String toString() {
     if (op.equals(Op.PLUS) || op.equals(Op.SUBTRACT)) {
-      return String.format("%s %s %s", e1, opString(op), e2);
+      return String.format("%s%s%s", e1, opString(op), e2);
     }
     return String.format("%s%s%s", e1, opString(op), e2);
   }

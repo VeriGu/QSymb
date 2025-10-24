@@ -64,7 +64,7 @@ public class SymbolicSolve {
             }
 
             public String toJson() {
-                return String.format("{\"row\": %d, \"col\": %d, \"value\": %s}", row, col, value.toString());
+                return String.format("{\"row\": %d, \"col\": %d, \"value\": \"%s\"}", row, col, value.toString());
             }
         }
 
@@ -152,11 +152,11 @@ public class SymbolicSolve {
         } else if (gate instanceof EggGen.RX) {
             gateName = "rx";
             targets.add(parseQubit(((EggGen.RX) gate).qubit));
-            paramsJson = paramToJson("theta", ((EggGen.RX) gate).angle);
+            paramsJson = paramToJson("theta1", ((EggGen.RX) gate).angle);
         } else if (gate instanceof EggGen.RY) {
             gateName = "ry";
             targets.add(parseQubit(((EggGen.RY) gate).qubit));
-            paramsJson = paramToJson("theta", ((EggGen.RY) gate).angle);
+            paramsJson = paramToJson("theta1", ((EggGen.RY) gate).angle);
         } else if (gate instanceof EggGen.U1) {
             gateName = "u1";
             targets.add(parseQubit(((EggGen.U1) gate).qubit));
@@ -172,7 +172,7 @@ public class SymbolicSolve {
             gateName = "u3";
             targets.add(parseQubit(((EggGen.U3) gate).qubit));
             paramsJson = paramsToJson(
-                new String[]{"theta", "phi", "lam"},
+                new String[]{"theta1", "phi", "lam"},
                 new Expr[]{((EggGen.U3) gate).theta, ((EggGen.U3) gate).phi, ((EggGen.U3) gate).lambda}
             );
         } else if (gate instanceof EggGen.RXX) {
@@ -352,6 +352,8 @@ public class SymbolicSolve {
                 System.err.println(line);
             }
             process.waitFor();
+
+            System.out.println(content.toString());
             return content.toString().contains("True");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
