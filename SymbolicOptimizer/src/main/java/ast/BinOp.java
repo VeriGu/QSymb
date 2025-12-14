@@ -48,6 +48,8 @@ public final class BinOp extends Expr {
       return "+";
     } else if (op.equals(Op.MINUS)) {
       return "-";
+    } else if (op.equals(Op.SUBTRACT)){
+      return "-";
     } else {
       return op.toString();
     }

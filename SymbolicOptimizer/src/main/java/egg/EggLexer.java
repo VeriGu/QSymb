@@ -21,9 +21,8 @@ public class EggLexer extends Lexer {
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
 		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
 		T__31=32, T__32=33, T__33=34, T__34=35, T__35=36, T__36=37, T__37=38, 
-		T__38=39, T__39=40, T__40=41, T__41=42, T__42=43, BOOLEAN=44, F64=45, 
-		Nil=46, LPAREN=47, RPAREN=48, STRING=49, INTEGER=50, NUMBER=51, WORD=52, 
-		WHITESPACE=53;
+		T__38=39, T__39=40, T__40=41, T__41=42, T__42=43, BOOLEAN=44, INTEGER=45, 
+		F64=46, Nil=47, LPAREN=48, RPAREN=49, STRING=50, NUMBER=51, WORD=52, WHITESPACE=53;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};
@@ -39,8 +38,8 @@ public class EggLexer extends Lexer {
 			"T__17", "T__18", "T__19", "T__20", "T__21", "T__22", "T__23", "T__24", 
 			"T__25", "T__26", "T__27", "T__28", "T__29", "T__30", "T__31", "T__32", 
 			"T__33", "T__34", "T__35", "T__36", "T__37", "T__38", "T__39", "T__40", 
-			"T__41", "T__42", "BOOLEAN", "F64", "Nil", "LPAREN", "RPAREN", "STRING", 
-			"INTEGER", "NUMBER", "WORD", "WHITESPACE", "DIGIT", "LETTER"
+			"T__41", "T__42", "BOOLEAN", "INTEGER", "F64", "Nil", "LPAREN", "RPAREN", 
+			"STRING", "NUMBER", "WORD", "WHITESPACE", "DIGIT", "LETTER"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -52,8 +51,8 @@ public class EggLexer extends Lexer {
 			"'RXX'", "'GPI'", "'GPI2'", "'VZ'", "'MS'", "'SX'", "'Q'", "'Bool'", 
 			"'Real'", "'Symbol'", "'Var'", "'Fun'", "'UnOp'", "'BinOp'", "'EXP'", 
 			"'SQRT'", "'MINUS'", "'COS'", "'SIN'", "'NOT'", "'PLUS'", "'SUBTRACT'", 
-			"'MULT'", "'DIV'", "'POWER'", "'XOR'", "'AND'", "'OR'", null, null, "'Nil'", 
-			"'('", "')'"
+			"'MULT'", "'DIV'", "'POWER'", "'XOR'", "'AND'", "'OR'", null, null, null, 
+			"'Nil'", "'('", "')'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -62,8 +61,8 @@ public class EggLexer extends Lexer {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, null, null, null, null, null, null, "BOOLEAN", "F64", "Nil", 
-			"LPAREN", "RPAREN", "STRING", "INTEGER", "NUMBER", "WORD", "WHITESPACE"
+			null, null, null, null, null, null, null, null, "BOOLEAN", "INTEGER", 
+			"F64", "Nil", "LPAREN", "RPAREN", "STRING", "NUMBER", "WORD", "WHITESPACE"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -169,9 +168,9 @@ public class EggLexer extends Lexer {
 		"&\u0001\'\u0001\'\u0001\'\u0001\'\u0001\'\u0001\'\u0001(\u0001(\u0001"+
 		"(\u0001(\u0001)\u0001)\u0001)\u0001)\u0001*\u0001*\u0001*\u0001+\u0001"+
 		"+\u0001+\u0001+\u0001+\u0001+\u0001+\u0001+\u0001+\u0003+\u0138\b+\u0001"+
-		",\u0001,\u0001-\u0001-\u0001-\u0001-\u0001.\u0001.\u0001/\u0001/\u0001"+
-		"0\u00010\u00050\u0146\b0\n0\f0\u0149\t0\u00010\u00010\u00011\u00041\u014e"+
-		"\b1\u000b1\f1\u014f\u00012\u00032\u0153\b2\u00012\u00042\u0156\b2\u000b"+
+		",\u0004,\u013b\b,\u000b,\f,\u013c\u0001-\u0001-\u0001.\u0001.\u0001.\u0001"+
+		".\u0001/\u0001/\u00010\u00010\u00011\u00011\u00051\u014b\b1\n1\f1\u014e"+
+		"\t1\u00011\u00011\u00012\u00032\u0153\b2\u00012\u00042\u0156\b2\u000b"+
 		"2\f2\u0157\u00012\u00012\u00042\u015c\b2\u000b2\f2\u015d\u00032\u0160"+
 		"\b2\u00013\u00013\u00033\u0164\b3\u00013\u00013\u00013\u00053\u0169\b"+
 		"3\n3\f3\u016c\t3\u00014\u00044\u016f\b4\u000b4\f4\u0170\u00014\u00014"+
@@ -224,9 +223,9 @@ public class EggLexer extends Lexer {
 		"\u0001\u0000\u0000\u0000I\u010b\u0001\u0000\u0000\u0000K\u0114\u0001\u0000"+
 		"\u0000\u0000M\u0119\u0001\u0000\u0000\u0000O\u011d\u0001\u0000\u0000\u0000"+
 		"Q\u0123\u0001\u0000\u0000\u0000S\u0127\u0001\u0000\u0000\u0000U\u012b"+
-		"\u0001\u0000\u0000\u0000W\u0137\u0001\u0000\u0000\u0000Y\u0139\u0001\u0000"+
-		"\u0000\u0000[\u013b\u0001\u0000\u0000\u0000]\u013f\u0001\u0000\u0000\u0000"+
-		"_\u0141\u0001\u0000\u0000\u0000a\u0143\u0001\u0000\u0000\u0000c\u014d"+
+		"\u0001\u0000\u0000\u0000W\u0137\u0001\u0000\u0000\u0000Y\u013a\u0001\u0000"+
+		"\u0000\u0000[\u013e\u0001\u0000\u0000\u0000]\u0140\u0001\u0000\u0000\u0000"+
+		"_\u0144\u0001\u0000\u0000\u0000a\u0146\u0001\u0000\u0000\u0000c\u0148"+
 		"\u0001\u0000\u0000\u0000e\u0152\u0001\u0000\u0000\u0000g\u0163\u0001\u0000"+
 		"\u0000\u0000i\u016e\u0001\u0000\u0000\u0000k\u0174\u0001\u0000\u0000\u0000"+
 		"m\u0176\u0001\u0000\u0000\u0000op\u0005C\u0000\u0000pq\u0005C\u0000\u0000"+
@@ -315,18 +314,18 @@ public class EggLexer extends Lexer {
 		"f\u0000\u0000\u0133\u0134\u0005a\u0000\u0000\u0134\u0135\u0005l\u0000"+
 		"\u0000\u0135\u0136\u0005s\u0000\u0000\u0136\u0138\u0005e\u0000\u0000\u0137"+
 		"\u012e\u0001\u0000\u0000\u0000\u0137\u0132\u0001\u0000\u0000\u0000\u0138"+
-		"X\u0001\u0000\u0000\u0000\u0139\u013a\u0003e2\u0000\u013aZ\u0001\u0000"+
-		"\u0000\u0000\u013b\u013c\u0005N\u0000\u0000\u013c\u013d\u0005i\u0000\u0000"+
-		"\u013d\u013e\u0005l\u0000\u0000\u013e\\\u0001\u0000\u0000\u0000\u013f"+
-		"\u0140\u0005(\u0000\u0000\u0140^\u0001\u0000\u0000\u0000\u0141\u0142\u0005"+
-		")\u0000\u0000\u0142`\u0001\u0000\u0000\u0000\u0143\u0147\u0005\"\u0000"+
-		"\u0000\u0144\u0146\u0003g3\u0000\u0145\u0144\u0001\u0000\u0000\u0000\u0146"+
-		"\u0149\u0001\u0000\u0000\u0000\u0147\u0145\u0001\u0000\u0000\u0000\u0147"+
-		"\u0148\u0001\u0000\u0000\u0000\u0148\u014a\u0001\u0000\u0000\u0000\u0149"+
-		"\u0147\u0001\u0000\u0000\u0000\u014a\u014b\u0005\"\u0000\u0000\u014bb"+
-		"\u0001\u0000\u0000\u0000\u014c\u014e\u0007\u0000\u0000\u0000\u014d\u014c"+
-		"\u0001\u0000\u0000\u0000\u014e\u014f\u0001\u0000\u0000\u0000\u014f\u014d"+
-		"\u0001\u0000\u0000\u0000\u014f\u0150\u0001\u0000\u0000\u0000\u0150d\u0001"+
+		"X\u0001\u0000\u0000\u0000\u0139\u013b\u0007\u0000\u0000\u0000\u013a\u0139"+
+		"\u0001\u0000\u0000\u0000\u013b\u013c\u0001\u0000\u0000\u0000\u013c\u013a"+
+		"\u0001\u0000\u0000\u0000\u013c\u013d\u0001\u0000\u0000\u0000\u013dZ\u0001"+
+		"\u0000\u0000\u0000\u013e\u013f\u0003e2\u0000\u013f\\\u0001\u0000\u0000"+
+		"\u0000\u0140\u0141\u0005N\u0000\u0000\u0141\u0142\u0005i\u0000\u0000\u0142"+
+		"\u0143\u0005l\u0000\u0000\u0143^\u0001\u0000\u0000\u0000\u0144\u0145\u0005"+
+		"(\u0000\u0000\u0145`\u0001\u0000\u0000\u0000\u0146\u0147\u0005)\u0000"+
+		"\u0000\u0147b\u0001\u0000\u0000\u0000\u0148\u014c\u0005\"\u0000\u0000"+
+		"\u0149\u014b\u0003g3\u0000\u014a\u0149\u0001\u0000\u0000\u0000\u014b\u014e"+
+		"\u0001\u0000\u0000\u0000\u014c\u014a\u0001\u0000\u0000\u0000\u014c\u014d"+
+		"\u0001\u0000\u0000\u0000\u014d\u014f\u0001\u0000\u0000\u0000\u014e\u014c"+
+		"\u0001\u0000\u0000\u0000\u014f\u0150\u0005\"\u0000\u0000\u0150d\u0001"+
 		"\u0000\u0000\u0000\u0151\u0153\u0005-\u0000\u0000\u0152\u0151\u0001\u0000"+
 		"\u0000\u0000\u0152\u0153\u0001\u0000\u0000\u0000\u0153\u0155\u0001\u0000"+
 		"\u0000\u0000\u0154\u0156\u0007\u0000\u0000\u0000\u0155\u0154\u0001\u0000"+
@@ -350,7 +349,7 @@ public class EggLexer extends Lexer {
 		"\u0172\u0001\u0000\u0000\u0000\u0172\u0173\u00064\u0000\u0000\u0173j\u0001"+
 		"\u0000\u0000\u0000\u0174\u0175\u000209\u0000\u0175l\u0001\u0000\u0000"+
 		"\u0000\u0176\u0177\u0007\u0002\u0000\u0000\u0177n\u0001\u0000\u0000\u0000"+
-		"\f\u0000\u0137\u0147\u014f\u0152\u0157\u015d\u015f\u0163\u0168\u016a\u0170"+
+		"\f\u0000\u0137\u013c\u014c\u0152\u0157\u015d\u015f\u0163\u0168\u016a\u0170"+
 		"\u0001\u0006\u0000\u0000";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());

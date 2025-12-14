@@ -16,6 +16,7 @@ import ast.Expr;
 import ast.Expr.Op;
 import ast.Real;
 import ast.Symbol;
+import ast.UnOp;
 
 public class SymbolicSolve {
 
@@ -179,7 +180,7 @@ public class SymbolicSolve {
             gateName = "rxx";
             targets.add(parseQubit(((EggGen.RXX) gate).qubit1));
             targets.add(parseQubit(((EggGen.RXX) gate).qubit2));
-            paramsJson = paramToJson("theta", ((EggGen.RXX) gate).angle);
+            paramsJson = paramToJson("theta1", ((EggGen.RXX) gate).angle);
         } else if (gate instanceof EggGen.SYMB){
             gateName = "symb";
             targets.add(0);
@@ -240,10 +241,12 @@ public class SymbolicSolve {
          if (expr instanceof Symbol) {
             return ((Symbol) expr).getSymbol();
          } else if(expr instanceof Real){
-            return String.valueOf(((Real) expr).getNumber());
+            return String.format("%.17g", ((Real) expr).getNumber());
          } else if(expr instanceof BinOp) {
             return evalBinop((BinOp) expr);
-         } 
+         } else if(expr instanceof UnOp) {
+            return evalUniOp((UnOp) expr);
+         }
          return "";
     }
 
@@ -257,6 +260,13 @@ public class SymbolicSolve {
         case DIV: return v1 + "/" + v2;
         default: throw new RuntimeException(String.format("unimplemented BinOp: %s", bo.getOp()));
        }
+    }
+
+    private String evalUniOp(UnOp uniop) { 
+        if(uniop.getOp() == Op.MINUS) {
+            return "-" + evalExpr(uniop.getE());
+        }
+        return "";
     }
     
     
@@ -353,7 +363,7 @@ public class SymbolicSolve {
             }
             process.waitFor();
 
-            System.out.println(content.toString());
+            //System.out.println(content.toString());
             return content.toString().contains("True");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -361,9 +371,11 @@ public class SymbolicSolve {
         }
     }
 
-    public String getEigenvalues(String jsonCircuit) {
+
+    public String getTrace(List<EggGen.Gate> gates, int nqubits) {
+        String circuitj1 = circuitToJson(gates, nqubits);
         try {
-            ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", "-eigenvals", jsonCircuit);
+            ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", "-trace", circuitj1);
             Process process = pb.start();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),java.nio.charset.StandardCharsets.UTF_8));
@@ -376,9 +388,36 @@ public class SymbolicSolve {
             while ((line = ereader.readLine()) != null) {                                                  
                 System.err.println(line);
             }
+
+            System.out.println(content.toString());
             process.waitFor();
             return content.toString();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
+    public String getEigenvalues(List<EggGen.Gate> gates, int nqubits) {
+        String circuitj1 = circuitToJson(gates, nqubits);
+        try {
+            ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", "-eigenvals", circuitj1);
+            Process process = pb.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder content = new StringBuilder();
+            BufferedReader ereader = new BufferedReader(new InputStreamReader(process.getErrorStream(),java.nio.charset.StandardCharsets.UTF_8));
+            String line;
+            while ((line = reader.readLine()) != null) {                                                  
+                content.append(line);
+            }
+            while ((line = ereader.readLine()) != null) {                                                  
+                System.err.println(line);
+            }
+
+            System.out.println(content.toString());
+            process.waitFor();
+            return content.toString();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return null;
@@ -510,8 +549,8 @@ public class SymbolicSolve {
         System.out.println(bellJson);
         solver.computeAndPrintMatrix(bellJson);
         System.out.println("Eigenvalues for Bell state circuit:");
-        String eigenvalues = solver.getEigenvalues(bellJson);
-        System.out.println(eigenvalues);
+        //String eigenvalues = solver.getEigenvalues(bellJson);
+        //System.out.println(eigenvalues);
         System.out.println();
 
         // Test case 2: Parameterized circuit from Test 12

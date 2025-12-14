@@ -14,7 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.io.PrintWriter;
+import java.io.File;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -45,7 +46,8 @@ public class EggGen {
     private long ematchingSuffixTime;
     private long ematchingRuleApplicationTime;
     private long ematchingResultParsingTime;
-
+    private FileWriter fileWriter;
+    private PrintWriter printWriter;
     private Process egglogProcess;
     private BufferedWriter processInput;
     private BufferedReader processOutput;
@@ -58,7 +60,7 @@ public class EggGen {
 
         if (expr instanceof ast.Symbol) {
             ast.Symbol symbol = (ast.Symbol) expr;
-            if (symbol.getSymbol().equals("theta1") || symbol.getSymbol().equals("theta2") || symbol.getSymbol().equals("theta3")) {
+            if (symbol.getSymbol().equals("theta") | symbol.getSymbol().equals("theta1") || symbol.getSymbol().equals("theta2") || symbol.getSymbol().equals("theta3")) {
                 return new ast.Var(symbol.getSymbol());
             } else {
                 return symbol;
@@ -96,7 +98,7 @@ public class EggGen {
         content.append("\n(datatype Op\n  (EXP :cost 0) (SQRT :cost 0) (MINUS :cost 0) (COS :cost 0) (SIN :cost 0) (NOT :cost 0) (PLUS :cost 0) (SUBTRACT :cost 0) (MULT :cost 0) (DIV :cost 0) (POWER :cost 0) (XOR :cost 0) (AND :cost 0) (OR :cost 0))\n");
         content.append("\n(datatype Expr\n  (Bool bool :cost 0) (Real f64 :cost 0) (Symbol String :cost 0) (Var String :cost 0) (Fun String Expr :cost 0) (UnOp Op Expr :cost 0) (BinOp Op Expr Expr :cost 0))\n");
         content.append("\n(datatype Qubit (Q String :cost 0))\n");
-        content.append("\n(datatype Gate\n  (X Qubit :cost 1) (CX Qubit Qubit :cost 1000) (RZ Qubit Expr :cost 1) (H Qubit :cost 1) (SYMB i64 :cost 0) (U1 Qubit Expr :cost 1) (U2 Qubit Expr Expr :cost 1)\n  (U3 Qubit Expr Expr Expr :cost 1) (RX Qubit Expr :cost 1) (CZ Qubit Qubit :cost 10) (RY Qubit Expr :cost 1) (RXX Qubit Qubit Expr :cost 10)\n  (GPI Qubit Expr :cost 1) (GPI2 Qubit Expr :cost 1) (VZ Qubit Expr :cost 1) (MS Qubit Qubit Expr Expr :cost 10) (SX Qubit :cost 1))\n");
+        content.append("\n(datatype Gate\n  (X Qubit :cost 3) (CX Qubit Qubit :cost 1000) (RZ Qubit Expr :cost 3) (H Qubit :cost 3) (SYMB i64 :cost 3) (U1 Qubit Expr :cost 3) (U2 Qubit Expr Expr :cost 3)\n  (U3 Qubit Expr Expr Expr :cost 3) (RX Qubit Expr :cost 3) (CZ Qubit Qubit :cost 10) (RY Qubit Expr :cost 3) (RXX Qubit Qubit Expr :cost 10)\n  (GPI Qubit Expr :cost 3) (GPI2 Qubit Expr :cost 3) (VZ Qubit Expr :cost 3) (MS Qubit Qubit Expr Expr :cost 10) (SX Qubit :cost 3))\n");
         content.append("\n(datatype Circuit (Nil :cost 0) (Cons Gate Circuit :cost 0))\n");
         content.append("\n(datatype Value (B bool :cost 0) (R f64 :cost 0))\n");
         content.append("\n(datatype Permutation (PermNil :cost 0) (PermCons i64 Permutation :cost 0))\n");
@@ -107,6 +109,8 @@ public class EggGen {
         content.append("(ruleset sizeanalysis)\n");
         content.append("(ruleset noteqfinger)\n");
         content.append("(ruleset opt)\n");
+        content.append("(ruleset opt1)\n");
+        content.append("(ruleset opt2)\n");
         content.append("(rule\n" + //
                         " ((= x (Nil)))\n" + //
                         " ((set (size x) 0))\n" + //
@@ -118,8 +122,8 @@ public class EggGen {
                         " (\n" + //
                         "  (set (size x) (+ 1 s))\n" + //
                         " )\n" + //
-                        ":ruleset sizeanalysis)");
-        content.append("(relation notSameButEqfinger (ConstrainedCircuit ConstrainedCircuit))");
+                        ":ruleset sizeanalysis)\n");
+        content.append("(relation notSameButEqfinger (ConstrainedCircuit ConstrainedCircuit))\n");
         content.append("(rule \n" + //
                         "(" + //
                         " (= x (CCircuit cx p))\n" + //
@@ -139,16 +143,39 @@ public class EggGen {
         "(rewrite (list-append (Nil) list) list :ruleset list-ruleset)\n" + 
         "(rewrite (list-append (Cons head tail) list) (Cons head (list-append tail list)) :ruleset list-ruleset)\n");
         content.append("(ruleset const)\n");
+
+        try {
+            File file = new File("egg_run.egg");
+            this.fileWriter = new FileWriter(file);
+            this.printWriter = new PrintWriter(this.fileWriter);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
         content.append("(rewrite (BinOp (PLUS) (Real x) (Real y)) (Real (+ x y)) :ruleset const)\n");
         content.append("(rewrite (BinOp (SUBTRACT) (Real x) (Real y)) (Real (- x y)) :ruleset const)\n");
-        content.append("(rewrite (BinOp (PLUS) (Real 0.0) x) x :ruleset const)\n");
-        content.append("(rewrite (BinOp (MULT) (Real 0.0) x) (Real 0.0) :ruleset const)\n");
+        // content.append("(rewrite (BinOp (DIV) (Real x) (Real y)) (Real (/ x y)) :ruleset const)\n");
+        // content.append("(rewrite (BinOp (MULT) (Real x) (Real y)) (Real (* x y)) :ruleset const)\n");
+        // content.append("(rewrite (BinOp (PLUS) (Real 0.0) x) x :ruleset const)\n");
+        // content.append("(rewrite (BinOp (MULT) (Real 0.0) x) (Real 0.0) :ruleset const)\n");
+        // content.append("(rewrite (BinOp (PLUS) x y) (BinOp (PLUS) y x) :ruleset const)\n");
+        // content.append("(rewrite (BinOp (PLUS) (BinOp (MULT) (Real x) (Symbol z)) (BinOp (MULT) (Real y) (Symbol z))) (BinOp (MULT) (Real (+ x y)) (Symbol z)) :ruleset const)\n");
+        // content.append("(rewrite (BinOp (MULT) x y) (BinOp (MULT) y x) :ruleset const)\n");
+        // content.append("(rewrite (BinOp (DIV) (Symbol x) (Real y)) (BinOp (MULT) (Real (/ 1.0 y)) (Symbol x)) :ruleset const)\n");
+        // content.append("(rewrite (BinOp (DIV) (UnOp (MINUS) (Symbol x)) (Real y)) (BinOp (MULT) (Real (/ -1.0 y)) (Symbol x)) :ruleset const)\n");
+        content.append("(rewrite (UnOp (MINUS) (Real y)) (Real (- 0.0 y)) :ruleset const)\n");
+        content.append("(rewrite (UnOp (MINUS) (UnOp (MINUS) y)) y :ruleset const)\n");
         content.append("(rewrite (BinOp (PLUS) x y) (BinOp (PLUS) y x) :ruleset const)\n");
-        content.append("(rewrite (BinOp (PLUS) (BinOp (MULT) (Real x) (Symbol z)) (BinOp (MULT) (Real y) (Symbol z))) (BinOp (MULT) (Real (+ x y)) (Symbol z)) :ruleset const)\n");
-        content.append("(rewrite (BinOp (MULT) x y) (BinOp (MULT) y x) :ruleset const)\n");
-        content.append("(rewrite (BinOp (DIV) (Symbol x) (Real y)) (BinOp (MULT) (Real (/ 1.0 y)) (Symbol x)) :ruleset const)\n");
-        content.append("(rewrite (BinOp (DIV) (UnOp (MINUS) (Symbol x)) (Real y)) (BinOp (MULT) (Real (/ -1.0 y)) (Symbol x)) :ruleset const)\n");
+        content.append("(ruleset wire)\n");
+        // content.append("(union (Symbol \"pi\") (Real 3.141592653589793238))\n");
+        // content.append("(union (BinOp (DIV) (Symbol \"pi\") (Real 2.0)) (Real 1.570796326794896619))\n");
+        // content.append("(union (BinOp (DIV) (Symbol \"pi\") (Real 4.0)) (Real 0.7853981633974483096))\n");
+        // content.append("(union (BinOp (DIV) (Symbol \"pi\") (Real 8.0)) (Real 0.3926990816987241548))\n");
+        // content.append("(union (BinOp (MULT) (Symbol \"pi\") (Real 2.0)) (Real 6.283185307179586476))\n");
+        // content.append("(union (BinOp (MULT) (Symbol \"pi\") (Real 4.0)) (Real 12.56637061435917295))\n");
+        // content.append("(union (BinOp (MULT) (Symbol \"pi\") (Real 8.0)) (Real 25.13274122871834591))\n");
         System.out.println(content.toString());
+        
         try {
             startEgglogREPL();
         } catch (IOException e) {
@@ -166,14 +193,32 @@ public class EggGen {
         return c;
     }
 
+    public Circuit extractCircuit(String name) {
+        String output = sendCommand(String.format("(extract %s)", name), true);
+        output = processPrintedOutput(output);
+        EggGen.Circuit c = EggAstBuilder.parseCircuit(output);
+        return c;
+    }
+
+    public List<Circuit> extractCircuit(String name, int n) {
+        String output = sendCommand(String.format("(extract %s %d)", name, n), true);
+        output = processPrintedOutput(output);
+        List<EggGen.Circuit> list = new ArrayList<>();
+        String[] lines = output.substring(1, output.length()-1).trim().split("\\n");
+        for(String line: lines) {
+            list.add(EggAstBuilder.parseCircuit(line));
+        }
+        return list;
+    }
+
     public List<ConstrainedCircuit> extract(String name, int n) {
         String output = sendCommand(String.format("(extract %s %d)", name, n), true);
         output = processPrintedOutput(output);
-        System.out.println(output);
+        //System.out.println(output);
         List<EggGen.ConstrainedCircuit> list = new ArrayList<>();
         String[] lines = output.substring(1, output.length()-1).trim().split("\\n");
         for(String line: lines) {
-            System.out.println(line);
+            //System.out.println(line);
             list.add(EggAstBuilder.parse(line));
         }
         return list;
@@ -191,6 +236,7 @@ public class EggGen {
     }
 
     public void stopEgglogREPL() {
+        printWriter.close();
         if (egglogProcess != null) {
             egglogProcess.destroy();
         }
@@ -201,6 +247,8 @@ public class EggGen {
     }
 
     public String sendCommand(String command, boolean wait) {
+        printWriter.println(command);
+        printWriter.flush();
         if (processInput == null || processOutput == null) {
             System.out.println("REPL not started. Call startEgglogREPL() first.");
             return null;
@@ -215,7 +263,7 @@ public class EggGen {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        
         return readOutput();
     }
 
@@ -348,10 +396,13 @@ public class EggGen {
     private String readError() {
         StringBuilder error = new StringBuilder();
         String line;
+        
         try {
-            while ((line = processError.readLine()) != null) {
-                error.append(line).append('\n');
-            }
+        while ((line = processError.readLine()) != null) {
+            error.append(line).append('\n');
+            System.out.println(line);
+            
+        }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -378,15 +429,15 @@ public class EggGen {
 
     public boolean check(String predicate) {
         long startTime = System.nanoTime();
-        System.out.println(predicate);
         String output = sendCommand(String.format("(check %s)",predicate), true);
+        System.out.println(output);
+        //System.out.println(predicate);
         if(output.contains("failed")) {
             //System.out.println(output);
-            System.out.println("false");
+            //System.out.println("false");
             checkEqualityTime += System.nanoTime() - startTime;
             return false;
         }
-        System.out.println(output);
         //System.out.println("true");
         checkEqualityTime += System.nanoTime() - startTime;
         return true;
@@ -407,16 +458,19 @@ public class EggGen {
     }
 
     public String addCircuit(Circuit circuit) {
-        Permutation emptyPermutation = new Permutation(new ArrayList<>());
-        ConstrainedCircuit constrainedCircuit = new ConstrainedCircuit(circuit, emptyPermutation);
-        return addConstrainedCircuit(constrainedCircuit);
+        long startTime = System.nanoTime();
+        String name = "c_" + numCircuits++;
+        String output = sendCommand(String.format("(let %s %s)", name, circuit.toEggString()));
+        //System.err.println(output);
+        addNewCircuitTime += System.nanoTime() - startTime;
+        return name;
     }
 
     public String addConstrainedCircuit(ConstrainedCircuit constrainedCircuit) {
         long startTime = System.nanoTime();
         String name = "cc_" + numCircuits++;
         String output = sendCommand(String.format("(let %s %s)\n", name, constrainedCircuit.toEggString()));
-        System.err.println(output);
+        //System.err.println(output);
         addNewCircuitTime += System.nanoTime() - startTime;
         return name;
     }
@@ -424,20 +478,36 @@ public class EggGen {
     public void addRewrite(String rule){
         if(!rules.contains(rule)) {
             long startTime = System.nanoTime();
-            System.out.println("Egg: Add Rewrite Rule:" + rule);
+            
+            //System.out.println("Egg: Add Rewrite Rule:" + rule);
             rules.add(rule);
             String output = sendCommand(rule);
-            System.out.println(output);
+            //System.out.println("Egg: Add Rewrite Rule Output:" + output);
             addRewriteRuleTime += System.nanoTime() - startTime;
         }
     }
 
 
-    public List<String> preprocessRule(String rule) {
+    public List<String> preprocessRule(String rule, String ruleset, boolean allBirewrite) {
         String[] compo = rule.split("\\|");
         String lhs = compo[0];
         String rhs = compo[1];
+        List<String> processed = new ArrayList<>();
+        
         String type = compo[2];
+        
+        if(lhs.contains("Q") && rhs.contains("Q")) {
+            if(type.equals("rewrite")) {
+                if(allBirewrite) {
+                    processed.add(String.format("(birewrite %s %s :ruleset %s)", lhs, rhs, ruleset));
+                } else {
+                    processed.add(String.format("(rewrite %s %s :ruleset %s)", lhs, rhs, ruleset));
+                }
+            } else if(type.equals("birewrite")) {
+                processed.add(String.format("(birewrite %s %s :ruleset %s)", lhs, rhs, ruleset));
+            }
+            return processed;
+        }
         Set<String> qubitVars = new HashSet<>();
         Pattern qubitPattern = Pattern.compile("q\\d+");
 
@@ -462,27 +532,36 @@ public class EggGen {
         }
 
         String constraintString = String.join(" ", constraints);
-        List<String> processed = new ArrayList<>();
+        
 
         if (type.equals("rewrite")) {
-            String newRule = String.format("(rule (%s (= e %s)) ((union e %s)) :ruleset %s)", constraintString, lhs, rhs, "opt");
-            String newRule1 = String.format("(rule (%s (= e %s)) ((union e %s)) :ruleset %s)", constraintString, rhs, lhs, "opt");
+            String newRule = String.format("(rewrite %s %s :when (%s) :ruleset %s)", lhs, rhs, constraintString, ruleset);
             processed.add(newRule);
-            processed.add(newRule1);
+            if(allBirewrite) {
+                String newRule1 = String.format("(rewrite %s %s :when (%s) :ruleset %s)", rhs, lhs, constraintString, ruleset);
+                processed.add(newRule1);
+            } 
+            //String newRule1 = String.format("(rewrite %s %s :when (%s) :ruleset %s)", rhs, lhs, constraintString, "opt");
+            //processed.add(newRule1);
         } else if (type.equals("birewrite")) {
             // Generate two rewrite rules for birewrite
-            String rule1 = String.format("(rule (%s (= e %s)) ((union e %s)) :ruleset %s)", constraintString, lhs, rhs, "opt");
-            String rule2 = String.format("(rule (%s (= e %s)) ((union e %s)) :ruleset %s)", constraintString, rhs, lhs, "opt");
+            String rule1 = String.format("(birewrite %s %s :when (%s) :ruleset %s)", lhs, rhs, constraintString, ruleset);
             processed.add(rule1);
-            processed.add(rule2);
         }
 
         return processed;
     }
 
+    public void addRewritev2(String rule, String ruleset, boolean allBirewrite) {
+        List<String> rs = preprocessRule(rule, ruleset, allBirewrite);
+        for(String r: rs) {
+            addRewrite(r);
+        }
+    }
+
     public void addRewritev2(String rule) {
         //System.out.println(rule);
-        List<String> rs = preprocessRule(rule);
+        List<String> rs = preprocessRule(rule, "opt", false);
         for(String r: rs) {
             addRewrite(r);
         }
@@ -744,6 +823,36 @@ public class EggGen {
     }
 
 
+    public static String circuitToGeneralizedOnlyRemoveQ(Circuit circuit, String congruenceVar) {
+        String current = congruenceVar;
+        for (int i = circuit.gates.size() - 1; i >= 0; i--) {
+            Gate g = circuit.gates.get(i);
+            current = String.format("(Cons %s %s)", gateRemoveQ(g), current);
+        }
+        return current;
+    }
+
+   public static String gateRemoveQ(Gate gate) {
+    if(gate instanceof X) return String.format("(X %s)", ((X) gate).qubit);
+    if(gate instanceof H) return String.format("(H %s)", ((H) gate).qubit);
+    if(gate instanceof SX) return String.format("(SX %s)", ((SX) gate).qubit);
+    if(gate instanceof RZ) return String.format("(RZ %s %s)", ((RZ) gate).qubit, replaceSymbolWithVar(((RZ) gate).angle).toEggString());
+    if(gate instanceof RX) return String.format("(RX %s %s)", ((RX) gate).qubit, replaceSymbolWithVar(((RX) gate).angle).toEggString());
+    if(gate instanceof RY) return String.format("(RY %s %s)", ((RY) gate).qubit, replaceSymbolWithVar(((RY) gate).angle).toEggString());
+    if(gate instanceof U1) return String.format("(U1 %s %s)", ((U1) gate).qubit, replaceSymbolWithVar(((U1) gate).lambda).toEggString());
+    if(gate instanceof U2) return String.format("(U2 %s %s %s)", ((U2) gate).qubit, replaceSymbolWithVar(((U2) gate).phi).toEggString(), replaceSymbolWithVar(((U2) gate).lambda).toEggString());
+    if(gate instanceof U3) return String.format("(U3 %s %s %s %s)", ((U3) gate).qubit, replaceSymbolWithVar(((U3) gate).theta).toEggString(), replaceSymbolWithVar(((U3) gate).phi).toEggString(), replaceSymbolWithVar(((U3) gate).lambda).toEggString());
+    if(gate instanceof GPI) return String.format("(GPI %s %s)", ((GPI) gate).qubit, replaceSymbolWithVar(((GPI) gate).phi).toEggString());
+    if(gate instanceof GPI2) return String.format("(GPI2 %s %s)", ((GPI2) gate).qubit, replaceSymbolWithVar(((GPI2) gate).phi).toEggString());
+    if(gate instanceof VZ) return String.format("(VZ %s %s)", ((VZ) gate).qubit, replaceSymbolWithVar(((VZ) gate).theta).toEggString());
+    if(gate instanceof CX) return String.format("(CX %s %s)", ((CX) gate).control, ((CX) gate).target);
+    if(gate instanceof CZ) return String.format("(CZ %s %s)", ((CZ) gate).control, ((CZ) gate).target);
+    if(gate instanceof RXX) return String.format("(RXX %s %s %s)", ((RXX) gate).qubit1, ((RXX) gate).qubit2, replaceSymbolWithVar(((RXX) gate).angle).toEggString());
+    if(gate instanceof MS) return String.format("(MS %s %s %s %s)", ((MS) gate).qubit1, ((MS) gate).qubit2, replaceSymbolWithVar(((MS) gate).phi1).toEggString(), replaceSymbolWithVar(((MS) gate).phi2).toEggString());
+    return null;
+   }
+
+
     public static String gateToAlphaEquivalentString(Gate gate, Map<String, String> qubitMap, boolean replaceSymbol) {
         if(replaceSymbol){
             if (gate instanceof X) return String.format("(X %s)", qubitMap.computeIfAbsent(((X) gate).qubit, q -> "q" + qubitMap.size()));
@@ -762,6 +871,7 @@ public class EggGen {
             if (gate instanceof CZ) return String.format("(CZ %s %s)", qubitMap.computeIfAbsent(((CZ) gate).control, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((CZ) gate).target, q -> "q" + qubitMap.size()));
             if (gate instanceof RXX) return String.format("(RXX %s %s %s)", qubitMap.computeIfAbsent(((RXX) gate).qubit1, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((RXX) gate).qubit2, q -> "q" + qubitMap.size()), replaceSymbolWithVar(((RXX) gate).angle).toEggString());
             if (gate instanceof MS) return String.format("(MS %s %s %s %s)", qubitMap.computeIfAbsent(((MS) gate).qubit1, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((MS) gate).qubit2, q -> "q" + qubitMap.size()), replaceSymbolWithVar(((MS) gate).phi1).toEggString(), replaceSymbolWithVar(((MS) gate).phi2).toEggString());
+            if (gate instanceof SYMB) return String.format("(SYMB %d)", ((SYMB) gate).maxQubits);
         } else {
             if (gate instanceof X) return String.format("(X %s)", qubitMap.computeIfAbsent(((X) gate).qubit, q -> "q" + qubitMap.size()));
             if (gate instanceof H) return String.format("(H %s)", qubitMap.computeIfAbsent(((H) gate).qubit, q -> "q" + qubitMap.size()));
@@ -779,8 +889,9 @@ public class EggGen {
             if (gate instanceof CZ) return String.format("(CZ %s %s)", qubitMap.computeIfAbsent(((CZ) gate).control, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((CZ) gate).target, q -> "q" + qubitMap.size()));
             if (gate instanceof RXX) return String.format("(RXX %s %s %s)", qubitMap.computeIfAbsent(((RXX) gate).qubit1, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((RXX) gate).qubit2, q -> "q" + qubitMap.size()), ((RXX) gate).angle.toEggString());
             if (gate instanceof MS) return String.format("(MS %s %s %s %s)", qubitMap.computeIfAbsent(((MS) gate).qubit1, q -> "q" + qubitMap.size()), qubitMap.computeIfAbsent(((MS) gate).qubit2, q -> "q" + qubitMap.size()), ((MS) gate).phi1.toEggString(), ((MS) gate).phi2.toEggString());
+            if (gate instanceof SYMB) return String.format("(SYMB %d)", ((SYMB) gate).maxQubits);
         }
-        return gate.toEggString();
+        return null;
     }
 
 
@@ -804,8 +915,8 @@ public class EggGen {
         boolean lhsVarsAreSubsetOfRhs = rhsQubits.containsAll(lhsQubits);
         String congruenceVar = "c";
         Map<String, String> qubitToVar = new HashMap<>();
-        String lhsCanonical = circuitToGeneralizedString(lhsCircuit, qubitToVar, congruenceVar, isopt);
-        String rhsCanonical = circuitToGeneralizedString(rhsCircuit, qubitToVar, congruenceVar, isopt);
+        String lhsCanonical = circuitToGeneralizedString(lhsCircuit, qubitToVar, congruenceVar, true);
+        String rhsCanonical = circuitToGeneralizedString(rhsCircuit, qubitToVar, congruenceVar, true);
         if(ruleEntry.getKey().circuit.gates.size() > ruleEntry.getValue().circuit.gates.size() && rhsVarsAreSubsetOfLhs) {
             if(ruleEntry.getKey().permutation.perm.isEmpty() && ruleEntry.getValue().permutation.perm.isEmpty()) {
                 if(isopt){
@@ -888,13 +999,13 @@ public class EggGen {
             if(ruleEntry.getKey().permutation.perm.isEmpty()) {
                 if(isopt){
                     String rule = String.format("%s|%s|rewrite",
-                    lhsCanonical,
-                    rhsCanonical);
+                    lhsCircuit.toCongruenceString("c"),
+                    rhsCircuit.toCongruenceString("c"));
                     addOptRules(rule);
                 } else {
                     String rule = String.format("(rewrite %s %s :ruleset opt)",
-                    lhsCanonical,
-                    rhsCanonical);
+                    lhsCircuit.toCongruenceString("c"),
+                    rhsCircuit.toCongruenceString("c"));
                     addRewrite(rule);
                 }
             } else {
@@ -922,12 +1033,18 @@ public class EggGen {
     }
 
     public void runN(String ruleset, int n) {
-        sendCommand(String.format("(run %s %d)\n", ruleset, n));
+        String output = sendCommand(String.format("(run-schedule (repeat %d (saturate (run const)) (run %s)))", n, ruleset));
+        //System.out.println("Run N: " + output);
+    }
+
+    public void runSchedule(String ruleset1, String ruleset2, String ruleset3, String ruleset4, int rounds, int n1,int n2, int n3, int n4) {
+        String output = sendCommand(String.format("(run-schedule (let-scheduler bo (back-off)) (repeat %d (repeat %d (run  %s)) (repeat %d (run %s)) (repeat %d (run %s)) (repeat %d (run %s))))", rounds, n1, ruleset1, n2, ruleset2, n3, ruleset3, n4, ruleset4));
+        //System.out.println("Run Schedule: " + output);
     }
 
     public void runBackoff(String ruleset, int n) {
         String output = sendCommand(String.format("(run-schedule (let-scheduler bo (back-off)) (repeat %d (saturate (run const)) (run-with bo %s)))", n, ruleset));
-        System.out.println("Run Backoff Output: " + output);
+        //System.out.println("Run Backoff Output: " + output);
     }
     public void runSaturation() {
         long startTime = System.nanoTime();
@@ -1002,6 +1119,10 @@ public class EggGen {
         }
 
         return output;
+    }
+
+    public void union(Circuit lhs, Circuit rhs) {
+        sendCommand(String.format("(union %s %s)", lhs.toEggString(), rhs.toEggString()));
     }
 
     public String printFunctionCSVn(String name, int n) {
@@ -1254,6 +1375,10 @@ public class EggGen {
         public String toQASM() {
             return "";
         }
+
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new Gate();
+        }
     }
 
     public static class Circuit implements EggExpr {
@@ -1337,6 +1462,24 @@ public class EggGen {
                 g.getAllSymbols(vars);
             }
         }
+
+
+        public Circuit instantiate(Map<String, Expr> angleMap) {
+            List<Gate> gatesnew = new ArrayList<>();
+            for(Gate g: gates) {
+                gatesnew.add(g.instantiate(angleMap));
+            }
+            return new Circuit(gatesnew);
+        }
+
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj instanceof Circuit) {
+                return toQASM().equals(((Circuit) obj).toQASM());
+            }
+            return false;
+        }
     }
 
     public static class Permutation implements EggExpr {
@@ -1410,12 +1553,17 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("x q[%s];\n", qubit.replaceAll("q", ""));
+            return String.format("x %s;\n", qubit);
         }
 
         @Override
         public int getMaxQubits(){
             return Integer.valueOf(qubit.replaceAll("q", ""));
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new X(qubit);
         }
     }
 
@@ -1457,7 +1605,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("cx q[%s],q[%s];\n", control.replaceAll("q", ""), target.replaceAll("q", ""));
+            return String.format("cx %s, %s;\n", control, target);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new CX(control, target);
         }
     }
     
@@ -1496,8 +1649,14 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("rz(%s) q[%s];\n", angle.toString(), qubit.replaceAll("q", ""));
+            return String.format("rz(%s) %s;\n", angle.toString(), qubit);
         }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+           return new RZ(qubit, CircuitDAG.eval(angle, angleMap));
+        }
+
     }
     
     public static class H extends Gate {
@@ -1530,9 +1689,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("h q[%s];\n", qubit.replaceAll("q", ""));
+            return String.format("h %s;\n", qubit);
         }
-        
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new H(qubit);
+        }
     }
 
     public static class SYMB extends Gate {
@@ -1552,7 +1714,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return "";
+            return String.format("symb %d;\n", maxQubits);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new SYMB(maxQubits);
         }
     }
 
@@ -1586,7 +1753,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("u1(%s) q[%s];\n", lambda.toString(), qubit.replaceAll("q", ""));
+            return String.format("u1(%s) %s;\n", lambda.toString(), qubit);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new U1(qubit, CircuitDAG.eval(lambda, angleMap));
         }
     }
 
@@ -1621,7 +1793,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("u2(%s,%s) q[%s];\n", phi.toString(), lambda.toEggString(), qubit.replaceAll("q", ""));
+            return String.format("u2(%s,%s) %s;\n", phi.toString(), lambda.toEggString(), qubit);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new U2(qubit, CircuitDAG.eval(phi, angleMap), CircuitDAG.eval(lambda, angleMap));
         }
     }
 
@@ -1658,7 +1835,13 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("u3(%s,%s,%s) q[%s];\n", theta.toString(), phi.toString(), lambda.toString(), qubit.replaceAll("q", ""));
+            return String.format("u3(%s,%s,%s) %s;\n", theta.toString(), phi.toString(), lambda.toString(), qubit);
+        }
+
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new U3(qubit, CircuitDAG.eval(theta, angleMap), CircuitDAG.eval(phi, angleMap), CircuitDAG.eval(lambda, angleMap));
         }
     }
 
@@ -1691,7 +1874,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("rx(%s) q[%s];\n", angle.toEggString(), qubit.replaceAll("q", ""));
+            return String.format("rx(%s) %s;\n", angle.toEggString(), qubit);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new RX(qubit, CircuitDAG.eval(angle, angleMap));
         }
     }
 
@@ -1725,7 +1913,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("cz q[%s],q[%s];\n", control.replaceAll("q", ""), target.replaceAll("q", ""));
+            return String.format("cz %s, %s;\n", control, target);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new CZ(control, target);
         }
     }
 
@@ -1753,6 +1946,16 @@ public class EggGen {
         @Override
         public void getAllSymbols(Set<String> vars) {
             angle.getAllSymbols(vars);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new RY(qubit, CircuitDAG.eval(angle, angleMap));
+        }
+
+        @Override
+        public String toQASM() {
+            return String.format("ry(%s) %s;\n", angle.toString(), qubit);
         }
     }
 
@@ -1787,7 +1990,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("rxx(%s) q[%s],q[%s];\n", angle.toString(), qubit1.replaceAll("q", ""), qubit2.replaceAll("q", ""));
+            return String.format("rxx(%s) %s, %s;\n", angle.toString(), qubit1, qubit2);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new RXX(qubit1, qubit2, CircuitDAG.eval(angle, angleMap));
         }
     }
 
@@ -1821,7 +2029,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("gpi(%s) q[%s];\n", phi.toString(), qubit.replaceAll("q", ""));
+            return String.format("gpi(%s) %s;\n", phi.toString(), qubit);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new GPI(qubit, CircuitDAG.eval(phi, angleMap));
         }
     }
 
@@ -1854,7 +2067,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("gpi2(%s) q[%s];\n", phi.toString(), qubit.replaceAll("q", ""));
+            return String.format("gpi2(%s) %s;\n", phi.toString(), qubit);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new GPI2(qubit, CircuitDAG.eval(phi, angleMap));
         }
     }
 
@@ -1888,7 +2106,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("vz(%s) q[%s];\n", theta.toString(), qubit.replaceAll("q", ""));
+            return String.format("vz(%s) %s;\n", theta.toString(), qubit);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new VZ(qubit, CircuitDAG.eval(theta, angleMap));
         }
     }
 
@@ -1926,7 +2149,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("ms(%s,%s) q[%s],q[%s];\n", phi1.toString(), phi2.toString(), qubit1.replaceAll("q", ""), qubit2.replaceAll("q", ""));
+            return String.format("ms(%s,%s) %s, %s;\n", phi1.toString(), phi2.toString(), qubit1, qubit2);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new MS(qubit1, qubit2, CircuitDAG.eval(phi1, angleMap), CircuitDAG.eval(phi2, angleMap));
         }
     }
 
@@ -1954,7 +2182,12 @@ public class EggGen {
 
         @Override
         public String toQASM() {
-            return String.format("sx q[%s];\n", qubit.replaceAll("q", ""));
+            return String.format("sx %s;\n", qubit);
+        }
+
+        @Override
+        public Gate instantiate(Map<String, Expr> angleMap) {
+            return new SX(qubit);
         }
     }
 }

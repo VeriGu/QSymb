@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import ast.*;
+import java.util.concurrent.*;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -24,10 +25,11 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.tuple.Triple;
+import org.apache.commons.math3.analysis.function.Max;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DirectedMultigraph;
 
-
+import java.io.FileWriter;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Random;
@@ -47,9 +49,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.stream.Collectors;
 
 public class Optimizer {
+    private Verifier verifier;
     private SymbolicSolve solver;
     public Optimizer() {
+        Random rand = new Random();
         solver = new SymbolicSolve(new Random());
+        verifier = new Verifier(rand, 7);
     }
 
     public CircuitDAG qasmToDAG(String qasm) {
@@ -110,12 +115,16 @@ public class Optimizer {
             }
             boolean foundMatch = false;
             if (circuit.outDegreeOf(circuitNode) != pattern.outDegreeOf(patternNode)) {
+                //System.out.println("Out Degree Mismatch");
                 return false;
             }
 
             for (Edge circE : circuit.outgoingEdgesOf(circuitNode)) {
+                //System.out.println("Circ Edge:" + circuitNode.toString() + "->" + circuit.getEdgeTarget(circE).toString() + "qubit" + circE.getQubit());
                 if (patternToCirc.containsKey(pattern.getEdgeTarget(pattE))) {
+                    
                     if (pattE.sameSourceTargetLabels(circE) && circuit.getEdgeTarget(circE) == patternToCirc.get(pattern.getEdgeTarget(pattE))) {
+                        //System.out.println("pattern matched");
                         foundMatch = true;
                     }
                 } else {
@@ -126,6 +135,7 @@ public class Optimizer {
                                 foundMatch = true;
                             }
                         } else {
+                            //System.out.println("Matched Target: " + pattern.getEdgeTarget(pattE).getId());
                             patternToCirc.put(pattern.getEdgeTarget(pattE), circuit.getEdgeTarget(circE));
                             foundMatch = true;
                         }
@@ -137,27 +147,13 @@ public class Optimizer {
                     break;
                 }
             }
-
-
-    
-
-
-                if (!foundMatch) {
-
-
-                    return false;
-
-
-                }
-
-
+            if (!foundMatch) {
+                return false;
             }
-
-
-            return true;
-
-
         }
+
+        return true;
+    }
     
     private boolean sameQubits(Node n1, Node n2) {
         return n1.getQubits().equals(n2.getQubits()) || (n1.getQubits().get(0).equals(n2.getQubits().get(1)) && n1.getQubits().get(1).equals(n2.getQubits().get(0)));
@@ -257,7 +253,7 @@ public class Optimizer {
                 } else {
                     if (pattE.sameSourceTargetLabels(circE) && circuit.getEdgeSource(circE).getId().equals(pattern.getEdgeSource(pattE).getId())) {
                         if (checkLCA(circuit, pattern, circuitNode, patternNode, patternToCirc)) {
-                            if (pattern.getEdgeSource(pattE).getAngles().isEmpty()) {
+                            if (!pattern.getEdgeSource(pattE).getAngles().isEmpty()) {
                                 if (matchAngles(circuit.getEdgeSource(circE), pattern.getEdgeSource(pattE), angleMap)) {
                                     patternToCirc.put(pattern.getEdgeSource(pattE), circuit.getEdgeSource(circE));
                                     foundMatch = true;
@@ -298,7 +294,7 @@ public class Optimizer {
         List<Node> nodes = new ArrayList<>(circuit.nodes());
         Collections.shuffle(nodes, rand);
         //System.out.println("Trying to match pattern starting with: " + start.getId());
-
+        //System.out.println("Pattern: " + pattern.toQASM());
         for (Node circN : nodes) {
             //System.out.println("Circuit node: " + circN.getId());
             patternToCirc.clear();
@@ -313,20 +309,19 @@ public class Optimizer {
                     if (!matchAngles(circN, start, angleMap)) {
                         continue;
                     }
-                    //System.out.println("Matched Angles"); 
                 }
                 List<Node> succsToVisit = new ArrayList<>();
                 List<Node> ancsToVisit = new ArrayList<>();
                 Set<Node> seen = new HashSet<>();
-
+                //System.out.println("matched:" + patternToCirc.toString());
                 if (!matchOutgoing(circuit.getDag(), pattern.getDag(), circN, start, patternToCirc, patternToCircEdges, angleMap, succsToVisit)) {
                     continue;
                 }
-                
+                //System.out.println("Matched Outgoing");
                 if (!matchIncoming(circuit.getDag(), pattern.getDag(), circN, start, patternToCirc, patternToCircEdges, angleMap, succsToVisit)) {
                     continue;
                 }
-                
+                //System.out.println("Matched Incoming");
                 seen.add(start);
 
                 boolean match = true;
@@ -343,10 +338,9 @@ public class Optimizer {
                             match = false;
                             break;
                         }
-                        //System.out.println("Succ: " + succ.getId() + " patternToCirc.get(succ): " + patternToCirc.get(succ));
+                        
                         if (!matchOutgoing(circuit.getDag(), pattern.getDag(), patternToCirc.get(succ), succ, patternToCirc, patternToCircEdges, angleMap, succsToVisit)) {
                             match = false;
-                            //System.out.println("No Match Found Outgoing " + succ.getId());
                             break;
                         }
                         
@@ -365,7 +359,7 @@ public class Optimizer {
                     while (!ancsToVisit.isEmpty()) {
                         Node anc = ancsToVisit.get(0);
                         ancsToVisit.remove(0);
-                        System.out.println("Visiting anc" + anc.getId());
+                        // System.out.println("Visiting anc" + anc.getId());
                         if (seen.contains(anc)) {
                             continue;
                         }
@@ -396,7 +390,7 @@ public class Optimizer {
                 }
                 //System.out.println("patternToCirc map: " + patternToCirc.toString());
                 if (patternToCirc.size() == pattern.totalGateCount()) {
-                    //System.out.println("Matched All");
+                    //System.out.println("Matched All: " + patternToCirc.toString());
                     matched.addAll(patternToCirc.values());
                     matches.add(new HashMap<>(patternToCirc));
 
@@ -408,6 +402,8 @@ public class Optimizer {
                     if (copy == null) {
                         copy = new CircuitDAG(circuit);
                     }
+
+                    //System.out.println("replace: " + replace);
 
                     String[] searchList = new String[patternToCircuitQubit.size() * 2];
                     String[] replaceList = new String[patternToCircuitQubit.size() * 2];
@@ -421,12 +417,16 @@ public class Optimizer {
                         i++;
                     }
                     String replaceAfterSubst = StringUtils.replaceEach(replace, searchList, replaceList);
+                    //System.out.println("angleMap: " + angleMap.toString());
                     replaceAfterSubst = replaceAngles(replaceAfterSubst, angleMap);
 
+                    //System.out.println("Replace After Subst: " + replaceAfterSubst);
                     CircuitDAG replaceDag = QASMToDAGVisitor.parse(replaceAfterSubst);
+                    //System.out.println("Replace DAG: " + replaceDag.toQASM());
                     replaced.addAll(replaceDag.nodes());
 
                     replace(copy.getDag(), pattern, replaceDag, patternToCirc, patternToCircuitQubit);
+                    //System.out.println("After replace: " + copy.toQASM());
                     if (applyOnce) {
                         return copy;
                     }
@@ -443,38 +443,50 @@ public class Optimizer {
                         Map<Node, Node> patternToCirc,
                         Map<String, String> patternToCircuitQubit) {
         //System.out.println("Replacing pattern: " + pattern.toQASM());
-        //System.out.println("With: " + replace.toQASM());
-        //System.out.println("patternToCirc map: " + patternToCirc.toString());
+       // System.out.println("With: " + replace.toQASM());
+       // System.out.println("patternToCirc map: " + patternToCirc.toString());
         //System.out.println("patternToCircuitQubit map: " + patternToCircuitQubit.toString());
+
+        
         Map<String, Node> patternRoots = pattern.rootsMap();
         Map<String, Node> patternLeaves = pattern.leavesMap();
 
+        //System.out.println("Pattern leaves:" + patternLeaves.toString());
+        //System.out.println("Pattern roots:" + patternRoots.toString());
+
         Map<String, Node> replaceRoots = replace.rootsMap();
         Map<String, Node> replaceLeaves = replace.leavesMap();
+
+        //System.out.println("Replace leaves:" + replaceLeaves.toString());
+        //System.out.println("Replace roots:" + replaceRoots.toString());
 
         Map<String, Node> ancPatternRoots = new HashMap<>();
         for (String qubit : patternRoots.keySet()) {
             String circQubit = patternToCircuitQubit.getOrDefault(qubit, qubit);
             Node match = patternToCirc.getOrDefault(patternRoots.get(qubit), patternRoots.get(qubit));
             for (Edge e : circuit.incomingEdgesOf(match)) {
+                // System.out.println("Incoming Edge of " + match.toString() + ": " + e.getQubit());
                 if (e.getQubit().equals(circQubit)) {
                     ancPatternRoots.put(circQubit, circuit.getEdgeSource(e));
                 }
 
             }
         }
+        // System.out.println("Incoming Ancestors: " + ancPatternRoots.toString());
 
         Map<String, Node> decPatternLeaves = new HashMap<>();
         for (String qubit : patternLeaves.keySet()) {
             String circQubit = patternToCircuitQubit.getOrDefault(qubit, qubit);
             Node match = patternToCirc.getOrDefault(patternLeaves.get(qubit), patternLeaves.get(qubit));
+            //System.out.println("Pattern leave qubit: " + qubit + ": " + circQubit);
             for (Edge e : circuit.outgoingEdgesOf(match)) {
+                //System.out.println("Outgoing Edge of " + match.toString() + ": " + e.getQubit());
                 if (e.getQubit().equals(circQubit)) {
                     decPatternLeaves.put(circQubit, circuit.getEdgeTarget(e));
                 }
             }
         }
-
+        // System.out.println("Outgoing Descendants: " + decPatternLeaves.toString());
         Set<Node> toRemove = new HashSet<>();
         for (Node n : replace.nodes()) {
             if (n.isQubit()) {
@@ -497,25 +509,29 @@ public class Optimizer {
         }
 
         //the replace leaves might contain new qubits that need to be connected to the decPatternLeaves
+        // for (String qubit : replaceLeaves.keySet()) {
+        //     // qubits not in replaceLeaves should not have been in replaceRoots and therefore were connected already to decPatternLeave
+        //     if (decPatternLeaves.containsKey(qubit)) {
+        //         circuit.addEdge(replaceLeaves.get(qubit), decPatternLeaves.get(qubit), pattern.getEdge(replaceLeaves.get(qubit), decPatternLeaves.get(qubit), qubit));
+        //     } else {
+        //         String circQubit = patternToCircuitQubit.getOrDefault(qubit, qubit);
+        //         Node match = patternToCirc.getOrDefault(replaceLeaves.get(qubit), replaceLeaves.get(qubit));
+        //         Edge newedge = null;
+        //         Node outNode = null;
+        //         for (Edge e : circuit.outgoingEdgesOf(match)) {
+        //             if (e.getQubit().equals(circQubit)) {
+        //                 newedge = pattern.getEdge(replaceLeaves.get(qubit), circuit.getEdgeTarget(e), qubit);
+        //                 outNode = circuit.getEdgeTarget(e);
+        //             }
+        //         }
+        //         if(newedge != null) {
+        //             circuit.addEdge(match, outNode, newedge);
+        //         }
+        //     }
+        // }
         for (String qubit : replaceLeaves.keySet()) {
-            // qubits not in replaceLeaves should not have been in replaceRoots and therefore were connected already to decPatternLeave
-            if (decPatternLeaves.containsKey(qubit)) {
-                circuit.addEdge(replaceLeaves.get(qubit), decPatternLeaves.get(qubit), pattern.getEdge(replaceLeaves.get(qubit), decPatternLeaves.get(qubit), qubit));
-            } else {
-                String circQubit = patternToCircuitQubit.getOrDefault(qubit, qubit);
-                Node match = patternToCirc.getOrDefault(replaceLeaves.get(qubit), replaceLeaves.get(qubit));
-                Edge newedge = null;
-                Node outNode = null;
-                for (Edge e : circuit.outgoingEdgesOf(match)) {
-                    if (e.getQubit().equals(circQubit)) {
-                        newedge = pattern.getEdge(replaceLeaves.get(qubit), circuit.getEdgeTarget(e), qubit);
-                        outNode = circuit.getEdgeTarget(e);
-                    }
-                }
-                if(newedge != null) {
-                    circuit.addEdge(match, outNode, newedge);
-                }
-            }
+            // qubits not in replaceLeaves should not have been in replaceRoots and therefore were connected already to decPatternLeaves
+            circuit.addEdge(replaceLeaves.get(qubit), decPatternLeaves.get(qubit), pattern.getEdge(replaceLeaves.get(qubit), decPatternLeaves.get(qubit), qubit));
         }
     }
 
@@ -546,7 +562,7 @@ public class Optimizer {
         CircuitDAG pattern = lhs;
         var result = find(circuit, pattern, rhs, applyOnce, rand);
         if (result == null) {
-            System.out.println("applyRule: No Match Found");
+            // System.out.println("applyRule: No Match Found");
             return circuit;
         }
         return result;
@@ -604,6 +620,189 @@ public class Optimizer {
     }
 
 
+    public CircuitDAG symbolicMatchBeforeAfterMono(CircuitDAG circuit, String rule, String rhs, int minSymbSize, int maxSymbSize, List<Map<boolean[], boolean[]>> constraints, EggGen egraph) {
+        //CircuitDAG dag = QASMToDAGVisitor.parse(circuit.toQASM());
+        Map<String, Expr> angleMap = new HashMap<>();
+        String lhs = rule;
+        int findSymbIndex = lhs.indexOf("symb");
+        String lhsbefore = StringUtils.stripStart(lhs.substring(0, findSymbIndex).trim(), ";");
+        String lhsafter = StringUtils.stripStart(lhs.substring(lhs.indexOf(";", findSymbIndex)).trim(), ";").trim();
+        EggGen.Circuit symblhsbefore = QASMAstBuilder.parse(lhsbefore);
+        EggGen.Circuit symblhsafter = QASMAstBuilder.parse(lhsafter);
+        List<EggGen.Gate> lhsBeforeGates = symblhsbefore.gates;
+      
+        
+        List<EggGen.Gate> lhsAfterGates = symblhsafter.gates;
+
+        EggGen.Circuit lhsBeforeCircuit = new EggGen.Circuit(lhsBeforeGates);
+        // System.out.println("LHS Before Circuit: " + lhsBeforeCircuit.toQASM());
+        EggGen.Circuit lhsAfterCircuit = new EggGen.Circuit(lhsAfterGates);
+        // System.out.println("LHS After Circuit: " + lhsAfterCircuit.toQASM());
+        CircuitDAG lhsBeforeDag = QASMToDAGVisitor.parse(lhsBeforeCircuit.toQASM());
+        CircuitDAG lhsAfterDag = QASMToDAGVisitor.parse(lhsAfterCircuit.toQASM());
+        Map<String, String> qubitMap = new HashMap<>();
+        Map<String, String> reverseMap = new HashMap<>();
+        List<Node> matchedNodes = null;
+        if (!GraphTests.isConnected(lhsBeforeDag.getDAG()) && lhsBeforeCircuit.gates.size() > 0) {
+            System.out.println("Symbolic LHS Before is not connected");
+            return null;
+        }
+        if (!GraphTests.isConnected(lhsAfterDag.getDAG()) && lhsAfterCircuit.gates.size() > 0) {
+            System.out.println("Symbolic LHS After is not connected");
+            return null;
+        }
+        if(lhsBeforeCircuit.gates.size() > 0 && lhsAfterCircuit.gates.size() > 0) {
+            matchedNodes = matchBeforeAfter(circuit, lhsBeforeDag, lhsAfterDag, angleMap, Params.MAX_QUBITS_SYMB, minSymbSize, maxSymbSize, constraints, null, qubitMap, reverseMap, true);
+        } else if(lhsBeforeCircuit.gates.size() == 0 && lhsAfterCircuit.gates.size() > 0) {
+            matchedNodes = matchAfter(circuit, lhsAfterDag, angleMap, Params.MAX_QUBITS_SYMB, minSymbSize, maxSymbSize, constraints, null, qubitMap, reverseMap, true);
+        } else if(lhsBeforeCircuit.gates.size() > 0 && lhsAfterCircuit.gates.size() == 0) {
+            matchedNodes = matchBefore(circuit, lhsBeforeDag, angleMap, Params.MAX_QUBITS_SYMB, minSymbSize, maxSymbSize, constraints, null, qubitMap, reverseMap, true);
+        }
+        if(matchedNodes == null) {
+            //System.out.println("No Match Before After found");
+            return null;
+        }
+        // System.out.println("Reverse Map: " + reverseMap.toString());
+        findSymbIndex = rhs.indexOf("symb");
+        String rhsbefore = StringUtils.stripStart(rhs.substring(0, findSymbIndex).trim(), ";");
+        String rhsafter = StringUtils.stripStart(rhs.substring(rhs.indexOf(";", findSymbIndex)).trim(), ";").trim();
+        EggGen.Circuit symbrhsBefore = QASMAstBuilder.parse(rhsbefore);
+        EggGen.Circuit symbrhsAfter = QASMAstBuilder.parse(rhsafter);
+
+        EggGen.Circuit symbrhsCanBefore = EggGen.canonicalizeCircuit(symbrhsBefore, reverseMap);
+        EggGen.Circuit symbrhsCanAfter = EggGen.canonicalizeCircuit(symbrhsAfter, reverseMap);
+        EggGen.Circuit symbrhsCanInstantiatedB = symbrhsCanBefore.instantiate(angleMap);
+        EggGen.Circuit symbrhsCanInstantiatedA = symbrhsCanAfter.instantiate(angleMap);
+       
+        List<EggGen.Gate> rhsBeforeGates = symbrhsCanInstantiatedB.gates;
+        List<EggGen.Gate> rhsAfterGates = symbrhsCanInstantiatedA.gates;
+        List<Node> matchedsymb = matchedNodes.subList(lhsBeforeGates.size(), matchedNodes.size() - lhsAfterGates.size());
+        List<EggGen.Gate> symbGates = nodesToGates(matchedsymb);
+        
+
+        EggGen.Circuit lhsCircuit = new EggGen.Circuit(nodesToGates(matchedNodes));
+        CircuitDAG lhsDag = QASMToDAGVisitor.parse(lhsCircuit.toQASM());
+        List<EggGen.Gate> rhsCombined = new ArrayList<>(rhsBeforeGates);
+        rhsCombined.addAll(symbGates);
+        rhsCombined.addAll(new ArrayList<>(rhsAfterGates));
+        EggGen.Circuit rhsCircuit = new EggGen.Circuit(rhsCombined);
+        //.println("RHS Combined: " + rhsCircuit.toQASM());
+        //System.out.println("LHS Combined: " + lhsCircuit.toQASM());
+        // try {
+        //     if(checkEquivalenceWithQiskit(lhsCircuit.toQASM(), rhsCircuit.toQASM(), lhsCircuit.getMaxQubits()+1)){
+        //         System.out.println("Equivalent to Qiskit");
+        //     }
+        // } catch (Exception e) {
+        //     System.out.println("Error checking equivalence with Qiskit");
+        //     e.printStackTrace();
+        // }
+        if(egraph != null)
+            egraph.sendCommand(String.format("(union %s %s)", lhsCircuit.toEggString(), rhsCircuit.toEggString()));
+        
+        EggGen.ConstrainedCircuit constrainedRhsCircuit = new EggGen.ConstrainedCircuit(rhsCircuit, new EggGen.Permutation(new ArrayList<>()));
+        Random rand = new Random();
+        CircuitDAG result = applyRule(circuit, lhsDag, rhsCircuit.toQASM(), true, rand);
+        String qasm = result.toQASM();
+        //System.out.println("Before: " + circuit.toQASM());
+        //System.out.println("Result: " + qasm);
+        return result;
+    }
+
+    public CircuitDAG symbolicMatchBeforeAfter(CircuitDAG circuit, String rule, String rhs, int minSymbSize, int maxSymbSize, List<SymbolicSolve.SparseMatrix> basis, EggGen egraph) {
+        //CircuitDAG dag = QASMToDAGVisitor.parse(circuit.toQASM());
+        Map<String, Expr> angleMap = new HashMap<>();
+        rule = rule.replaceAll("\\bc\\b", "(Nil)");
+        rule = rule.replaceAll("q\\d+", "(Q \"$0\")");
+        rule = rule.replaceAll("theta1|theta2|theta3", "(Symbol \"$0\")");
+        // System.out.println("Rule: " + rule);
+        EggGen.Circuit symblhs = EggAstBuilder.parseCircuit(rule);
+        // System.out.println("Symbolic LHS: " + symblhs.toQASM());
+        List<EggGen.Gate> lhsGates = symblhs.gates;
+        int symbindex = 0;
+        int i = 0;
+        for(EggGen.Gate gate : lhsGates) {
+            if(gate instanceof EggGen.SYMB) {
+                symbindex = i;
+            }
+            i++;
+        }
+        List<EggGen.Gate> lhsBeforeGates = new ArrayList<>(lhsGates.subList(0, symbindex));
+        List<EggGen.Gate> lhsAfterGates = new ArrayList<>(lhsGates.subList(symbindex + 1, lhsGates.size()));
+
+        EggGen.Circuit lhsBeforeCircuit = new EggGen.Circuit(lhsBeforeGates);
+        // System.out.println("LHS Before Circuit: " + lhsBeforeCircuit.toQASM());
+        EggGen.Circuit lhsAfterCircuit = new EggGen.Circuit(lhsAfterGates);
+        // System.out.println("LHS After Circuit: " + lhsAfterCircuit.toQASM());
+        CircuitDAG lhsBeforeDag = QASMToDAGVisitor.parse(lhsBeforeCircuit.toQASM());
+        CircuitDAG lhsAfterDag = QASMToDAGVisitor.parse(lhsAfterCircuit.toQASM());
+        Map<String, String> qubitMap = new HashMap<>();
+        Map<String, String> reverseMap = new HashMap<>();
+        System.out.println("LHS before:" + lhsBeforeDag.toQASM());
+        System.out.println("LHS after:" + lhsAfterDag.toQASM());
+        if (lhsBeforeCircuit.gates.size() > 0 && !GraphTests.isConnected(lhsBeforeDag.getDAG())) {
+            System.out.println("Symbolic LHS is not connected");
+            return null;    
+        }
+        if (lhsAfterCircuit.gates.size() > 0 && !GraphTests.isConnected(lhsAfterDag.getDAG())) {
+            System.out.println("Symbolic LHS After is not connected");
+            return null;
+        }
+        List<Node> matchedNodes = null;
+        if(lhsBeforeCircuit.gates.size() > 0 && lhsAfterCircuit.gates.size() > 0) {
+            matchedNodes = matchBeforeAfter(circuit, lhsBeforeDag, lhsAfterDag, angleMap, Params.MAX_QUBITS_SYMB, minSymbSize, maxSymbSize, null, basis, qubitMap, reverseMap, false);
+        } else if(lhsBeforeCircuit.gates.size() == 0 && lhsAfterCircuit.gates.size() > 0) {
+            matchedNodes = matchAfter(circuit, lhsAfterDag, angleMap, Params.MAX_QUBITS_SYMB, minSymbSize, maxSymbSize, null, basis, qubitMap, reverseMap, false);
+        } else if(lhsBeforeCircuit.gates.size() > 0 && lhsAfterCircuit.gates.size() == 0) {
+            matchedNodes = matchBefore(circuit, lhsBeforeDag, angleMap, Params.MAX_QUBITS_SYMB, minSymbSize, maxSymbSize, null, basis, qubitMap, reverseMap, false);
+        }
+        if(matchedNodes == null) {
+            //System.out.println("No Match Before After found");
+            return null;
+        }
+        // System.out.println("Reverse Map: " + reverseMap.toString());
+        rhs = rhs.replaceAll("\\bc\\b", "(Nil)");
+        rhs = rhs.replaceAll("q\\d+", "(Q \"$0\")");
+        rhs = rhs.replaceAll("theta1|theta2|theta3", "(Symbol \"$0\")");
+        EggGen.Circuit symbrhs = EggAstBuilder.parseCircuit(rhs);
+        EggGen.Circuit symbrhsCan = EggGen.canonicalizeCircuit(symbrhs, reverseMap);
+        EggGen.Circuit symbrhsCanInstantiated = symbrhsCan.instantiate(angleMap);
+        System.out.println("Symbolic RHS: " + symbrhsCanInstantiated.toQASM());
+        List<EggGen.Gate> rhsCan = symbrhsCanInstantiated.gates;
+        i = 0;
+        for(EggGen.Gate gate : rhsCan) {
+            if(gate instanceof EggGen.SYMB) {
+                symbindex = i;
+            }
+            i++;
+        }
+        List<EggGen.Gate> rhsBeforeGates = new ArrayList<>(rhsCan.subList(0, symbindex));
+        List<EggGen.Gate> rhsAfterGates = new ArrayList<>(rhsCan.subList(symbindex + 1, rhsCan.size()));
+        List<Node> matchedsymb = matchedNodes.subList(lhsBeforeGates.size(), matchedNodes.size() - lhsAfterGates.size());
+        List<EggGen.Gate> symbGates = nodesToGates(matchedsymb);
+        
+
+        EggGen.Circuit lhsCircuit = new EggGen.Circuit(nodesToGates(matchedNodes));
+        CircuitDAG lhsDag = QASMToDAGVisitor.parse(lhsCircuit.toQASM());
+        List<EggGen.Gate> rhsCombined = new ArrayList<>(rhsBeforeGates);
+        rhsCombined.addAll(symbGates);
+        rhsCombined.addAll(new ArrayList<>(rhsAfterGates));
+        EggGen.Circuit rhsCircuit = new EggGen.Circuit(rhsCombined);
+        //System.out.println("RHS Combined: " + rhsCircuit.toQASM());
+        //System.out.println("LHS Combined: " + lhsCircuit.toQASM());
+       
+        if(egraph != null)
+            egraph.sendCommand(String.format("(union %s %s)", lhsCircuit.toEggString(), rhsCircuit.toEggString()));
+        
+        EggGen.ConstrainedCircuit constrainedRhsCircuit = new EggGen.ConstrainedCircuit(rhsCircuit, new EggGen.Permutation(new ArrayList<>()));
+        Random rand = new Random();
+        CircuitDAG result = applyRule(circuit, lhsDag, rhsCircuit.toQASM(), true, rand);
+        String qasm = result.toQASM();
+        //e: " + circuit.toQASM());
+        //System.out.println("Result: " + qasm);
+        return result;
+    }
+
+
     public CircuitDAG symbolicMatch(EggGen.Circuit circuit, String rule, String rhs, int minSymbSize, int maxSymbSize, List<SymbolicSolve.SparseMatrix> basis, EggGen egraph) {
         System.out.println(circuit.toQASM());
         CircuitDAG dag = QASMToDAGVisitor.parse(circuit.toQASM());
@@ -626,7 +825,7 @@ public class Optimizer {
             Map<String, String> qubitMap = new HashMap<>();
             Map<String, String> reverseMap = new HashMap<>();
             //System.out.println("LHS DAG: " + symbdag.toQASM());
-            List<Node> matchedNodes = matchBefore(dag, symbdag, angleMap, Params.MAX_QUBITS_SYMB, minSymbSize, maxSymbSize, basis, qubitMap, reverseMap);
+            List<Node> matchedNodes = matchBefore(dag, symbdag, angleMap, Params.MAX_QUBITS_SYMB, minSymbSize, maxSymbSize, null, basis, qubitMap, reverseMap, false);
             if(matchedNodes == null) {
                 //System.out.println("No Match Before found");
                 return null;
@@ -645,7 +844,7 @@ public class Optimizer {
             Map<String, String> premap = new HashMap<>();
             premap.put("theta1+theta2", "(BinOp (PLUS) theta1 theta2)");
             for(String angle: angleMap.keySet()) {
-                System.out.println("Angle: " + angle + " -> " + angleMap.get(angle).toEggString());
+                // System.out.println("Angle: " + angle + " -> " + angleMap.get(angle).toEggString());
                 if(premap.containsKey(angle)) {
                     removedRhs = removedRhs.replace(premap.get(angle), angleMap.get(angle).toEggString());
                 } else {
@@ -676,8 +875,8 @@ public class Optimizer {
             Random rand = new Random();
             CircuitDAG result = applyRule(dag, lhsDag, combinedCircuit.toQASM(), true, rand);
             String qasm = result.toQASM();
-            System.out.println("Before: " + dag.toQASM());
-            System.out.println("Result: " + qasm);
+            //System.out.println("Before: " + dag.toQASM());
+            //System.out.println("Result: " + qasm);
             return result;
         } else {
             Pattern pattern2 = Pattern.compile("\\(Cons \\(SYMB \\d+\\)\\s+(.*)\\)");
@@ -701,7 +900,7 @@ public class Optimizer {
             Map<String, String> qubitMap = new HashMap<>();
             Map<String, String> reverseMap = new HashMap<>();
             //System.out.println("LHS DAG: " + symbdag.toQASM());
-            List<Node> matchedNodes = matchAfter(dag, symbdag, angleMap, Params.MAX_QUBITS_SYMB, minSymbSize, maxSymbSize, basis, qubitMap, reverseMap);
+            List<Node> matchedNodes = matchAfter(dag, symbdag, angleMap, Params.MAX_QUBITS_SYMB, minSymbSize, maxSymbSize, null, basis, qubitMap, reverseMap, false);
             if(matchedNodes == null) {
                 //System.out.println("No Match After found");
                 return null;
@@ -757,7 +956,543 @@ public class Optimizer {
         }
     }
 
-    private List<Node> matchAfter(CircuitDAG dag, CircuitDAG symbdag, Map<String, Expr> angleMap, int maxSymbQubits, int minSymbSize, int maxSymbSize, List<SymbolicSolve.SparseMatrix> basis, Map<String, String> qubitMap, Map<String, String> reverseMap) {
+
+    private List<Node> matchBeforeAfter(CircuitDAG dag, CircuitDAG symbbefore, CircuitDAG symbafter, Map<String, Expr> angleMap, int maxSymbQubits, int minSymbSize, int maxSymbSize, List<Map<boolean[], boolean[]>> constraints, List<SymbolicSolve.SparseMatrix> basis, Map<String, String> qubitMap, Map<String, String> reverseMap, boolean isMono) {
+        List<Node> beforeRoots = symbbefore.getCircuitRoots();
+        List<Node> afterRoots = symbafter.getCircuitRoots();
+        Node patternBeforeStart = beforeRoots.get(0);
+        Node patternAfterStart = afterRoots.get(0);
+        
+        List<List<Node>> layers = dag.topoSort();
+        for(int i = 0; i < layers.size(); i++) {
+            List<Node> layer = layers.get(i);
+            for(Node node : layer) {
+                qubitMap.clear();
+                reverseMap.clear();
+                angleMap.clear();
+                if(node.isGate() && node.getId().equals(patternBeforeStart.getId())) {
+                    if(patternBeforeStart.getAngles() != null) {
+                        if(!matchAngles(node, patternBeforeStart, angleMap)) {
+                            continue;
+                        }
+                    }
+                    //System.out.println("Before Pattern" + symbbefore.toQASM());
+                    //System.out.println("angleMap" + angleMap);
+                    //System.out.println("matched node: " + node.getId());
+                    for(int j = 0; j < node.getQubits().size(); j++) {
+                        qubitMap.put(node.getQubits().get(j), patternBeforeStart.getQubits().get(j));
+                        reverseMap.put(patternBeforeStart.getQubits().get(j), node.getQubits().get(j));
+                    }
+                    // System.out.println("Qubit Map: " + qubitMap);
+                    // System.out.println("Reverse Map: " + reverseMap);
+                    Node next = Graphs.successorListOf(symbbefore.getDAG(), patternBeforeStart).get(0);
+                    int s = 1;
+                    boolean foundOutter = true;
+                    while(!next.isSinkQubit()) {
+                        boolean found = false;
+                        for(Node circN3: layers.get(i + s)) {
+                            // System.out.println("Next Pattern: " + next.getId());
+                            // System.out.println("Next Concrete: " + circN3.getId());
+                            // System.out.println("Pattern Qubits: " + next.getQubits());
+                            // System.out.println("Concrete Qubits: " + circN3.getQubits());
+                            if(circN3.isGate() && circN3.getId().equals(next.getId())) {
+                                // System.out.println("Intermediate Matched Node: " + circN3.getId());
+                                if(!next.getAngles().isEmpty()) {
+                                    if(matchAngles(circN3, next, angleMap)) {
+                                        boolean qubitMatch = true;
+                                        for(int j = 0; j < circN3.getQubits().size(); j++) {
+                                            if(qubitMap.containsKey(circN3.getQubits().get(j))) {
+                                                if(!qubitMap.get(circN3.getQubits().get(j)).equals(next.getQubits().get(j))) {
+                                                    qubitMatch = false;
+                                                    break;
+                                                }
+                                                if(reverseMap.containsKey(next.getQubits().get(j))) {
+                                                    if(!reverseMap.get(next.getQubits().get(j)).equals(circN3.getQubits().get(j))) {
+                                                        qubitMatch = false;
+                                                        break;
+                                                    }
+                                                }
+                                            } else {
+                                                if(reverseMap.containsKey(next.getQubits().get(j))) {
+                                                    if(!reverseMap.get(next.getQubits().get(j)).equals(circN3.getQubits().get(j))) {
+                                                        qubitMatch = false;
+                                                        break;
+                                                    }
+                                                }
+                                                
+                                            }
+                                            qubitMap.put(circN3.getQubits().get(j), next.getQubits().get(j));
+                                            reverseMap.put(next.getQubits().get(j), circN3.getQubits().get(j));
+                                        }
+                                        if(qubitMatch) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    boolean qubitMatch = true;
+                                    for(int j = 0; j < circN3.getQubits().size(); j++) {
+                                        if(qubitMap.containsKey(circN3.getQubits().get(j))) {
+                                            if(!qubitMap.get(circN3.getQubits().get(j)).equals(next.getQubits().get(j))) {
+                                                qubitMatch = false;
+                                                break;
+                                            }
+                                            if(reverseMap.containsKey(next.getQubits().get(j))) {
+                                                if(!reverseMap.get(next.getQubits().get(j)).equals(circN3.getQubits().get(j))) {
+                                                    qubitMatch = false;
+                                                    break;
+                                                }
+                                            }
+                                        } else {
+                                            if(reverseMap.containsKey(next.getQubits().get(j))) {
+                                                if(!reverseMap.get(next.getQubits().get(j)).equals(circN3.getQubits().get(j))) {
+                                                    qubitMatch = false;
+                                                    break;
+                                                }
+                                            }
+                                           
+                                        }
+                                        qubitMap.put(circN3.getQubits().get(j), next.getQubits().get(j));
+                                        reverseMap.put(next.getQubits().get(j), circN3.getQubits().get(j));
+                                    }
+                                    if(qubitMatch) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if(!found) {
+                            // System.out.println("Did not find the next node");
+                            foundOutter = false;
+                            break;
+                        }
+                        next = Graphs.successorListOf(symbbefore.getDAG(), next).get(0);
+                        s++;
+                    }
+                    if(!foundOutter) {
+                        continue;
+                    }
+                    // System.out.println("After match before Qubit Map: " + qubitMap);
+                    // System.out.println("After match before Reverse Map: " + reverseMap);
+                    //start to grow symbolic circuit
+                    Set<String> blockedQubits = new HashSet<>();
+                    Set<String> trackedQubits = new HashSet<>();
+                    List<Node> symb = new ArrayList<>();
+                    List<Node> symbToReplace = new ArrayList<>();
+                    symbToReplace.add(node);
+                    next = Graphs.successorListOf(symbbefore.getDAG(), patternBeforeStart).get(0);
+                    Node circNext = Graphs.successorListOf(dag.getDAG(), node).get(0);
+                    while (!next.isSinkQubit()) {
+                        symbToReplace.add(next);
+                        circNext = Graphs.successorListOf(dag.getDAG(), circNext).get(0);
+                        next = Graphs.successorListOf(symbbefore.getDAG(), next).get(0);
+                    }
+
+                    trackedQubits.addAll(node.getQubits());
+                    for(int j = i + s; j < layers.size(); j++) {
+                        if(trackedQubits.size() > maxSymbQubits || symb.size() > maxSymbSize) {
+                            break;
+                        }
+                        List<Node> layerJ = layers.get(j);
+                        
+                        for(Node circN: layerJ) {
+                            Map<String, String> tempQubitMap = new HashMap<>(qubitMap);
+                            Map<String, String> tempReverseMap = new HashMap<>(reverseMap);
+                            Map<String, Expr> tempAngleMap = new HashMap<>(angleMap);
+                            // System.out.println("TempQubit" + tempQubitMap);
+                            // System.out.println("TempReverse" + tempReverseMap);
+                            // System.out.println("Checking node: " + circN.getId());
+                            if(!circN.isGate()) {
+                                continue;
+                            }
+                            Set<String> trackedIntersection = new HashSet<>(trackedQubits);
+                            trackedIntersection.retainAll(circN.getQubits());
+                            if(!trackedIntersection.isEmpty()) {
+                                trackedQubits.addAll(circN.getQubits());
+                                if(trackedQubits.size() > maxSymbQubits || symb.size() > maxSymbSize) {
+                                    break;
+                                }
+
+                                //match after here
+                                boolean match = false;
+                                // System.out.println("AngleMap:" + angleMap);
+                                if(!blockedQubits.contains(circN.getQubits().get(0)) && circN.getId().equals(patternAfterStart.getId())) {
+                                    // System.out.println("Matched Root: " + circN.getId());
+                                    if(!patternAfterStart.getAngles().isEmpty()) {
+                                        if(matchAngles(circN, patternAfterStart, tempAngleMap)){
+                                            //System.out.println("Matched angle");
+                                            boolean roottQubitMatch = true;
+                                            for(int k = 0; k < circN.getQubits().size(); k++) {
+                                                // System.out.println("CircN:" + circN.getQubits().get(k));
+                                                // System.out.println("PatternAfterStart:" + patternAfterStart.getQubits().get(k));
+                                                if(tempQubitMap.containsKey(circN.getQubits().get(k))) {
+                                                    if(!tempQubitMap.get(circN.getQubits().get(k)).equals(patternAfterStart.getQubits().get(k))) {;
+                                                        roottQubitMatch = false;
+                                                        break;
+                                                    }
+                                                    if(tempReverseMap.containsKey(patternAfterStart.getQubits().get(k))) {
+                                                        if(!tempReverseMap.get(patternAfterStart.getQubits().get(k)).equals(circN.getQubits().get(k))) {
+                                                            roottQubitMatch = false;
+                                                            break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    if(tempReverseMap.containsKey(patternAfterStart.getQubits().get(k))) {
+                                                        if(!tempReverseMap.get(patternAfterStart.getQubits().get(k)).equals(circN.getQubits().get(k))) {
+                                                            roottQubitMatch = false;
+                                                            break;
+                                                        }
+                                                    }
+                                                    
+                                                }
+                                                tempQubitMap.put(circN.getQubits().get(k), patternAfterStart.getQubits().get(k));
+                                                tempReverseMap.put(patternAfterStart.getQubits().get(k), circN.getQubits().get(k));
+                                            }
+                                            if(roottQubitMatch) {
+                                                Node nextA = Graphs.successorListOf(symbafter.getDAG(), patternAfterStart).get(0);
+                                                int t = 1;
+                                                boolean found = true;
+                                                    
+                                                while(!nextA.isSinkQubit()) {
+                                                    boolean foundInner = false;
+                                                    for(Node node2: layers.get(i + t)) {
+                                                        // System.out.println("Trying to match Node2: " + node2.getId());
+                                                        if(node2.isGate() && node2.getId().equals(nextA.getId())) {
+                                                            if(!nextA.getAngles().isEmpty()) {
+                                                                if(matchAngles(node2, nextA, tempAngleMap)) {
+                                                                    boolean qubitMatch = true;
+                                                                    for(int k = 0; k < node2.getQubits().size(); k++) {
+                                                                        if(tempQubitMap.containsKey(node2.getQubits().get(k))) {
+                                                                            if(!tempQubitMap.get(node2.getQubits().get(k)).equals(nextA.getQubits().get(k))) {
+                                                                                qubitMatch = false;
+                                                                                break;
+                                                                            }
+                                                                            if(tempReverseMap.containsKey(nextA.getQubits().get(k))) {
+                                                                                if(!tempReverseMap.get(nextA.getQubits().get(k)).equals(node2.getQubits().get(k))) {
+                                                                                    qubitMatch = false;
+                                                                                    break;
+                                                                                }
+                                                                            }
+                                                                        } else {
+                                                                            if(tempReverseMap.containsKey(nextA.getQubits().get(k))) {
+                                                                                if(!tempReverseMap.get(nextA.getQubits().get(k)).equals(node2.getQubits().get(k))) {
+                                                                                    qubitMatch = false;
+                                                                                    break;
+                                                                                }
+                                                                            }
+                                                                            
+                                                                        }
+                                                                        tempQubitMap.put(node2.getQubits().get(k), nextA.getQubits().get(k));
+                                                                        tempReverseMap.put(nextA.getQubits().get(k), node2.getQubits().get(k));
+                                                                    }
+                                                                    // System.out.println("Match node: " + node2.getId() + " nextA: " + nextA.getId());
+                                                                    if(!qubitMatch) {
+                                                                        foundInner = false;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                
+                                                            }
+                                                            else {
+                                                                boolean qubitMatch = true;
+                                                                for(int k = 0; k < node2.getQubits().size(); k++) {
+                                                                    if(tempQubitMap.containsKey(node2.getQubits().get(k))) {
+                                                                        if(!tempQubitMap.get(node2.getQubits().get(k)).equals(nextA.getQubits().get(k))) {
+                                                                            qubitMatch = false;
+                                                                            break;
+                                                                        }
+                                                                        if(tempReverseMap.containsKey(nextA.getQubits().get(k))) {
+                                                                            if(!tempReverseMap.get(nextA.getQubits().get(k)).equals(node2.getQubits().get(k))) {
+                                                                                qubitMatch = false;
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    } else {
+                                                                        if(tempReverseMap.containsKey(nextA.getQubits().get(k))) {
+                                                                            if(!tempReverseMap.get(nextA.getQubits().get(k)).equals(node2.getQubits().get(k))) {
+                                                                                qubitMatch = false;
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    tempQubitMap.put(node2.getQubits().get(k), nextA.getQubits().get(k));
+                                                                    tempReverseMap.put(nextA.getQubits().get(k), node2.getQubits().get(k));
+                                                                }
+                                                                // System.out.println("Match node: " + node2.getId() + " nextA: " + nextA.getId());
+                                                                if(qubitMatch) {
+                                                                    foundInner = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if(!foundInner) {
+                                                        found = false;
+                                                        break;
+                                                    }
+                                                    nextA = Graphs.successorListOf(symbafter.getDAG(), nextA).get(0);
+                                                    t++;
+                                                }
+                                                if(found) {
+                                                    System.out.println("Matched the entire pattern");
+                                                    match = true;
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        //System.out.println("Matched Angles");
+                                        boolean roottQubitMatch = true;
+                                        for(int k = 0; k < circN.getQubits().size(); k++) {
+                                            // System.out.println("CircN:" + circN.getQubits().get(k));
+                                            // System.out.println("PatternAfterStart:" + patternAfterStart.getQubits().get(k));
+                                            if(tempQubitMap.containsKey(circN.getQubits().get(k))) {
+                                                if(!tempQubitMap.get(circN.getQubits().get(k)).equals(patternAfterStart.getQubits().get(k))) {;
+                                                    roottQubitMatch = false;
+                                                    break;
+                                                }
+                                                if(tempReverseMap.containsKey(patternAfterStart.getQubits().get(k))) {
+                                                    if(!tempReverseMap.get(patternAfterStart.getQubits().get(k)).equals(circN.getQubits().get(k))) {
+                                                        roottQubitMatch = false;
+                                                        break;
+                                                    }
+                                                }
+                                            } else {
+                                                if(tempReverseMap.containsKey(patternAfterStart.getQubits().get(k))) {
+                                                    if(!tempReverseMap.get(patternAfterStart.getQubits().get(k)).equals(circN.getQubits().get(k))) {
+                                                        roottQubitMatch = false;
+                                                        break;
+                                                    }
+                                                }
+                                                
+                                            }
+                                            tempQubitMap.put(circN.getQubits().get(k), patternAfterStart.getQubits().get(k));
+                                            tempReverseMap.put(patternAfterStart.getQubits().get(k), circN.getQubits().get(k));
+                                        }
+                                        if(roottQubitMatch) {
+                                            Node nextA = Graphs.successorListOf(symbafter.getDAG(), patternAfterStart).get(0);
+                                            int t = 1;
+                                            boolean found = true;
+                                            while(!nextA.isSinkQubit()) {
+                                                boolean foundInner = false;
+                                                for(Node node2: layers.get(i + t)) {
+                                                    //System.out.println("Trying to match Node2: " + node2.getId());
+                                                    if(node2.isGate() && node2.getId().equals(nextA.getId())) {
+                                                        if(!nextA.getAngles().isEmpty()) {
+                                                            if(matchAngles(node2, nextA, tempAngleMap)) {
+                                                                boolean qubitMatch = true;
+                                                                for(int k = 0; k < node2.getQubits().size(); k++) {
+                                                                    if(tempQubitMap.containsKey(node2.getQubits().get(k))) {
+                                                                        if(!tempQubitMap.get(node2.getQubits().get(k)).equals(nextA.getQubits().get(k))) {
+                                                                            qubitMatch = false;
+                                                                            break;
+                                                                        }
+                                                                        if(tempReverseMap.containsKey(nextA.getQubits().get(k))) {
+                                                                            if(!tempReverseMap.get(nextA.getQubits().get(k)).equals(node2.getQubits().get(k))) {
+                                                                                qubitMatch = false;
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    } else {
+                                                                        if(tempReverseMap.containsKey(nextA.getQubits().get(k))) {
+                                                                            if(!tempReverseMap.get(nextA.getQubits().get(k)).equals(node2.getQubits().get(k))) {
+                                                                                qubitMatch = false;
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    tempQubitMap.put(node2.getQubits().get(k), nextA.getQubits().get(k));
+                                                                    tempReverseMap.put(nextA.getQubits().get(k), node2.getQubits().get(k));
+                                                                
+                                                                }
+                                                                System.out.println("Match node: " + node2.getId() + " nextA: " + nextA.getId());
+                                                                if(qubitMatch) {
+                                                                    foundInner = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                        else {
+                                                            boolean qubitMatch = true;
+                                                            for(int k = 0; k < node2.getQubits().size(); k++) {
+                                                                if(tempQubitMap.containsKey(node2.getQubits().get(k))) {
+                                                                    if(!tempQubitMap.get(node2.getQubits().get(k)).equals(nextA.getQubits().get(k))) {
+                                                                        qubitMatch = false;
+                                                                        break;
+                                                                    }
+                                                                    if(tempReverseMap.containsKey(nextA.getQubits().get(k))) {
+                                                                        if(!tempReverseMap.get(nextA.getQubits().get(k)).equals(node2.getQubits().get(k))) {
+                                                                            qubitMatch = false;
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                } else {
+                                                                    if(tempReverseMap.containsKey(nextA.getQubits().get(k))) {
+                                                                        if(!tempReverseMap.get(nextA.getQubits().get(k)).equals(node2.getQubits().get(k))) {
+                                                                            qubitMatch = false;
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                    
+                                                                }
+                                                                tempQubitMap.put(node2.getQubits().get(k), nextA.getQubits().get(k));
+                                                                tempReverseMap.put(nextA.getQubits().get(k), node2.getQubits().get(k));
+                                                            }
+                                                            System.out.println("Match node: " + node2.getId() + " nextA: " + nextA.getId());
+                                                            if(qubitMatch) {
+                                                                foundInner = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if(!foundInner) {
+                                                    found = false;
+                                                    break;
+                                                }
+                                                nextA = Graphs.successorListOf(symbafter.getDAG(), nextA).get(0);
+                                                t++;
+                                            }
+                                            if(found) {
+                                                System.out.println("Matched the entire pattern");
+                                                match = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                //System.out.println("After match anglemap" + angleMap);
+                                //System.out.println("After match after Qubit Map: " + tempQubitMap);
+                                //System.out.println("After match after Reverse Map: " + tempReverseMap);
+                                if(match) {
+                                    Circuit symbCirc = opsToCircuit(symb);
+                                    EggGen.ConstrainedCircuit symbCircConst = CircuitTranslator.translate(symbCirc);
+                                    if(symbCirc.getUsedQubits().size() <= maxSymbQubits && symb.size() >= minSymbSize) {
+                                        if(isMono) {
+                                            for (Map<boolean[], boolean[]> constraint : constraints) {
+                                                boolean satisfiesConstraint = true;
+                                                for (Map.Entry<boolean[], boolean[]> e : constraint.entrySet()) {
+                                                    Map<String, Integer> qubitMapMono = new HashMap<>();
+                                                    Map<String, Boolean> expectedMap = new HashMap<>();
+                                                    if (patternBeforeStart.getQubits().get(0).equals("q0")) {
+                                                        qubitMapMono.put(node.getQubits().get(0), e.getKey()[0] ? 1 : 0);
+                                                        expectedMap.put(node.getQubits().get(0), e.getValue()[0]);
+                                                    }
+                                                    if (patternAfterStart.getQubits().get(0).equals("q0")) {
+                                                        qubitMapMono.put(circN.getQubits().get(0), e.getKey()[0] ? 1 : 0);
+                                                        expectedMap.put(circN.getQubits().get(0), e.getValue()[0]);
+                                                    }
+                                                    if (patternBeforeStart.getQubits().get(0).equals("q1")) {
+                                                        qubitMapMono.put(node.getQubits().get(0), e.getKey()[1] ? 1 : 0);
+                                                        expectedMap.put(node.getQubits().get(0), e.getValue()[1]);
+                                                    }
+                                                    if (patternAfterStart.getQubits().get(0).equals("q1")) {
+                                                        qubitMapMono.put(circN.getQubits().get(0), e.getKey()[1] ? 1 : 0);
+                                                        expectedMap.put(circN.getQubits().get(0), e.getValue()[1]);
+                                                    }
+                                                    if (!verifier.verify(symbCirc, qubitMapMono, expectedMap)) {
+                                                        satisfiesConstraint = false;
+                                                        break;
+                                                    }
+                                                }
+    
+                                                if (satisfiesConstraint) {
+                                                    System.out.println("S Satisfy the monomial constraints");
+                                                    qubitMap.clear();
+                                                    qubitMap.putAll(tempQubitMap);
+                                                    reverseMap.clear();
+                                                    reverseMap.putAll(tempReverseMap);
+                                                    angleMap.clear();
+                                                    angleMap.putAll(tempAngleMap);
+                                                    symbToReplace.add(circN);
+                                                    Node nextA = Graphs.successorListOf(symbafter.getDAG(), patternAfterStart).get(0);
+                                                    Node circNextA = Graphs.successorListOf(dag.getDAG(), circN).get(0);
+                                                    while (!nextA.isSinkQubit()) {
+                                                        symbToReplace.add(circNextA);
+                                                        circNextA = Graphs.successorListOf(dag.getDAG(), circNextA).get(0);
+                                                        nextA = Graphs.successorListOf(symbafter.getDAG(), nextA).get(0);
+                                                    }
+                                                    return symbToReplace;
+                                                } 
+                                                //System.out.println("S did not satisfy the monomial constraints");
+                                            }
+                                        } else {
+                                            //check for constraints
+                                            //System.out.println("checking constraints:");
+                                            
+                                            //canonicalize the circuit based on qubit map
+                                            EggGen.Circuit canonicalizedCirc = EggGen.canonicalizeCircuit(symbCircConst.circuit, new HashMap<>(tempQubitMap));
+        
+                                            //System.out.println("Canonicalized Circuit: " + canonicalizedCirc.toQASM());
+                                            try {
+                                                List<Integer> subspace = new ArrayList<>();
+                                                subspace.add(0);
+                                                subspace.add(1);
+                                                //System.out.println("Subspace: " + subspace);
+                                                if(checkLinearCombination(canonicalizedCirc, basis, subspace, tempAngleMap)) {
+                                                    //satisfy the constraints
+                                                    System.out.println("S Satisfy the constraints");
+                                                    symbToReplace.add(circN);
+                                                    qubitMap.clear();
+                                                    qubitMap.putAll(tempQubitMap);
+                                                    reverseMap.clear();
+                                                    reverseMap.putAll(tempReverseMap);
+                                                    angleMap.clear();
+                                                    angleMap.putAll(tempAngleMap);
+                                                    Node nextA = Graphs.successorListOf(symbafter.getDAG(), patternAfterStart).get(0);
+                                                    Node circNextA = Graphs.successorListOf(dag.getDAG(), circN).get(0);
+                                                    while (!nextA.isSinkQubit()) {
+                                                        symbToReplace.add(circNextA);
+                                                        circNextA = Graphs.successorListOf(dag.getDAG(), circNextA).get(0);
+                                                        nextA = Graphs.successorListOf(symbafter.getDAG(), nextA).get(0);
+                                                    }
+                                                    return symbToReplace;
+                                                } else {
+                                                    System.out.println("S did not satisfy the constraints");
+                                                }
+                                            } catch (IOException | InterruptedException e) {
+                                                System.err.println("Error checking linear combination: " + e.getMessage());
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Set<String> blockedIntersection = new HashSet<>(blockedQubits);
+                                blockedIntersection.retainAll(circN.getQubits());
+                                if(!symbToReplace.contains(circN) && blockedIntersection.isEmpty()) {
+                                    symb.add(circN);
+                                    symbToReplace.add(circN);
+                                    //System.out.println("Added node: " + symbToReplace.toString());
+                                    //System.out.println("Symb: " + symb.toString());
+                                } else {
+                                    if(node.isCCZ()) {
+                                        if(!blockedQubits.contains(circN.getQubits().get(2))) { 
+                                            //block target qubit
+                                            blockedQubits.add(circN.getQubits().get(2));
+                                            symbToReplace.add(circN);
+                                        } else {
+                                            symbToReplace.add(circN);
+                                        }
+                                    } else if(node.isCX()) {
+                                        if(blockedQubits.contains(circN.getQubits().get(0))) {
+                                            symbToReplace.add(circN);
+                                            blockedQubits.add(circN.getQubits().get(1));
+                                        } else if(blockedQubits.contains(circN.getQubits().get(1))) {
+                                            symbToReplace.add(circN);
+                                        }
+                                    } else {
+                                        symbToReplace.add(circN);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<Node> matchAfter(CircuitDAG dag, CircuitDAG symbdag, Map<String, Expr> angleMap, int maxSymbQubits, int minSymbSize, int maxSymbSize, List<Map<boolean[], boolean[]>> constraints, List<SymbolicSolve.SparseMatrix> basis, Map<String, String> qubitMap, Map<String, String> reverseMap, boolean isMono) {
         List<Node> roots = symbdag.getCircuitRoots();
         Node patternRoot = roots.get(0);
         List<List<Node>> layers = dag.topoSort();
@@ -772,17 +1507,18 @@ public class Optimizer {
             if(trackedQubits.size() > maxSymbQubits || symb.size() > maxSymbSize) {
                 break;
             }
-            System.out.println("layer:" + (i+1) + "/" + layers.size());
+            //System.out.println("layer:" + (i+1) + "/" + layers.size());
             for(Node node : layers.get(i)) {
                 qubitMap.clear();
                 reverseMap.clear();
+                angleMap.clear();
                 if(!node.isGate()) {
                     continue;
                 }
 
-                System.out.println("Trying to match Node: " + node.toString());
+                //System.out.println("Trying to match Node: " + node.toString());
                 Set<String> trackedIntersection = new HashSet<>(trackedQubits);
-                System.out.println("Tracked Qubits" + trackedQubits);
+                //System.out.println("Tracked Qubits" + trackedQubits);
                 if(isFirst) {
                     trackedIntersection.addAll(node.getQubits());
                     isFirst = false;
@@ -797,7 +1533,7 @@ public class Optimizer {
 
                     boolean match = false;
                     if(!blockedQubits.contains(node.getQubits().get(0)) && node.getId().equals(patternRoot.getId())) {
-                        System.out.println("Matched Root: " + node.getId());
+                        //System.out.println("Matched Root: " + node.getId());
                         if(!patternRoot.getAngles().isEmpty()) {
                             if(matchAngles(node, patternRoot, angleMap)) {
                                 for(int j = 0; j < node.getQubits().size(); j++) {
@@ -811,43 +1547,38 @@ public class Optimizer {
                                 while(!nextA.isSinkQubit()) {
                                     boolean foundInner = false;
                                     for(Node node2: layers.get(i + t)) {
-                                        System.out.println("Trying to match Node2: " + node2.getId());
+                                        //System.out.println("Trying to match Node2: " + node2.getId());
                                         if(node2.isGate() && node2.getId().equals(nextA.getId())) {
                                             if(!nextA.getAngles().isEmpty()) {
                                                 if(matchAngles(node2, nextA, angleMap)) {
-                                                    Map<String, String> tempQubitMap = new HashMap<>(qubitMap);
-                                                    Map<String, String> tempReverseMap = new HashMap<>(reverseMap);
+                                                    
                                                     boolean qubitMatch = true;
                                                     for(int j = 0; j < node2.getQubits().size(); j++) {
                                                         if(qubitMap.containsKey(node2.getQubits().get(j))) {
-                                                            if(qubitMap.get(node2.getQubits().get(j)) != nextA.getQubits().get(j)) {
+                                                            if(!qubitMap.get(node2.getQubits().get(j)).equals(nextA.getQubits().get(j))) {
                                                                 qubitMatch = false;
                                                                 break;
                                                             }
                                                             if(reverseMap.containsKey(nextA.getQubits().get(j))) {
-                                                                if(reverseMap.get(nextA.getQubits().get(j)) != node2.getQubits().get(j)) {
+                                                                if(!reverseMap.get(nextA.getQubits().get(j)).equals(node2.getQubits().get(j))) {
                                                                     qubitMatch = false;
                                                                     break;
                                                                 }
                                                             }
                                                         } else {
                                                             if(reverseMap.containsKey(nextA.getQubits().get(j))) {
-                                                                if(reverseMap.get(nextA.getQubits().get(j)) != node2.getQubits().get(j)) {
+                                                                if(!reverseMap.get(nextA.getQubits().get(j)).equals(node2.getQubits().get(j))) {
                                                                     qubitMatch = false;
                                                                     break;
                                                                 }
                                                             }
                                                             
                                                         }
-                                                        tempQubitMap.put(node2.getQubits().get(j), nextA.getQubits().get(j));
-                                                        tempReverseMap.put(nextA.getQubits().get(j), node2.getQubits().get(j));
+                                                        qubitMap.put(node2.getQubits().get(j), nextA.getQubits().get(j));
+                                                        reverseMap.put(nextA.getQubits().get(j), node2.getQubits().get(j));
                                                     }
                                                     System.out.println("Match node: " + node2.getId() + " nextA: " + nextA.getId());
                                                     if(qubitMatch) {
-                                                        qubitMap.clear();
-                                                        qubitMap.putAll(tempQubitMap);
-                                                        reverseMap.clear();
-                                                        reverseMap.putAll(tempReverseMap);
                                                         foundInner = true;
                                                         break;
                                                     }
@@ -855,39 +1586,33 @@ public class Optimizer {
                                                 
                                             }
                                             else {
-                                                Map<String, String> tempQubitMap = new HashMap<>(qubitMap);
-                                                Map<String, String> tempReverseMap = new HashMap<>(reverseMap);
                                                 boolean qubitMatch = true;
                                                 for(int j = 0; j < node2.getQubits().size(); j++) {
                                                     if(qubitMap.containsKey(node2.getQubits().get(j))) {
-                                                        if(qubitMap.get(node2.getQubits().get(j)) != nextA.getQubits().get(j)) {
+                                                        if(!qubitMap.get(node2.getQubits().get(j)).equals(nextA.getQubits().get(j))) {
                                                             qubitMatch = false;
                                                             break;
                                                         }
                                                         if(reverseMap.containsKey(nextA.getQubits().get(j))) {
-                                                            if(reverseMap.get(nextA.getQubits().get(j)) != node2.getQubits().get(j)) {
+                                                            if(!reverseMap.get(nextA.getQubits().get(j)).equals(node2.getQubits().get(j))) {
                                                                 qubitMatch = false;
                                                                 break;
                                                             }
                                                         }
                                                     } else {
                                                         if(reverseMap.containsKey(nextA.getQubits().get(j))) {
-                                                            if(reverseMap.get(nextA.getQubits().get(j)) != node2.getQubits().get(j)) {
+                                                            if(!reverseMap.get(nextA.getQubits().get(j)).equals(node2.getQubits().get(j))) {
                                                                 qubitMatch = false;
                                                                 break;
                                                             }
                                                         }
                                                     }
-                                                    tempQubitMap.put(node2.getQubits().get(j), nextA.getQubits().get(j));
-                                                    tempReverseMap.put(nextA.getQubits().get(j), node2.getQubits().get(j));
+                                                    qubitMap.put(node2.getQubits().get(j), nextA.getQubits().get(j));
+                                                    reverseMap.put(nextA.getQubits().get(j), node2.getQubits().get(j));
                                                 }
-                                                System.out.println("Match node: " + node2.getId() + " nextA: " + nextA.getId());
+                                                //System.out.println("Match node: " + node2.getId() + " nextA: " + nextA.getId());
                                                 if(qubitMatch) {
                                                     foundInner = true;
-                                                    qubitMap.clear();
-                                                    qubitMap.putAll(tempQubitMap);
-                                                    reverseMap.clear();
-                                                    reverseMap.putAll(tempReverseMap);
                                                     break;
                                                 }
                                             }
@@ -917,51 +1642,44 @@ public class Optimizer {
                             while(!nextA.isSinkQubit()) {
                                 boolean foundInner = false;
                                 for(Node node2: layers.get(i + t)) {
-                                    System.out.println("Trying to match Node2: " + node2.getId());
+                                    //System.out.println("Trying to match Node2: " + node2.getId());
                                     if(node2.isGate() && node2.getId().equals(nextA.getId())) {
                                         if(nextA.getAngles() != null) {
                                             if(matchAngles(node2, nextA, angleMap)) {
-                                                Map<String, String> tempQubitMap = new HashMap<>(qubitMap);
-                                                Map<String, String> tempReverseMap = new HashMap<>(reverseMap);
+                                            
                                                 boolean qubitMatch = true;
                                                 for(int j = 0; j < node2.getQubits().size(); j++) {
                                                     if(qubitMap.containsKey(node2.getQubits().get(j))) {
-                                                        if(qubitMap.get(node2.getQubits().get(j)) != nextA.getQubits().get(j)) {
+                                                        if(!qubitMap.get(node2.getQubits().get(j)).equals(nextA.getQubits().get(j))) {
                                                             qubitMatch = false;
                                                             break;
                                                         }
                                                         if(reverseMap.containsKey(nextA.getQubits().get(j))) {
-                                                            if(reverseMap.get(nextA.getQubits().get(j)) != node2.getQubits().get(j)) {
+                                                            if(!reverseMap.get(nextA.getQubits().get(j)).equals(node2.getQubits().get(j))) {
                                                                 qubitMatch = false;
                                                                 break;
                                                             }
                                                         }
                                                     } else {
                                                         if(reverseMap.containsKey(nextA.getQubits().get(j))) {
-                                                            if(reverseMap.get(nextA.getQubits().get(j)) != node2.getQubits().get(j)) {
+                                                            if(!reverseMap.get(nextA.getQubits().get(j)).equals(node2.getQubits().get(j))) {
                                                                 qubitMatch = false;
                                                                 break;
                                                             }
                                                         }
                                                     }
-                                                    tempQubitMap.put(node2.getQubits().get(j), nextA.getQubits().get(j));
-                                                    tempReverseMap.put(nextA.getQubits().get(j), node2.getQubits().get(j));
+                                                    qubitMap.put(node2.getQubits().get(j), nextA.getQubits().get(j));
+                                                    reverseMap.put(nextA.getQubits().get(j), node2.getQubits().get(j));
                                                    
                                                 }
-                                                System.out.println("Match node: " + node2.getId() + " nextA: " + nextA.getId());
+                                                //System.out.println("Match node: " + node2.getId() + " nextA: " + nextA.getId());
                                                 if(qubitMatch) {
-                                                    qubitMap.clear();
-                                                    qubitMap.putAll(tempQubitMap);
-                                                    reverseMap.clear();
-                                                    reverseMap.putAll(tempReverseMap);
                                                     foundInner = true;
                                                     break;
                                                 }
                                             }
                                         }
                                         else {
-                                            Map<String, String> tempQubitMap = new HashMap<>(qubitMap);
-                                            Map<String, String> tempReverseMap = new HashMap<>(reverseMap);
                                             boolean qubitMatch = true;
                                             for(int j = 0; j < node2.getQubits().size(); j++) {
                                                 if(qubitMap.containsKey(node2.getQubits().get(j))) {
@@ -970,29 +1688,25 @@ public class Optimizer {
                                                         break;
                                                     }
                                                     if(reverseMap.containsKey(nextA.getQubits().get(j))) {
-                                                        if(reverseMap.get(nextA.getQubits().get(j)) != node2.getQubits().get(j)) {
+                                                        if(!reverseMap.get(nextA.getQubits().get(j)).equals(node2.getQubits().get(j))) {
                                                             qubitMatch = false;
                                                             break;
                                                         }
                                                     }
                                                 } else {
                                                     if(reverseMap.containsKey(nextA.getQubits().get(j))) {
-                                                        if(reverseMap.get(nextA.getQubits().get(j)) != node2.getQubits().get(j)) {
+                                                        if(!reverseMap.get(nextA.getQubits().get(j)).equals(node2.getQubits().get(j))) {
                                                             qubitMatch = false;
                                                             break;
                                                         }
                                                     }
                                                     
                                                 }
-                                                tempQubitMap.put(node2.getQubits().get(j), nextA.getQubits().get(j));
-                                                tempReverseMap.put(nextA.getQubits().get(j), node2.getQubits().get(j));
+                                                qubitMap.put(node2.getQubits().get(j), nextA.getQubits().get(j));
+                                                reverseMap.put(nextA.getQubits().get(j), node2.getQubits().get(j));
                                             }
-                                            System.out.println("Match node: " + node2.getId() + " nextA: " + nextA.getId());
+                                            //System.out.println("Match node: " + node2.getId() + " nextA: " + nextA.getId());
                                             if(qubitMatch) {
-                                                qubitMap.clear();
-                                                qubitMap.putAll(tempQubitMap);
-                                                reverseMap.clear();
-                                                reverseMap.putAll(tempReverseMap);
                                                 foundInner = true;
                                                 break;
                                             }
@@ -1015,32 +1729,74 @@ public class Optimizer {
 
                     if(match) {
                         Circuit symbCirc = opsToCircuit(symb);
+                        System.out.println("Matched Nodes: " + symbToReplace.toString());
+                        System.out.println("Symb: " + symb.toString());
                         EggGen.ConstrainedCircuit symbCircConst = CircuitTranslator.translate(symbCirc);
                         if(symbCirc.getUsedQubits().size() <= maxSymbQubits && symb.size() >= minSymbSize) {
-                            EggGen.Circuit canonicalizedCirc = EggGen.canonicalizeCircuit(symbCircConst.circuit, new HashMap<>(qubitMap));
-                            System.out.println("Canonicalized Circuit: " + canonicalizedCirc.toEggString());
-                            try {
-                                List<Integer> subspace = new ArrayList<>();
-                                subspace.add(0);
-                                subspace.add(1);
-                                //System.out.println("Subspace: " + subspace);
-                                if(checkLinearCombination(canonicalizedCirc, basis, subspace, angleMap)) {
-                                    symbToReplace.add(node);
-                                    Node nextA = Graphs.successorListOf(symbdag.getDAG(), patternRoot).get(0);
-                                    Node circNextA = Graphs.successorListOf(dag.getDAG(), node).get(0);
-                                    while(!nextA.isSinkQubit()) {
-                                        symbToReplace.add(circNextA);
-                                        circNextA = Graphs.successorListOf(dag.getDAG(), circNextA).get(0);
-                                        nextA = Graphs.successorListOf(symbdag.getDAG(), nextA).get(0);
+                            if(isMono) {
+                                for (Map<boolean[], boolean[]> constraint : constraints) {
+                                    boolean satisfiesConstraint = true;
+                                    for (Map.Entry<boolean[], boolean[]> e : constraint.entrySet()) {
+                                        Map<String, Integer> qubitMapMono = new HashMap<>();
+                                        Map<String, Boolean> expectedMap = new HashMap<>();
+                                       
+                                        if (patternRoot.getQubits().get(0).equals("q0")) {
+                                            qubitMapMono.put(node.getQubits().get(0), e.getKey()[0] ? 1 : 0);
+                                            expectedMap.put(node.getQubits().get(0), e.getValue()[0]);
+                                        }
+                                       
+                                        if (patternRoot.getQubits().get(0).equals("q1")) {
+                                            qubitMapMono.put(node.getQubits().get(0), e.getKey()[1] ? 1 : 0);
+                                            expectedMap.put(node.getQubits().get(0), e.getValue()[1]);
+                                        }
+
+                                        if (!verifier.verify(symbCirc, qubitMapMono, expectedMap)) {
+                                            satisfiesConstraint = false;
+                                            break;
+                                        }
                                     }
-                                    System.out.println("S satisfy the constraints");
-                                    return symbToReplace;
-                                } else {
-                                    System.out.println("S does not satisfy the constraints");
+
+                                    if (satisfiesConstraint) {
+                                        System.out.println("S satisfy the monomial constraints");
+                                        symbToReplace.add(node);
+                                        Node nextA = Graphs.successorListOf(symbdag.getDAG(), patternRoot).get(0);
+                                        Node circNextA = Graphs.successorListOf(dag.getDAG(), node).get(0);
+                                        while (!nextA.isSinkQubit()) {
+                                            symbToReplace.add(circNextA);
+                                            circNextA = Graphs.successorListOf(dag.getDAG(), circNextA).get(0);
+                                            nextA = Graphs.successorListOf(symbdag.getDAG(), nextA).get(0);
+                                        }
+                                        return symbToReplace;
+                                    } else {
+                                        System.out.println("S does not satisfy the monomial constraints");
+                                    }
                                 }
-                            }
-                            catch (IOException | InterruptedException e) {
-                                e.printStackTrace();
+                            } else {
+                                EggGen.Circuit canonicalizedCirc = EggGen.canonicalizeCircuit(symbCircConst.circuit, new HashMap<>(qubitMap));
+                                System.out.println("Canonicalized Circuit: " + canonicalizedCirc.toEggString());
+                                try {
+                                    List<Integer> subspace = new ArrayList<>();
+                                    subspace.add(0);
+                                    subspace.add(1);
+                                    //System.out.println("Subspace: " + subspace);
+                                    if(checkLinearCombination(canonicalizedCirc, basis, subspace, angleMap)) {
+                                        symbToReplace.add(node);
+                                        Node nextA = Graphs.successorListOf(symbdag.getDAG(), patternRoot).get(0);
+                                        Node circNextA = Graphs.successorListOf(dag.getDAG(), node).get(0);
+                                        while(!nextA.isSinkQubit()) {
+                                            symbToReplace.add(circNextA);
+                                            circNextA = Graphs.successorListOf(dag.getDAG(), circNextA).get(0);
+                                            nextA = Graphs.successorListOf(symbdag.getDAG(), nextA).get(0);
+                                        }
+                                        System.out.println("S satisfy the constraints");
+                                        return symbToReplace;
+                                    } else {
+                                        System.out.println("S does not satisfy the constraints");
+                                    }
+                                }
+                                catch (IOException | InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
@@ -1050,8 +1806,8 @@ public class Optimizer {
                     if(!symbToReplace.contains(node) && blockedIntersection.isEmpty()) {
                         symb.add(node);
                         symbToReplace.add(node);
-                        System.out.println("Added node: " + symbToReplace.toString());
-                        System.out.println("Symb: " + symb.toString());
+                        //System.out.println("Added node: " + symbToReplace.toString());
+                        //System.out.println("Symb: " + symb.toString());
                     } else {
                         if(node.isCCZ()) {
                             if(!blockedQubits.contains(node.getQubits().get(2))) { 
@@ -1077,6 +1833,8 @@ public class Optimizer {
         }
         return null;
     }
+
+
 
     private boolean sameAngle(Expr angle1, Expr angle2) {
         return (eval(angle1) % (4 * Math.PI)) == (eval(angle2) % (4 * Math.PI));
@@ -1134,10 +1892,13 @@ public class Optimizer {
 
 
     private boolean matchAngle(Expr pattern, Expr circ, Map<String, Expr> angleMap) {
+        // System.out.println("Pattern:" + pattern);
+        // System.out.println("Circ:" + circ);
         if(pattern instanceof Symbol) {
             String key = pattern.toString();
             if(key.contains("theta")) {
                 if(angleMap.containsKey(key)) {
+                    
                     return sameAngle(angleMap.get(key), circ);
                 } else {
                     angleMap.put(key, circ);
@@ -1162,8 +1923,10 @@ public class Optimizer {
                     return false;
                 }
             }
-        } else {
-            return sameAngle(pattern, circ);
+        } else if (pattern instanceof Real){
+            if (circ instanceof Real) {
+                return sameAngle(pattern, circ);
+            }
         }
 
         return false;
@@ -1405,7 +2168,7 @@ public class Optimizer {
         return c;
     }
 
-    public List<Node> matchBefore(CircuitDAG dag, CircuitDAG symbdag, Map<String, Expr> angleMap, int maxSymbQubits, int minSymbSize, int maxSymbSize, List<SymbolicSolve.SparseMatrix> basis, Map<String, String> qubitMap, Map<String, String> reverseMap) {
+    public List<Node> matchBefore(CircuitDAG dag, CircuitDAG symbdag, Map<String, Expr> angleMap, int maxSymbQubits, int minSymbSize, int maxSymbSize, List<Map<boolean[], boolean[]>> constraints, List<SymbolicSolve.SparseMatrix> basis, Map<String, String> qubitMap, Map<String, String> reverseMap, boolean isMono) {
         List<Node> roots = symbdag.getCircuitRoots();
         Node patternRoot = roots.get(0);
         List<List<Node>> layers = dag.topoSort();
@@ -1415,101 +2178,94 @@ public class Optimizer {
             for(Node node : layer) {
                 qubitMap.clear();
                 reverseMap.clear();
+                angleMap.clear();
+                // System.out.println("Pattern: " + symbdag.toQASM());
                 if(node.isGate() && node.getId().equals(patternRoot.getId())) {
                     if(patternRoot.getAngles() != null) {
                         if(!matchAngles(node, patternRoot, angleMap)) {
                             continue;
                         }
                     }
-                    System.out.println("matched node: " + node.getId());
+                    // System.out.println("Angle Map:" + angleMap);
+                    // System.out.println("matched node: " + node.getId());
                     for(int j = 0; j < node.getQubits().size(); j++) {
                         qubitMap.put(node.getQubits().get(j), patternRoot.getQubits().get(j));
                         reverseMap.put(patternRoot.getQubits().get(j), node.getQubits().get(j));
                     }
                     //System.out.println("Qubit Map: " + qubitMap);
                     Node next = Graphs.successorListOf(symbdag.getDAG(), patternRoot).get(0);
+                    //System.out.println("Next:" + next.toString());
                     int s = 1;
                     boolean foundOutter = true;
                     while(!next.isSinkQubit()) {
                         boolean found = false;
                         for(Node circN3: layers.get(i + s)) {
-                            System.out.println("Next Pattern: " + next.getId());
-                            System.out.println("Next Concrete: " + circN3.getId());
-                            System.out.println("Pattern Qubits: " + next.getQubits());
-                            System.out.println("Concrete Qubits: " + circN3.getQubits());
+                            // System.out.println("Next Pattern: " + next.getId());
+                            // System.out.println("Next Concrete: " + circN3.getId());
+                            // System.out.println("Pattern Qubits: " + next.getQubits());
+                            // System.out.println("Concrete Qubits: " + circN3.getQubits());
                             if(circN3.isGate() && circN3.getId().equals(next.getId())) {
-                                System.out.println("Intermediate Matched Node: " + circN3.getId());
-                                if(patternRoot.getAngles() != null) {
+                                //System.out.println("Intermediate Matched Node: " + circN3.getId());
+                                if(!next.getAngles().isEmpty()) {
                                     if(matchAngles(circN3, next, angleMap)) {
-                                        Map<String, String> tempQubitMap = new HashMap<>(qubitMap);
-                                        Map<String, String> tempReverseMap = new HashMap<>(reverseMap);
+                                        System.out.println("Angle Map:" + angleMap);
                                         boolean qubitMatch = true;
                                         for(int j = 0; j < circN3.getQubits().size(); j++) {
                                             if(qubitMap.containsKey(circN3.getQubits().get(j))) {
-                                                if(qubitMap.get(circN3.getQubits().get(j)) != next.getQubits().get(j)) {
+                                                if(!qubitMap.get(circN3.getQubits().get(j)).equals(next.getQubits().get(j))) {
                                                     qubitMatch = false;
                                                     break;
                                                 }
                                                 if(reverseMap.containsKey(next.getQubits().get(j))) {
-                                                    if(reverseMap.get(next.getQubits().get(j)) != circN3.getQubits().get(j)) {
+                                                    if(!reverseMap.get(next.getQubits().get(j)).equals(circN3.getQubits().get(j))) {
                                                         qubitMatch = false;
                                                         break;
                                                     }
                                                 }
                                             } else {
                                                 if(reverseMap.containsKey(next.getQubits().get(j))) {
-                                                    if(reverseMap.get(next.getQubits().get(j)) != circN3.getQubits().get(j)) {
+                                                    if(!reverseMap.get(next.getQubits().get(j)).equals(circN3.getQubits().get(j))) {
                                                         qubitMatch = false;
                                                         break;
                                                     }
                                                 }
                                                 
                                             }
-                                            tempQubitMap.put(circN3.getQubits().get(j), next.getQubits().get(j));
-                                            tempReverseMap.put(next.getQubits().get(j), circN3.getQubits().get(j));
+                                            qubitMap.put(circN3.getQubits().get(j), next.getQubits().get(j));
+                                            reverseMap.put(next.getQubits().get(j), circN3.getQubits().get(j));
                                         }
                                         if(qubitMatch) {
-                                            qubitMap.clear();
-                                            qubitMap.putAll(tempQubitMap);
-                                            reverseMap.clear();
-                                            reverseMap.putAll(tempReverseMap);
                                             found = true;
                                             break;
                                         }
                                     }
                                 } else {
-                                    Map<String, String> tempQubitMap = new HashMap<>(qubitMap);
-                                    Map<String, String> tempReverseMap = new HashMap<>(reverseMap);
                                     boolean qubitMatch = true;
                                     for(int j = 0; j < circN3.getQubits().size(); j++) {
                                         if(qubitMap.containsKey(circN3.getQubits().get(j))) {
-                                            if(qubitMap.get(circN3.getQubits().get(j)) != node.getQubits().get(j)) {
+                                            if(!qubitMap.get(circN3.getQubits().get(j)).equals(node.getQubits().get(j))) {
                                                 qubitMatch = false;
                                                 break;
                                             }
                                             if(reverseMap.containsKey(next.getQubits().get(j))) {
-                                                if(reverseMap.get(next.getQubits().get(j)) != circN3.getQubits().get(j)) {
+                                                if(!reverseMap.get(next.getQubits().get(j)).equals(circN3.getQubits().get(j))) {
                                                     qubitMatch = false;
                                                     break;
                                                 }
                                             }
                                         } else {
                                             if(reverseMap.containsKey(next.getQubits().get(j))) {
-                                                if(reverseMap.get(next.getQubits().get(j)) != circN3.getQubits().get(j)) {
+                                                if(!reverseMap.get(next.getQubits().get(j)).equals(circN3.getQubits().get(j))) {
                                                     qubitMatch = false;
                                                     break;
                                                 }
                                             }
                                            
                                         }
-                                        tempQubitMap.put(circN3.getQubits().get(j), next.getQubits().get(j));
-                                        tempReverseMap.put(next.getQubits().get(j), circN3.getQubits().get(j));
+                                        qubitMap.put(circN3.getQubits().get(j), next.getQubits().get(j));
+                                        reverseMap.put(next.getQubits().get(j), circN3.getQubits().get(j));
                                     }
                                     if(qubitMatch) {
-                                        qubitMap.clear();
-                                        qubitMap.putAll(tempQubitMap);
-                                        reverseMap.clear();
-                                        reverseMap.putAll(tempReverseMap);
                                         found = true;
                                         break;
                                     }
@@ -1517,7 +2273,7 @@ public class Optimizer {
                             }
                         }
                         if(!found) {
-                            System.out.println("Did not find the next node");
+                            //System.out.println("Did not find the next node");
                             foundOutter = false;
                             break;
                         }
@@ -1548,32 +2304,62 @@ public class Optimizer {
                         }
                         List<Node> layerJ = layers.get(j);
                         for(Node circN: layerJ) {
-                            System.out.println("Checking node: " + circN.getId());
+                            //System.out.println("Checking node: " + circN.getId());
                             if(!circN.isGate()) {
                                 Circuit symbCirc = opsToCircuit(symb);
                                 EggGen.ConstrainedCircuit symbCircConst = CircuitTranslator.translate(symbCirc);
                                 if(symbCirc.getUsedQubits().size() <= maxSymbQubits && symb.size() >= minSymbSize) {
                                     //check for constraints
                                     //canonicalize the circuit based on qubit map
-                                    
-                                    EggGen.Circuit canonicalizedCirc = EggGen.canonicalizeCircuit(symbCircConst.circuit, new HashMap<>(qubitMap));
-                                    System.out.println("checking constraints:");
-                                    System.out.println(canonicalizedCirc.toEggString());
-                                    try {
-                                        List<Integer> subspace = new ArrayList<>();
-                                        subspace.add(0);
-                                        subspace.add(1);
-                                        System.out.println("Subspace: " + subspace);
-                                        if(checkLinearCombination(canonicalizedCirc, basis, subspace, angleMap)) {
-                                            //satisfy the constraints
-                                            System.out.println("Satisfy the constraints");
-                                            //symbToReplace.add(circN);
-                                            return symbToReplace;
-                                        } else {
-                                            System.out.println("did not satisfy the constraints");
+                                    if(isMono) {
+                                        for (Map<boolean[], boolean[]> constraint : constraints) {
+                                            boolean satisfiesConstraint = true;
+                                            for (Map.Entry<boolean[], boolean[]> e : constraint.entrySet()) {
+                                                Map<String, Integer> qubitMapMono = new HashMap<>();
+                                                Map<String, Boolean> expectedMap = new HashMap<>();
+                                                if (patternRoot.getQubits().get(0).equals("q0")) {
+                                                    qubitMapMono.put(node.getQubits().get(0), e.getKey()[0] ? 1 : 0);
+                                                    expectedMap.put(node.getQubits().get(0), e.getValue()[0]);
+                                                }
+                                                
+                                                if (patternRoot.getQubits().get(0).equals("q1")) {
+                                                    qubitMapMono.put(node.getQubits().get(0), e.getKey()[1] ? 1 : 0);
+                                                    expectedMap.put(node.getQubits().get(0), e.getValue()[1]);
+                                                }
+
+                                                if (!verifier.verify(symbCirc, qubitMapMono, expectedMap)) {
+                                                    satisfiesConstraint = false;
+                                                    break;
+                                                }
+                                            }
+
+                                            if (satisfiesConstraint) {
+                                                System.out.println("S satisfy Monomial");
+                                                return symbToReplace;
+                                            } else {
+                                                System.out.println("S does not satisfy Monomial");
+                                            }
                                         }
-                                    } catch (IOException | InterruptedException e) {
-                                        System.err.println("Error checking linear combination: " + e.getMessage());
+                                    } else {
+                                        EggGen.Circuit canonicalizedCirc = EggGen.canonicalizeCircuit(symbCircConst.circuit, new HashMap<>(qubitMap));
+                                        System.out.println("checking constraints:");
+                                        System.out.println(canonicalizedCirc.toEggString());
+                                        try {
+                                            List<Integer> subspace = new ArrayList<>();
+                                            subspace.add(0);
+                                            subspace.add(1);
+                                            System.out.println("Subspace: " + subspace);
+                                            if(checkLinearCombination(canonicalizedCirc, basis, subspace, angleMap)) {
+                                                //satisfy the constraints
+                                                System.out.println("Satisfy the constraints");
+                                                //symbToReplace.add(circN);
+                                                return symbToReplace;
+                                            } else {
+                                                System.out.println("did not satisfy the constraints");
+                                            }
+                                        } catch (IOException | InterruptedException e) {
+                                            System.err.println("Error checking linear combination: " + e.getMessage());
+                                        }
                                     }
                                 }
                                 continue;
@@ -1590,26 +2376,54 @@ public class Optimizer {
                                 EggGen.ConstrainedCircuit symbCircConst = CircuitTranslator.translate(symbCirc);
                                 if(symbCirc.getUsedQubits().size() <= maxSymbQubits && symb.size() >= minSymbSize) {
                                     //check for constraints
-                                    System.out.println("checking constraints:");
-                                    System.out.println(symbCircConst.toEggString());
-                                    //canonicalize the circuit based on qubit map
-                                    EggGen.Circuit canonicalizedCirc = EggGen.canonicalizeCircuit(symbCircConst.circuit, new HashMap<>(qubitMap));
-    
-                                    try {
-                                        List<Integer> subspace = new ArrayList<>();
-                                        subspace.add(0);
-                                        subspace.add(1);
-                                        System.out.println("Subspace: " + subspace);
-                                        if(checkLinearCombination(canonicalizedCirc, basis, subspace, angleMap)) {
-                                            //satisfy the constraints
-                                            System.out.println("S Satisfy the constraints");
-                                            symbToReplace.add(circN);
-                                            return symbToReplace;
-                                        } else {
-                                            System.out.println("S did not satisfy the constraints");
+                                    if(isMono) {
+                                        System.out.println("Checking monomial constraints:");
+                                        for (Map<boolean[], boolean[]> constraint : constraints) {
+                                            boolean satisfiesConstraint = true;
+                                            for (Map.Entry<boolean[], boolean[]> e : constraint.entrySet()) {
+                                                Map<String, Integer> qubitMapMono = new HashMap<>();
+                                                Map<String, Boolean> expectedMap = new HashMap<>();
+                                                if (patternRoot.getQubits().get(0).equals("q0")) {
+                                                    qubitMapMono.put(node.getQubits().get(0), e.getKey()[0] ? 1 : 0);
+                                                    expectedMap.put(node.getQubits().get(0), e.getValue()[0]);
+                                                }
+                                              
+                                                if (patternRoot.getQubits().get(0).equals("q1")) {
+                                                    qubitMapMono.put(node.getQubits().get(0), e.getKey()[1] ? 1 : 0);
+                                                    expectedMap.put(node.getQubits().get(0), e.getValue()[1]);
+                                                }
+                                              
+                                                if (!verifier.verify(symbCirc, qubitMapMono, expectedMap)) {
+                                                    satisfiesConstraint = false;
+                                                    break;
+                                                }
+                                            }
+
+                                            if (satisfiesConstraint) {
+                                                return symbToReplace;
+                                            }
                                         }
-                                    } catch (IOException | InterruptedException e) {
-                                        System.err.println("Error checking linear combination: " + e.getMessage());
+                                    } else {
+                                        System.out.println("checking constraints:");
+                                        System.out.println(symbCircConst.toEggString());
+                                        //canonicalize the circuit based on qubit map
+                                        EggGen.Circuit canonicalizedCirc = EggGen.canonicalizeCircuit(symbCircConst.circuit, new HashMap<>(qubitMap));
+        
+                                        try {
+                                            List<Integer> subspace = new ArrayList<>();
+                                            subspace.add(0);
+                                            subspace.add(1);
+                                            System.out.println("Subspace: " + subspace);
+                                            if(checkLinearCombination(canonicalizedCirc, basis, subspace, angleMap)) {
+                                                //satisfy the constraints
+                                                System.out.println("S Satisfy the constraints");
+                                                return symbToReplace;
+                                            } else {
+                                                System.out.println("S did not satisfy the constraints");
+                                            }
+                                        } catch (IOException | InterruptedException e) {
+                                            System.err.println("Error checking linear combination: " + e.getMessage());
+                                        }
                                     }
                                 }
 
@@ -1666,12 +2480,16 @@ public class Optimizer {
             System.err.println("Error output: " + errorOutput.toString());
             return false;
         }
-        System.out.print("Output:" + output);
+        //System.out.print("Output:" + output);
 
         return output.toString().trim().equals("true");
     }
 
-    public void optimize(EggGen.ConstrainedCircuit circuit, EggGen egraph, int timeout) {
+    public void optimize(EggGen.ConstrainedCircuit circuit, List<String> rules, int timeout) {
+        EggGen egraph = new EggGen();
+        for(String rule: rules) {
+            egraph.addRewritev2(rule);
+        }
         System.out.println("Original Gate Size: " + circuit.toEggString());
         System.out.println("Original Gate Size: " + circuit.circuit.gates.size());
         String name = egraph.addConstrainedCircuit(circuit);
@@ -1805,7 +2623,7 @@ public class Optimizer {
             iters++;
 
             EggGen.ConstrainedCircuit current = q.peek();
-            if(comparator.compare(current, bestOptimized) < 0) {
+            if(comparator.compare(current, bestOptimized) <= 0) {
                 System.out.println("New best optimized: " + current.circuit.toQASM());
                 System.out.println("New best optimized 2q:" + current.circuit.getTwoQubitsCount());
                 System.out.println("New best optimized gate size:" + current.circuit.gates.size());
@@ -1839,8 +2657,7 @@ public class Optimizer {
                 System.out.println("Queue size: " + q.size());
                 System.out.println("Prune queue");
                 PriorityQueue<EggGen.ConstrainedCircuit> newQ = new PriorityQueue<>(comparator);
-                while(newQ.size() != 1000) {
-                    EggGen.ConstrainedCircuit newCandidate = dequeueCircuit(q, Params.TEMPERATURE, CircuitDAG.OptObj.TWO_Q, random);
+                while(newQ.size() != beam_width) {
                     newQ.add(q.poll());
                 }
                 q = newQ;
@@ -1848,30 +2665,33 @@ public class Optimizer {
 
             for(List<String> rs: rulesToUse) {
                 egraph.push();
+                egraph.clearRules();
                 String name = egraph.addConstrainedCircuit(current);
                 for(String rule: rs) {
                     egraph.addRewritev2(rule);
                 }
                 egraph.runBackoff("opt", 25);
                 List<EggGen.ConstrainedCircuit> newcandidates = egraph.extract(name, beam_width);
+                System.out.println("New candidates: " + newcandidates.size());
                 for(EggGen.ConstrainedCircuit newcandidate: newcandidates) {
                     int hashcode = newcandidate.circuit.toQASM().hashCode();
-                    if(newcandidate.circuit.getTwoQubitsCount() <= bestOptimized.circuit.getTwoQubitsCount() && !visited.contains(hashcode)) {
+                    if(newcandidate.circuit.getTwoQubitsCount() <= bestOptimized.circuit.getTwoQubitsCount()) {
                         q.add(newcandidate);
                     }
-                    visited.add(hashcode);
+                    //visited.add(hashcode);
                 }
                 egraph.pop();
             }
 
             if(useSymb) {
                 for(MatrixConstrainedRule r: symbRulesToUse) {
+                    System.out.println("Use Symb Rule: " + r.getLHS() + " -> " + r.getRHS());
                     int reverse = random.nextInt(2);
                     CircuitDAG optimizedDAG = null;
                     if(reverse == 0) {
-                        optimizedDAG = symbolicMatch(candidate.circuit, r.getLHS(), r.getRHS(), min_symb_size, max_symb_size, r.getConstraint(), null);
+                        optimizedDAG = symbolicMatchBeforeAfter(QASMToDAGVisitor.parse(candidate.circuit.toQASM()), r.getLHS(), r.getRHS(), min_symb_size, max_symb_size, r.getConstraint(), null);
                     } else {
-                        optimizedDAG = symbolicMatch(candidate.circuit, r.getRHS(), r.getLHS(), min_symb_size, max_symb_size, r.getConstraint(), null);
+                        optimizedDAG = symbolicMatchBeforeAfter(QASMToDAGVisitor.parse(candidate.circuit.toQASM()), r.getRHS(), r.getLHS(), min_symb_size, max_symb_size, r.getConstraint(), null);
                     }
                     if(optimizedDAG != null) {
                         System.out.println("Optimized DAG: " + optimizedDAG.toQASM());
@@ -1879,9 +2699,9 @@ public class Optimizer {
                         EggGen.Circuit circuitnew = QASMAstBuilder.parse(qasm);
                         int hashcode = circuitnew.toQASM().hashCode();
                         double acceptP = saProbability(candidate.circuit.getTwoQubitsCount(), circuitnew.getTwoQubitsCount(), Params.TEMPERATURE);
-                        if(acceptP >= random.nextDouble() && !visited.contains(hashcode)) {
+                        if(acceptP >= random.nextDouble()) {
                             q.add(new EggGen.ConstrainedCircuit(circuitnew, new EggGen.Permutation(new ArrayList<>())));
-                            visited.add(hashcode);
+                            //visited.add(hashcode);
                         }
                     }
                 }
@@ -1900,7 +2720,19 @@ public class Optimizer {
             return q.poll();
         else {
             List<EggGen.ConstrainedCircuit> qList = new ArrayList<>(q);
-            List<Integer> weights = qList.stream().map(c -> c.circuit.getTwoQubitsCount()).collect(Collectors.toList());
+            List<Integer> weights = qList.stream().map(c -> -c.circuit.getTwoQubitsCount()).collect(Collectors.toList());
+            int index = sampleSoftMax(weights, temperature, random);
+            q.remove(qList.get(index));
+            return qList.get(index);
+        }
+    }
+
+    private CircuitDAG dequeue(PriorityQueue<CircuitDAG> q, double temperature, CircuitDAG.OptObj optobj, Random random) {
+        if(temperature == 0)
+            return q.poll();
+        else {
+            List<CircuitDAG> qList = new ArrayList<>(q);
+            List<Integer> weights = qList.stream().map(c -> -c.cost(optobj)).collect(Collectors.toList());
             int index = sampleSoftMax(weights, temperature, random);
             q.remove(qList.get(index));
             return qList.get(index);
@@ -1941,135 +2773,685 @@ public class Optimizer {
         return distribution.length - 1;
     }
 
-    public void optimize_SA(EggGen.ConstrainedCircuit circuit, List<String> rules, List<MatrixConstrainedRule> symbRules, int egraph_rule_limit, int symb_rule_limit, int min_symb_size, int max_symb_size, int timeout, boolean useSymb, List<String> commutative) {
-        EggGen egraph = new EggGen();
-        for(String rule: commutative) {
-            egraph.addRewrite(rule);
+
+    public List<String> filterValidRules(List<String> rules) {
+        List<String> validRules = new ArrayList<>();
+        for(String rule: rules) {
+            String[] splitRule = rule.split(" \\| ");
+            String pattern = splitRule[1];
+            String replace = splitRule[0];
+            CircuitDAG patternDag = QASMToDAGVisitor.parse(pattern);
+            CircuitDAG replaceDag = QASMToDAGVisitor.parse(replace);
+            if (pattern.contains("+") || pattern.contains("-")) {
+                continue;
+            }
+            
+            if(patternDag.getDagHash() == replaceDag.getDagHash()) {
+                continue;
+            }
+
+            if(!GraphTests.isConnected(patternDag.getDAG())) {
+                continue;
+            }
+
+            if(replace.contains("theta1") && !pattern.contains("theta1")) {
+                continue;
+            }
+            if(replace.contains("theta2") && !pattern.contains("theta2")) {
+                continue;
+            }
+            if(replace.contains("theta3") && !pattern.contains("theta3")) {
+                continue;
+            }
+            if(replace.contains("theta4") && !pattern.contains("theta4")) {
+                continue;
+            }
+
+            Set<String> replaceQubits = replaceDag.getQubits();
+            Set<String> patternQubits = patternDag.getQubits();
+            if(!patternQubits.containsAll(replaceQubits)) {
+                continue;
+            }
+
+            validRules.add(rule);
+
+            // if (StringUtils.countMatches(splitRule[0], ";") == StringUtils.countMatches(splitRule[1], ";")) {
+            //     if (GraphTests.isConnected(lhs.getDAG())) {
+            //         validRules.add(splitRule[1] + " | " + splitRule[0]);
+            //     }
+            // }
         }
-        System.out.println("Starting SA optimization..., timeout: " + timeout);
-        System.out.println("Original Size:" + circuit.circuit.gates.size());
-        System.out.println("Original 2q:" + circuit.circuit.getTwoQubitsCount());
-        EggGen.ConstrainedCircuit bestOptimized = circuit;
-        Random random = new Random(Params.SEED);
-        long startTime = System.nanoTime();
-        EggGen.ConstrainedCircuit optimized = bestOptimized;
-        Map<MatrixConstrainedRule, Integer> symbRulesUsed = new HashMap();
+
+        return validRules;
+    }
+
+    public List<MononialRule> filterValidMonomialRules(List<MononialRule> rules) {
+        List<MononialRule> validRules = new ArrayList<>();
+        for(MononialRule rule: rules) {
+
+            String find = rule.getRhs();
+            String replace = rule.getLhs();
+            int findSymbIndex = find.indexOf("symb");
+            String findBeforeSymb = StringUtils.stripStart(find.substring(0, findSymbIndex).trim(), ";");
+            String findAfterSymb = StringUtils.stripStart(find.substring(find.indexOf(";", findSymbIndex)).trim(), ";").trim();
+            int replaceSymbIndex = replace.indexOf("symb");
+            String replaceBeforeSymb = StringUtils.stripStart(replace.substring(0, replaceSymbIndex).trim(), ";");
+            String replaceAfterSymb = StringUtils.stripStart(replace.substring(replace.indexOf(";", replaceSymbIndex)).trim(), ";").trim();
+
+            CircuitDAG patternBefore = QASMToDAGVisitor.parse(findBeforeSymb);
+            CircuitDAG patternAfter = QASMToDAGVisitor.parse(findAfterSymb);
+            CircuitDAG targetBefore = QASMToDAGVisitor.parse(replaceBeforeSymb);
+            CircuitDAG targetAfter = QASMToDAGVisitor.parse(replaceAfterSymb);
+
+            if(!GraphTests.isConnected(patternBefore.getDAG())) {
+                continue;
+            }
+
+            if(!GraphTests.isConnected(patternAfter.getDAG())) {
+                continue;
+            }
+
+            Set<String> replaceQubits = targetBefore.getQubits();
+            replaceQubits.addAll(targetAfter.getQubits());
+            Set<String> patternQubits = patternBefore.getQubits();
+            patternQubits.addAll(patternAfter.getQubits());
+            if (!patternQubits.containsAll(replaceQubits)) {
+                continue;
+            }
+            
+            if (replace.contains("theta1") && !find.contains("theta1")) {
+                continue;
+            }
+            if (replace.contains("theta2") && !find.contains("theta2")) {
+                continue;
+            }
+            if (replace.contains("theta3") && !find.contains("theta3")) {
+                continue;
+            }
+            if (replace.contains("theta4") && !find.contains("theta4")) {
+                continue;
+            }
+            
+            validRules.add(new MononialRule(replace, find, rule.getConstraints()));
+
+
+            if(Params.USE_SIZE_PRESERVING_SYMB_RULES) {
+                if(StringUtils.countMatches(find, ";") == StringUtils.countMatches(replace, ";")) {
+                    if(replaceQubits.containsAll(patternQubits)) {
+                        validRules.add(new MononialRule(find, replace, rule.getConstraints()));
+                    }
+                }
+            }
+        }
+        return validRules;
+    }
+
+
+    public List<MatrixConstrainedRule> filterValidMatrixRules(List<MatrixConstrainedRule> rules) {
+        List<MatrixConstrainedRule> validRules = new ArrayList<>();
+        for(MatrixConstrainedRule rule: rules) {
+            String lhs = rule.getLHS();
+            String rhs = rule.getRHS();
+            lhs = lhs.replaceAll("\\bc\\b", "(Nil)");
+            lhs = lhs.replaceAll("q\\d+", "(Q \"$0\")");
+            lhs = lhs.replaceAll("theta1|theta2|theta3|theta4", "(Symbol \"$0\")");
+            rhs = rhs.replaceAll("\\bc\\b", "(Nil)");
+            rhs = rhs.replaceAll("q\\d+", "(Q \"$0\")");
+            rhs = rhs.replaceAll("theta1|theta2|theta3|theta4", "(Symbol \"$0\")");
+            EggGen.Circuit lhsEgg = EggAstBuilder.parseCircuit(lhs);
+            EggGen.Circuit rhsEgg = EggAstBuilder.parseCircuit(rhs);
+
+            int symbindex = 0;
+            int i = 0;
+            for(EggGen.Gate gate : lhsEgg.gates) {
+                if(gate instanceof EggGen.SYMB) {
+                    symbindex = i;
+                    break;
+                }
+                i++;
+            }
+            EggGen.Circuit lhsEggBeforeSymb = new EggGen.Circuit(lhsEgg.gates.subList(0, symbindex));
+            EggGen.Circuit lhsEggAfterSymb = new EggGen.Circuit(lhsEgg.gates.subList(symbindex + 1, lhsEgg.gates.size()));
+
+            symbindex = 0;
+            i = 0;
+            for(EggGen.Gate gate : rhsEgg.gates) {
+                if(gate instanceof EggGen.SYMB) {
+                    symbindex = i;
+                    break;
+                }
+                i++;
+            }
+            EggGen.Circuit rhsEggBeforeSymb = new EggGen.Circuit(rhsEgg.gates.subList(0, symbindex));
+            EggGen.Circuit rhsEggAfterSymb = new EggGen.Circuit(rhsEgg.gates.subList(symbindex + 1, rhsEgg.gates.size()));
+
+            CircuitDAG lhsDagBeforeSymb = QASMToDAGVisitor.parse(lhsEggBeforeSymb.toQASM());
+            CircuitDAG lhsDagAfterSymb = QASMToDAGVisitor.parse(lhsEggAfterSymb.toQASM());
+            CircuitDAG rhsDagBeforeSymb = QASMToDAGVisitor.parse(rhsEggBeforeSymb.toQASM());
+            CircuitDAG rhsDagAfterSymb = QASMToDAGVisitor.parse(rhsEggAfterSymb.toQASM());
+
+            Set<String> replaceQubits = rhsDagBeforeSymb.getQubits();
+            replaceQubits.addAll(rhsDagAfterSymb.getQubits());
+            Set<String> patternQubits = lhsDagBeforeSymb.getQubits();
+            patternQubits.addAll(lhsDagAfterSymb.getQubits());
+            if (!patternQubits.containsAll(replaceQubits)) {
+                continue;
+            }
+
+            if(!GraphTests.isConnected(lhsDagBeforeSymb.getDAG())) {
+                continue;
+            }
+
+            if(!GraphTests.isConnected(lhsDagAfterSymb.getDAG())) {
+                continue;
+            }
+            
+            validRules.add(rule);
+        }
+        return validRules;
+    }
+
+
+    public int scoreRule(String rule, int numAppliedBest, int numApplied) {
+        return numApplied + (2 * numAppliedBest);
+    }
+
+
+
+    public void optimize_BEAM_normal(CircuitDAG circuit, List<String> rules, List<MatrixConstrainedRule> symbRules, List<MononialRule> symbMonomialRules, int beam_width, int rule_limit, int symb_rule_limit, int min_symb_size, int max_symb_size, int timeout, boolean useSymb) {
+        CircuitDAG bestCircuit = circuit;
+        Set<Integer> seen = new HashSet<>();
+        List<String> validRules = filterValidRules(rules);
+        List<MononialRule> validMonomialRules = filterValidMonomialRules(symbMonomialRules);
+        List<MatrixConstrainedRule> validMatrixRules = filterValidMatrixRules(symbRules);
+        seen.add(circuit.hashCode());
         
+        System.out.println("Original Size: " + circuit.totalGateCount());
+        System.out.println("Original 2q: " + circuit.twoQGateCount());
+        System.out.println("Rule size: " + validRules.size());
+        System.out.println("Symb rule limit: " + symb_rule_limit);
+        System.out.println("Min symb size: " + min_symb_size);
+        System.out.println("Max symb size: " + max_symb_size);
+        System.out.println("Timeout: " + timeout);
+        System.out.println("Use symb: " + useSymb);
+        //System.out.println("Candidate:" + circuit.toQASM());
+        CircuitComparator comparator = new CircuitComparator(Params.OPTIMIZATION_OBJECTIVE);
+        PriorityQueue<CircuitDAG> q = new PriorityQueue<>(comparator);
+        q.add(circuit);
+
+        int iters = 0;
+        long timesStart = System.nanoTime();
+        int rulesize = rules.size();
+        int symbRulesSize = symbRules.size();
+        int symbMonomialRulesSize = symbMonomialRules.size();
+        Random rand = new Random(new Random(1697753314).nextInt());
+        Map<String, Integer> rulesUsed = new HashMap<>();
+        Map<String, Integer> symbRulesUsed = new HashMap<>();
+        Map<String, Integer> symbMonomialRulesUsed = new HashMap<>();
         int symbRuleReductionsTotal = 0;
         int symbRuleReduction2q = 0;
         int egraphRuleReductionsTotal = 0;
         int egraphRuleReduction2q = 0;
-
-        while(true) {
-           
-            egraph.push();
-            egraph.clearRules();
-            String name = egraph.addConstrainedCircuit(optimized);
-            // choose egraph_rule_limit different rules from rules
-            List<String> copy = new ArrayList<>(rules);
-            for(int i = 0; i < Integer.min(copy.size(), egraph_rule_limit); i++) {
-                int index = random.nextInt(copy.size());
-                egraph.addRewritev2(copy.get(index));
-                copy.remove(index);
-            }
-            int lastSize = -1;
-            int size = 1;
-            int delta = -10;
-            int initialn = 20;
-            int n = initialn;
-            while(size < 3500 && size != lastSize && n > 0) {
-                lastSize = size;
-                egraph.runBackoff("opt", n);
-                size = Integer.parseInt(egraph.printSize("Cons"));
-                n += delta;
+        SymbolicThread symbolicThread = null;
+        while(!q.isEmpty()) {
+            iters++;
+            
+            if((System.nanoTime() - timesStart) / 1000000000.0 > timeout) {
+                break;
             }
 
-            EggGen.ConstrainedCircuit candidate = egraph.extract(name);
-            System.out.println("Candidate: " + candidate.toEggString());
-            double acceptP = saProbability(optimized.circuit.getTwoQubitsCount(), candidate.circuit.getTwoQubitsCount(), Params.TEMPERATURE);
-            if(random.nextDouble() <= acceptP) {
-                if(candidate.circuit.gates.size() < optimized.circuit.gates.size()) {
-                    egraphRuleReductionsTotal += optimized.circuit.gates.size() - candidate.circuit.gates.size();
+            CircuitDAG c = q.peek();
+            if(comparator.compare(c, bestCircuit) < 0) {
+                bestCircuit = c;
+                System.out.println("Current Best: " + c.toQASM());
+                System.out.println("Current Best Cost: " + c.cost(Params.OPTIMIZATION_OBJECTIVE));
+                System.out.println("Current Best Size: " + c.totalGateCount());
+                //System.out.println("Current Best Rules Applied: " + c.getRulesApplied());
+                //System.out.println("Current Rules Used: " + rulesUsed);
+                //System.out.println("Current Rules Applied: " + rulesUsed.size());
+            }
+
+            c = dequeue(q, Params.TEMPERATURE, Params.OPTIMIZATION_OBJECTIVE, rand);
+            List<String> rulesToUse = new ArrayList<>();
+            
+
+            if(q.size() > Params.QUEUE_SIZE) {
+                PriorityQueue<CircuitDAG> newQ = new PriorityQueue<>(new CircuitComparator(Params.OPTIMIZATION_OBJECTIVE));
+                while(newQ.size() != Params.QUEUE_SIZE) {
+                    newQ.add(q.poll());
                 }
-                if(candidate.circuit.getTwoQubitsCount() < optimized.circuit.getTwoQubitsCount()) {
-                    egraphRuleReduction2q += optimized.circuit.getTwoQubitsCount() - candidate.circuit.getTwoQubitsCount();
-                }
-                optimized = candidate;
+                q = newQ;
             }
             
-            if(useSymb) {
-                List<MatrixConstrainedRule> copysymb = new ArrayList<>(symbRules);
-                for (int i = 0; i < Integer.min(copysymb.size(), symb_rule_limit); i++){
-                    System.out.println("Current RULE: " + i + "/" + Integer.min(symb_rule_limit, symbRules.size()));
-                    int index = random.nextInt(copysymb.size());
-                    System.out.println("Current SYMB RULE: " + copysymb.get(index).getLHS() + " -> " + copysymb.get(index).getRHS());
-                    int reverse = random.nextInt(2);
-                    CircuitDAG optimizedDAG = null;
-                    if(reverse == 0) {
-                        optimizedDAG = symbolicMatch(optimized.circuit, copysymb.get(index).getLHS(), copysymb.get(index).getRHS(), min_symb_size, max_symb_size, copysymb.get(index).getConstraint(), egraph);
+            
+            if(Params.PRUNE_TEMPERATURE == 0) {
+                while(rulesToUse.size() < Integer.min(rule_limit, validRules.size())) {
+                    int index = rand.nextInt(validRules.size());
+                    String r = validRules.get(index);
+                    if(!rulesToUse.contains(r)) {
+                        rulesToUse.add(r);
+                    }
+                }
+            } else {
+                CircuitDAG bestCircuitCopy = new CircuitDAG(bestCircuit);
+                Map<String, Integer> rulesUsedCopy = new HashMap<>(rulesUsed);
+                List<Integer> weights = validRules.stream().map(r -> scoreRule(r, bestCircuitCopy.countRulesApplied(r), rulesUsedCopy.getOrDefault(r, 0))).collect(Collectors.toList());
+                int index = sampleSoftMax(weights, Params.TEMPERATURE, rand);
+                if(!rulesToUse.contains(validRules.get(index))) {
+                    rulesToUse.add(validRules.get(index));
+                }
+            }
+            
+            //System.out.println("Rules TO USE: " + rulesToUse.size());
+            boolean concreteruleApplied = false;
+            for(String rule: rulesToUse) {
+                String[] splitRule = rule.split(" \\| ");
+                //System.out.println("Rule: " + rule);
+                CircuitDAG candidate = applyRule(c, QASMToDAGVisitor.parse(splitRule[1]), splitRule[0], false, rand);
+                if(candidate != c) {
+                    //System.out.println("Apply Rule: " + rule);
+                    List<String> rulesApplied = new ArrayList<>(c.getRulesApplied());
+                    rulesApplied.add(rule);
+                    candidate.setRulesApplied(rulesApplied);
+                    rulesUsed.put(rule, rulesUsed.getOrDefault(rule, 0) + 1);
+                    concreteruleApplied = true;
+                }
+                
+                if(candidate.cost(Params.OPTIMIZATION_OBJECTIVE) <= c.cost(Params.OPTIMIZATION_OBJECTIVE)) {
+                    q.add(candidate);
+                } else {
+                    double acceptP = Math.min(1, Math.exp(-Params.TEMPERATURE * ((double) candidate.cost(Params.OPTIMIZATION_OBJECTIVE) / c.cost(Params.OPTIMIZATION_OBJECTIVE))));
+                    if (rand.nextDouble() <= acceptP) {
+                        q.add(candidate);
                     } else {
-                        optimizedDAG = symbolicMatch(optimized.circuit, copysymb.get(index).getRHS(), copysymb.get(index).getLHS(), min_symb_size, max_symb_size, copysymb.get(index).getConstraint(), egraph);
+                        q.add(c);
                     }
-                    if(optimizedDAG != null) {
-                        symbRulesUsed.add(copysymb.get(index));
-                        System.out.println("Optimized DAG: " + optimizedDAG.toQASM());
-                        String qasm = optimizedDAG.toQASM();
-                        EggGen.Circuit circuitnew = QASMAstBuilder.parse(qasm);
-                        
-                        System.out.println("Union: " + optimized.circuit.toEggString() + " " + circuitnew.toEggString());
-                        egraph.runBackoff("opt", 5);
-                        candidate = egraph.extract(name);
-                        
-                        acceptP = saProbability(optimized.circuit.getTwoQubitsCount(), candidate.circuit.getTwoQubitsCount(), Params.TEMPERATURE);
-                        if(random.nextDouble() < acceptP) {
-                            System.out.println("Accept ");
-                            optimized = candidate;
-                            // String qasm = optimizedDAG.toQASM();
-                            // EggGen.Circuit circuitnew = QASMAstBuilder.parse(qasm);
-                            
-                            if(circuitnew.gates.size() < optimized.circuit.gates.size()) {
-                                System.out.println("Symb Rule Reduced: " + (optimized.circuit.gates.size() - circuitnew.gates.size()));
-                                symbRuleReductionsTotal += optimized.circuit.gates.size() - circuitnew.gates.size();
-                            }
-                            if(circuitnew.getTwoQubitsCount() < optimized.circuit.getTwoQubitsCount()) {
-                                System.out.println("Symb Rule Reduced 2q: " + (optimized.circuit.getTwoQubitsCount() - circuitnew.getTwoQubitsCount()));
-                                symbRuleReduction2q += optimized.circuit.getTwoQubitsCount() - circuitnew.getTwoQubitsCount();
-                            }
-                            // EggGen.ConstrainedCircuit cc = new EggGen.ConstrainedCircuit(circuitnew, new EggGen.Permutation(new ArrayList<>()));
-                            // egraph.sendCommand(String.format("(union %s %s)", optimized.circuit.toEggString(), cc.circuit.toEggString()));
-                            // optimized = cc;
+                }
+            }
 
-                            // egraph.runBackoff("opt", 5);
-                            // optimized = egraph.extract(name);
+            if(useSymb && concreteruleApplied) {
+                // List<MatrixConstrainedRule> copysymb = new ArrayList<>(symbRules);
+                // List<MononialRule> copysymbMonomial = new ArrayList<>(validMonomialRules);
+                // List<MatrixConstrainedRule> symbRulesToUse = new ArrayList<>();
+                // List<MononialRule> symbMonomialRulesToUse = new ArrayList<>();
+                // for(int i = 0; i < symb_rule_limit; i++) {
+                //     CircuitDAG bestCircuitCopy = new CircuitDAG(bestCircuit);
+                //     Map<String, Integer> symbRulesUsedCopy = new HashMap<>(symbRulesUsed);
+                //     Map<String, Integer> symbMonomialRulesUsedCopy = new HashMap<>(symbMonomialRulesUsed);
+                //     List<Integer> weights = copysymb.stream().map(r -> scoreRule(r.getLHS() + "|" + r.getRHS(), bestCircuitCopy.countRulesApplied(r.getLHS() + "|" + r.getRHS()), symbRulesUsedCopy.getOrDefault(r.getLHS() + "|" + r.getRHS(), 0))).collect(Collectors.toList());
+                //     List<Integer> weightsMonomial = copysymbMonomial.stream().map(r -> scoreRule(r.getRhs() + "|" + r.getLhs(), bestCircuitCopy.countRulesApplied(r.getRhs() + "|" + r.getLhs()), symbMonomialRulesUsedCopy.getOrDefault(r.getRhs() + "|" + r.getLhs(), 0))).collect(Collectors.toList());
+                //     if(Params.PRUNE_TEMPERATURE == 0) {
+                //         // int maxWeight = weights.stream().max(Integer::compare).get();
+                //         // int maxWeightMonomial = weightsMonomial.stream().max(Integer::compare).get();
+                //         // symbRulesToUse.add(copysymb.get(weights.indexOf(maxWeight)));
+                //         // symbMonomialRulesToUse.add(copysymbMonomial.get(weightsMonomial.indexOf(maxWeightMonomial)));
+                //         // copysymb.remove(weights.indexOf(maxWeight));
+                //         // copysymbMonomial.remove(weightsMonomial.indexOf(maxWeightMonomial));
+                //         int index = rand.nextInt(copysymb.size());
+                //         int indexMonomial = rand.nextInt(copysymbMonomial.size());
+                //         symbRulesToUse.add(copysymb.get(index));
+                //         symbMonomialRulesToUse.add(copysymbMonomial.get(indexMonomial));
+                //         copysymb.remove(index);
+                //         copysymbMonomial.remove(indexMonomial);
+                //     } else {
+                //         int index = sampleSoftMax(weights, Params.PRUNE_TEMPERATURE, rand);
+                //         int indexMonomial = sampleSoftMax(weightsMonomial, Params.PRUNE_TEMPERATURE, rand);
+                //         symbRulesToUse.add(copysymb.get(index));
+                //         symbMonomialRulesToUse.add(copysymbMonomial.get(indexMonomial));
+                //         copysymb.remove(index);
+                //         copysymbMonomial.remove(indexMonomial);
+                //     }
+                // }
+
+                // for (int i = 0; i < symbMonomialRulesToUse.size(); i++){
+                //     //System.out.println("Current Monomial RULE: " + i + "/" + Integer.min(symb_rule_limit, symbMonomialRules.size()));
+                //     int index = i;
+                //     //System.out.println("Current SYMB MONOMIAL RULE: " + symbMonomialRulesToUse.get(index).getRhs() + " -> " + symbMonomialRulesToUse.get(index).getLhs());
+                //     CircuitDAG optimizedDAG = symbolicMatchBeforeAfterMono(c, symbMonomialRulesToUse.get(index).getRhs(), symbMonomialRulesToUse.get(index).getLhs(), min_symb_size, max_symb_size, symbMonomialRulesToUse.get(index).getConstraints(), null);
+                    
+                //     if(optimizedDAG != null) {
+                //         //System.out.println("Applyed Monomial Rule: " + symbMonomialRulesToUse.get(index).getRhs() + " -> " + symbMonomialRulesToUse.get(index).getLhs());
+                //         List<String> rulesApplied = new ArrayList<>(c.getRulesApplied());
+                //         rulesApplied.add(symbMonomialRulesToUse.get(index).getRhs() + "|" + symbMonomialRulesToUse.get(index).getLhs());
+                //         optimizedDAG.setRulesApplied(rulesApplied);
+                //         symbMonomialRulesUsed.put(symbMonomialRulesToUse.get(index).getRhs() + "|" + symbMonomialRulesToUse.get(index).getLhs(), symbMonomialRulesUsed.getOrDefault(symbMonomialRulesToUse.get(index), 0) + 1);
+                //         //System.out.println("Optimized Using Monomial Rule: " + optimizedDAG.toQASM());
+                //         if(optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE) <= c.cost(Params.OPTIMIZATION_OBJECTIVE)) {
+                //             symbRuleReductionsTotal += c.cost(Params.OPTIMIZATION_OBJECTIVE) - optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE);
+                //             q.add(optimizedDAG);
+                //         } else {
+                        
+                //             double acceptP = Math.min(1, Math.exp(-Params.TEMPERATURE * ((double) optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE) / c.cost(Params.OPTIMIZATION_OBJECTIVE))));
+                //             if (rand.nextDouble() <= acceptP) {
+                //                 q.add(optimizedDAG);
+                //             } else {
+                //                 q.add(c);
+                //             }
+                
+                //         }
+                //     }
+                // }
+
+                
+                // for (int i = 0; i < symbRulesToUse.size(); i++){
+                //     //System.out.println("Current RULE: " + i + "/" + Integer.min(symb_rule_limit, symbRules.size()));
+                //     int index = i;
+                //     //System.out.println("Current SYMB RULE: " + symbRulesToUse.get(index).getLHS() + " -> " + symbRulesToUse.get(index).getRHS());
+                   
+                //     CircuitDAG optimizedDAG = symbolicMatchBeforeAfter(c, symbRulesToUse.get(index).getLHS(), symbRulesToUse.get(index).getRHS(), min_symb_size, max_symb_size, symbRulesToUse.get(index).getConstraint(), null);
+                //     if(optimizedDAG != null) {
+                //         List<String> rulesApplied = new ArrayList<>(c.getRulesApplied());
+                //         rulesApplied.add(symbRulesToUse.get(index).getLHS() + "|" + symbRulesToUse.get(index).getRHS());
+                //         optimizedDAG.setRulesApplied(rulesApplied);
+                //         symbRulesUsed.put(symbRulesToUse.get(index).getLHS() + "|" + symbRulesToUse.get(index).getRHS(), symbRulesUsed.getOrDefault(symbRulesToUse.get(index), 0) + 1);
+                //         //System.out.println("Optimized DAG: " + optimizedDAG.toQASM());
+                       
+                //         if(optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE) <= c.cost(Params.OPTIMIZATION_OBJECTIVE)) {
+                //             //System.out.println("Symb Rule Reduced: " + (c.cost(Params.OPTIMIZATION_OBJECTIVE) - optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE)));
+                //             //System.out.println("From " + c.cost(Params.OPTIMIZATION_OBJECTIVE) + " to " + optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE));
+                //             symbRuleReductionsTotal += c.cost(Params.OPTIMIZATION_OBJECTIVE) - optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE);
+                //             q.add(optimizedDAG);
+                //         } else {
+                //             double acceptP = Math.min(1, Math.exp(-Params.TEMPERATURE * ((double) optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE) / c.cost(Params.OPTIMIZATION_OBJECTIVE))));
+                //             if (rand.nextDouble() <= acceptP) {
+                //                 q.add(optimizedDAG);
+                //             } else {
+                //                 q.add(c);
+                //             }
+                //         }
+                //     }
+                // } 
+                if(symbolicThread == null) {
+                    symbolicThread = new SymbolicThread(c, validMatrixRules, validMonomialRules, min_symb_size, max_symb_size, rand, this);
+                    symbolicThread.start();
+                } else {
+                    if(!symbolicThread.isAlive()) {
+                        CircuitDAG result = symbolicThread.getResult();
+                        if(result != null) {
+                            q.add(result);
                         }
+                        symbolicThread = new SymbolicThread(c, validMatrixRules, validMonomialRules, min_symb_size, max_symb_size, rand, this);
+                        symbolicThread.start();
                     }
-                } 
-            } 
+                }
+            }
+        }
+
+        System.out.println("Final Gate Size: " + bestCircuit.totalGateCount());
+        System.out.println("Final 2q: " + bestCircuit.twoQGateCount());
+        System.out.println("Final Cost: " + bestCircuit.cost(Params.OPTIMIZATION_OBJECTIVE));
+    }
+
+    public void optimize_SA(EggGen.ConstrainedCircuit circuit, List<String> rules, List<String> longrules, List<MatrixConstrainedRule> symbRules, List<MononialRule> symbMonomialRules, int rule_limit, int symb_rule_limit, int min_symb_size, int max_symb_size, int timeout, boolean useSymb, List<String> commutative) {
+        EggGen egraph = new EggGen();
+        List<Rule> parsedRules = new ArrayList<>();
+        for(String rule: rules) {
+            System.err.println("Parsing rule: " + rule);
+            Rule parsedRule = QASMAstBuilder.parseRule(rule);
+            System.err.println("Parsed rule: " + parsedRule.toString());
+            parsedRules.add(parsedRule);
+        }
+        for(String rule: commutative) {
+            egraph.addRewrite(rule);
+        }
+        List<Rule> sizeDecreasingRules = new ArrayList<>();
+        List<Rule> sizePreservingRules = new ArrayList<>();
+        List<Rule> sizeIncreasingRules = new ArrayList<>();
+        for(Rule rule: parsedRules) {
+            int lhssize = rule.lhs.gates.size();
+            int rhssize = rule.rhs.gates.size();
+            if(lhssize > rhssize) {
+                sizeDecreasingRules.add(rule);
+
+                EggGen.Circuit lhs = rule.lhs;
+                Set<String> lhsqubitsVars = new HashSet<>();
+                lhs.getQubitVars(lhsqubitsVars);
+                Set<String> rhsqubitsVars = new HashSet<>();
+                EggGen.Circuit rhs = rule.rhs;
+                rhs.getQubitVars(rhsqubitsVars);
+                if(rhsqubitsVars.containsAll(lhsqubitsVars)) {
+                    sizeIncreasingRules.add(new Rule(rule.rhs, rule.lhs, rule.conditions));
+                }
+            } else if(lhssize == rhssize) {
+                sizePreservingRules.add(rule);
+            } else if(lhssize < rhssize) {
+                EggGen.Circuit lhs = rule.lhs;
+                Set<String> lhsqubitsVars = new HashSet<>();
+                lhs.getQubitVars(lhsqubitsVars);
+                Set<String> rhsqubitsVars = new HashSet<>();
+                EggGen.Circuit rhs = rule.rhs;
+                rhs.getQubitVars(rhsqubitsVars);
+                if(rhsqubitsVars.containsAll(lhsqubitsVars)) {
+                    sizeDecreasingRules.add(new Rule(rule.rhs, rule.lhs, rule.conditions));
+                }
+                sizeIncreasingRules.add(rule);
+            }
+        }
+        System.out.println("Size increasing rules: " + sizeIncreasingRules.size());
+        System.out.println("Size preserving rules: " + sizePreservingRules.size());
+        System.out.println("Size decreasing rules: " + sizeDecreasingRules.size());
+        List<String> validLongRules = filterValidRules(longrules);
+        try {
+        FileWriter fileWriter = new FileWriter("validLongRules.txt");
+        for(String rule: validLongRules) {
+                fileWriter.write(rule + "\n");
+        }
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<MononialRule> validMonomialRules = filterValidMonomialRules(symbMonomialRules);
+        List<MatrixConstrainedRule> validMatrixRules = filterValidMatrixRules(symbRules);
+        //System.out.println("circuit: " + circuit.circuit.toQASM());
+        int sizeIncreasingRuleslimit = 17;
+        int sizePreservingRuleslimit = 26;
+        int sizeDecreasingRuleslimit = 21;
+        int egg_rule_limit = Integer.min(rules.size(), 25);
+        
+       //EggGen.Circuit instantiatedCircuit = circuit.circuit.instantiate(new HashMap<>());
+       //EggGen.ConstrainedCircuit instantiatedCircuitC = new EggGen.ConstrainedCircuit(instantiatedCircuit, new EggGen.Permutation(new ArrayList<>()));
+        System.out.println("Starting SA optimization..., timeout: " + timeout);
+        System.out.println("Original Size:" + circuit.circuit.gates.size());
+        System.out.println("Original 2q:" + circuit.circuit.getTwoQubitsCount());
+        System.out.println("Egraph rule size limit: " + rule_limit);
+        System.out.println("Symb rule size limit: " + symb_rule_limit);
+        System.out.println("Min symb size: " + min_symb_size);
+        System.out.println("Max symb size: " + max_symb_size);
+        System.out.println("candidate circuit: " + circuit.circuit.toQASM());
+        EggGen.Circuit instantiatedCircuit = circuit.circuit.instantiate(new HashMap<>());
+        CircuitDAG bestOptimized = QASMToDAGVisitor.parse(instantiatedCircuit.toQASM());
+
+        Random random = new Random(30);
+        long startTime = System.nanoTime();
+        CircuitDAG optimized = bestOptimized;
+        Map<MatrixConstrainedRule, Integer> symbRulesUsed = new HashMap<>();
+        Map<MononialRule, Integer> symbMonomialRulesUsed = new HashMap<>();
+        Map<String, Integer> rewriteRulesUsed = new HashMap<>();
+        int symbRuleReductionsTotal = 0;
+        int symbRuleReduction2q = 0;
+        int egraphRuleReductionsTotal = 0;
+        int egraphRuleReduction2q = 0;
+        CircuitComparator circuitComparator = new CircuitComparator(Params.OPTIMIZATION_OBJECTIVE);
+        PriorityQueue<CircuitDAG> q = new PriorityQueue<>(circuitComparator);
+        q.add(optimized);
+        SymbolicThread symbolicThread = null;
+        while(!q.isEmpty()) {
+            egraph.push();
+            egraph.clearRules();
+            if(circuitComparator.compare(q.peek(), bestOptimized) <= 0) {
+                bestOptimized = q.peek();
+                System.out.println("Best Optimized Size:" + bestOptimized.totalGateCount());
+                System.out.println("Best Optimized 2q:" + bestOptimized.twoQGateCount());
+            }
+
+            CircuitDAG c = dequeue(q, Params.TEMPERATURE, Params.OPTIMIZATION_OBJECTIVE, random);
+            //System.out.println("Current Circuit: " + c.toQASM());
+            if(q.size() > Params.QUEUE_SIZE+2) {
+                PriorityQueue<CircuitDAG> newQ = new PriorityQueue<>(new CircuitComparator(Params.OPTIMIZATION_OBJECTIVE));
+                while(newQ.size() != Params.QUEUE_SIZE) {
+                    newQ.add(q.poll());
+                }
+                q = newQ;
+            }
+            // choose egraph_rule_limit different rules from rules
+            
+            int rules_to_use = Integer.min(validLongRules.size(), rule_limit);
+            List<String> rulesToUse = new ArrayList<>();
+            
+            if(Params.PRUNE_TEMPERATURE == 0) {
+                while(rulesToUse.size() < Integer.min(rule_limit, validLongRules.size())) {
+                    int index = random.nextInt(validLongRules.size());
+                    String rule = validLongRules.get(index);
+                    if(!rulesToUse.contains(rule)) {
+                        rulesToUse.add(rule);
+                    }
+                }
+            } else {
+                CircuitDAG bestOptimizedCopy = new CircuitDAG(bestOptimized);
+                Map<String, Integer> rewriteRulesApplied = new HashMap<>(rewriteRulesUsed);
+                List<Integer> weights = validLongRules.stream().map(r -> scoreRule(r, bestOptimizedCopy.countRulesApplied(r), rewriteRulesApplied.getOrDefault(r, 0))).collect(Collectors.toList());
+                while(rulesToUse.size() < Integer.min(rule_limit, validLongRules.size())) {
+                    int index = sampleSoftMax(weights, Params.TEMPERATURE, random);
+                    String rule = validLongRules.get(index);
+                    if(!rulesToUse.contains(rule)) {
+                        rulesToUse.add(rule);
+                    }
+                }
+            }
+            
+            
+            String name = egraph.addCircuit(QASMAstBuilder.parse(c.toQASM()));
+            for(String rule: rulesToUse) {
+                String[] splitRule = rule.split(" \\| ");
+                EggGen.Circuit lhs = QASMAstBuilder.parse(splitRule[0]);
+                EggGen.Circuit rhs = QASMAstBuilder.parse(splitRule[1]);
+                Map<String, String> qubitMap = new HashMap<>();
+                String eggrule2 = String.format("%s|%s|rewrite", EggGen.circuitToGeneralizedString(rhs, qubitMap, "c", true), EggGen.circuitToGeneralizedString(lhs, qubitMap, "c", true));
+                //first derive cross wire commutations
+                //List<String> copySizePreservingRules = new ArrayList<>(sizePreservingRules);
+                // 
+                
+               
+                    //System.out.println("Adding size preserving rule: " + copyRules.size());
+                List<Integer> addedRules = new ArrayList<>();
+                while(addedRules.size() < sizePreservingRuleslimit) {
+                    int index = random.nextInt(sizePreservingRules.size());
+                    Rule r = sizePreservingRules.get(index);
+                    if(!addedRules.contains(index)) {
+                        addedRules.add(index);
+                        List<Rule.Equality> equalities = r.getEqualities();
+                        String egg_rule = String.format("(%s %s %s %s :ruleset %s)", "birewrite", EggGen.circuitToGeneralizedOnlyRemoveQ(r.lhs, "c"), EggGen.circuitToGeneralizedOnlyRemoveQ(r.rhs, "c"), ":when (" + equalities.stream().map(e -> String.format("(%s %s %s)",  e.isEqual ? "=" : "!=", e.qubit1, e.qubit2)).collect(Collectors.joining(" ")) + ")", "opt1");
+                        egraph.addRewrite(egg_rule);
+                    }
+                }
+                
+
+                addedRules = new ArrayList<>();
+                while(addedRules.size() < sizeIncreasingRuleslimit) {
+                    //System.out.println("Adding size increasing rule: " + copyRules.size());
+                    int index = random.nextInt(sizeIncreasingRules.size());
+                    Rule r = sizeIncreasingRules.get(index);
+                    if(!addedRules.contains(index)) {
+                        addedRules.add(index);
+                        List<Rule.Equality> equalities = r.getEqualities();
+                        String egg_rule = String.format("(%s %s %s %s :ruleset %s)", "rewrite", EggGen.circuitToGeneralizedOnlyRemoveQ(r.lhs, "c"), EggGen.circuitToGeneralizedOnlyRemoveQ(r.rhs, "c"), ":when (" + equalities.stream().map(e -> String.format("(%s %s %s)",  e.isEqual ? "=" : "!=", e.qubit1, e.qubit2)).collect(Collectors.joining(" ")) + ")", "opt1");
+                        egraph.addRewrite(egg_rule);
+                    }
+                }
+
+                addedRules = new ArrayList<>();
+                while(addedRules.size() < sizeDecreasingRuleslimit) {
+                    //System.out.println("Adding size increasing rule: " + copyRules.size());
+                    int index = random.nextInt(sizeDecreasingRules.size());
+                    Rule r = sizeDecreasingRules.get(index);
+                    if(!addedRules.contains(index)) {
+                        addedRules.add(index);
+                        List<Rule.Equality> equalities = r.getEqualities();
+                        String egg_rule = String.format("(%s %s %s %s :ruleset %s)", "rewrite", EggGen.circuitToGeneralizedOnlyRemoveQ(r.lhs, "c"), EggGen.circuitToGeneralizedOnlyRemoveQ(r.rhs, "c"), ":when (" + equalities.stream().map(e -> String.format("(%s %s %s)",  e.isEqual ? "=" : "!=", e.qubit1, e.qubit2)).collect(Collectors.joining(" ")) + ")", "opt1");
+                        egraph.addRewrite(egg_rule);
+                    }
+                }
+
+                //egraph.addRewritev2(eggrule2, "wire");
+                // egraph.runN("wire", 10);
+                // egraph.runN("opt2", 15);
+                //egraph.runBackoff("wire", 15);
+                EggGen.Circuit candidate = null;
+                int i = 0;
+                //egraph.runN("wire", 1);
+                while(i < 9) {
+                    i++;
+                    egraph.runSaturation("const");
+                
+                    egraph.runN("opt1", 1);
+                    //graph.runN("wire", 1);
+                    //egraph.runN("opt2", 1);
+                    candidate = egraph.extractCircuit(name);
+                    CircuitDAG candidateDAG = QASMToDAGVisitor.parse(candidate.toQASM());
+                    //System.out.println("Candidate: " + candidateDAG.toQASM());
+                    //System.out.println("Candidate EGG String: " + candidate.toEggString());
+                    if(!candidateDAG.toQASM().equals(c.toQASM())) {
+                        q.add(candidateDAG);
+                        break;
+                    }
+                }
+               
+                CircuitDAG candidateDAG = QASMToDAGVisitor.parse(candidate.toQASM());
+                System.out.println("Candidate Total Gates: " + candidate.gates.size());
+                System.out.println("Candidate 2q Gates: " + candidate.getTwoQubitsCount());
+                if(circuitComparator.compare(candidateDAG, c) <= 0) {
+                    q.add(candidateDAG);
+                } else {
+                    double acceptP = Math.min(1, Math.exp(-Params.TEMPERATURE * ((double) candidateDAG.cost(Params.OPTIMIZATION_OBJECTIVE) / optimized.cost(Params.OPTIMIZATION_OBJECTIVE))));
+                    if(random.nextDouble() <= acceptP) {
+                        System.out.println("Accept");
+                        System.out.println("From " + optimized.cost(Params.OPTIMIZATION_OBJECTIVE) + " to " + candidateDAG.cost(Params.OPTIMIZATION_OBJECTIVE));
+                        q.add(candidateDAG);
+                        rewriteRulesUsed.put(rule, rewriteRulesUsed.getOrDefault(rule, 0) + 1);
+                    } else {
+                        q.add(c);
+                    }
+                }
+                
+            }
+            if(useSymb) {
+                c = dequeue(q, Params.TEMPERATURE, Params.OPTIMIZATION_OBJECTIVE, random);
+                System.out.println("Using symbolic rules");
+                if(symbolicThread == null) {
+                    symbolicThread = new SymbolicThread(c, validMatrixRules, validMonomialRules, min_symb_size, max_symb_size, random, this);
+                    symbolicThread.start();
+                } else {
+                    if(!symbolicThread.isAlive()) {
+                        CircuitDAG result = symbolicThread.getResult();
+                        if(result != null) {
+                            q.add(result);
+                        }
+                        symbolicThread = new SymbolicThread(c, validMatrixRules, validMonomialRules, min_symb_size, max_symb_size, random, this);
+                        symbolicThread.start();
+                    }
+                }
+            }
 
             egraph.pop();
 
-            if(optimized.circuit.getTwoQubitsCount() <= bestOptimized.circuit.getTwoQubitsCount()) {
-                bestOptimized = optimized;
-            }
+            // if(circuitComparator.compare(optimized, bestOptimized) <= 0) {
+            //     bestOptimized = optimized;
+            //     System.out.println("Best Optimized Size:" + bestOptimized.totalGateCount());
+            //     System.out.println("Best Optimized 2q:" + bestOptimized.twoQGateCount());
+            // }
             
-            System.out.println("Best Optimized Size:" + bestOptimized.circuit.gates.size());
-            System.out.println("Best Optimized 2q:" + bestOptimized.circuit.getTwoQubitsCount());
-            System.out.println("Symb Rule Reductions Total:" + symbRuleReductionsTotal);
-            System.out.println("Symb Rule Reduction 2q:" + symbRuleReduction2q);
-            System.out.println("Egraph Rule Reductions Total:" + egraphRuleReductionsTotal);
-            System.out.println("Egraph Rule Reduction 2q:" + egraphRuleReduction2q);
+          
+            //System.out.println("Egraph Rule Reduction 2q:" + egraphRuleReduction2q);
             long endTime = System.nanoTime();
             long duration = endTime - startTime;
             if(duration / 1000000000 > timeout) {
                 break;
             }
         }
-        System.out.println("Final Gate Size:" + bestOptimized.circuit.gates.size());
-        System.out.println("Final 2q:" + bestOptimized.circuit.getTwoQubitsCount());
-        System.out.println("Symb Rule Reductions Total:" + symbRuleReductionsTotal);
-        System.out.println("Symb Rule Reduction 2q:" + symbRuleReduction2q);
-        System.out.println("Egraph Rule Reductions Total:" + egraphRuleReductionsTotal);
-        System.out.println("Egraph Rule Reduction 2q:" + egraphRuleReduction2q);
+        System.out.println("Final Gate Size:" + bestOptimized.cost(CircuitDAG.OptObj.TOTAL));
+        System.out.println("Final 2q:" + bestOptimized.cost(CircuitDAG.OptObj.TWO_Q));
+        System.out.println("Symb Rule Obj Reductions Total:" + symbRuleReductionsTotal);
+        System.out.println("Egraph Rule Obj Reductions Total:" + egraphRuleReductionsTotal);
     }
     
     public void optimize(EggGen.ConstrainedCircuit circuit, List<String> rules, List<MatrixConstrainedRule> symbRules, int egraph_rule_limit, int symb_rule_limit, int timeout) {
@@ -2240,7 +3622,7 @@ public class Optimizer {
         }
         jsonM = jsonM + String.join(",", basisStrList) + "]";
         
-        System.out.println("Json Matrix" + jsonM);
+        //System.out.println("Json Matrix" + jsonM);
 
         String subspaceStr = subspace.stream().map(String::valueOf).collect(Collectors.joining(","));
         subspaceStr = "[" + subspaceStr + "]";
@@ -2279,8 +3661,37 @@ public class Optimizer {
     }
 
 
-   
- 
+    public static List<Map<boolean[], boolean[]>> parseConstraints(String stringConstraints) {
+        List<Map<boolean[], boolean[]>> constraints = new ArrayList<>();
+        String[] splitOuter = stringConstraints.split("},");
+        for (String out : splitOuter) {
+            String[] splitInner = out.split("],");
+            Map<boolean[], boolean[]> constraint = new HashMap<>();
+            for (String in : splitInner) {
+                in = in.replace("]=[", ", ");
+                in = in.replace("[", "");
+                in = in.replace("]", "");
+                in = in.replace("{", "");
+                in = in.replace("}", "");
+                in = in.trim();
+
+                boolean[] key = new boolean[2];
+                boolean[] val = new boolean[2];
+                String[] bools = in.split(", ");
+
+                key[0] = Boolean.parseBoolean(bools[0]);
+                key[1] = Boolean.parseBoolean(bools[1]);
+                val[0] = Boolean.parseBoolean(bools[2]);
+                val[1] = Boolean.parseBoolean(bools[3]);
+
+                constraint.put(key, val);
+            }
+            constraints.add(constraint);
+        }
+
+        return constraints;
+    }
+
     public static void main(String[] args) throws IOException {
         List<MatrixConstrainedRule> symbRules = new ArrayList<>();
         Options options = new Options();
@@ -2297,6 +3708,11 @@ public class Optimizer {
         Option timeout = new Option("t", "timeout", true, "timeout");
         symbRulesO.setRequired(false);
         options.addOption(symbRulesO);
+
+
+        Option symbRulesMonomial = new Option("sm", "monomial", true, "monomial");
+        symbRulesMonomial.setRequired(false);
+        options.addOption(symbRulesMonomial);
 
         timeout.setRequired(false);
         options.addOption(timeout);
@@ -2321,6 +3737,10 @@ public class Optimizer {
         gateset.setRequired(true);
         options.addOption(gateset);
 
+        Option longrulesO = new Option("lr", "longrule", true, "longruleset file path");
+        longrulesO.setRequired(false);
+        options.addOption(longrulesO);
+
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -2335,7 +3755,6 @@ public class Optimizer {
             return;
         }
 
-        EggGen egraph = new EggGen();
         List<String> commutative = new ArrayList<>();
         String g = cmd.getOptionValue("gateset");
         FileReader fr = new FileReader("rules_" + g + ".txt", StandardCharsets.UTF_8);
@@ -2343,14 +3762,16 @@ public class Optimizer {
             String line;
             while ((line = br.readLine()) != null) {
                 commutative.add(line);
-                egraph.addRewrite(line);
             }
         }
 
         String benchmarkFile = cmd.getOptionValue("benchmark");
         System.out.println(benchmarkFile);
         String rulesFile = cmd.getOptionValue("rule");
+        String longrulesFile = cmd.getOptionValue("longrule");
         String symrulesFile = cmd.getOptionValue("symbrule");
+        String symrulesMonomialFile = cmd.getOptionValue("monomial");
+
         String modeStr = cmd.getOptionValue("mode");
         int timeoutint = Integer.valueOf(cmd.getOptionValue("timeout"));
         boolean useSymb = Boolean.valueOf(cmd.getOptionValue("usesymb"));
@@ -2359,8 +3780,31 @@ public class Optimizer {
         try (BufferedReader br = new BufferedReader(new FileReader(rulesFile, StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
-                egraph.addRewritev2(line);
                 rules.add(line);
+            }
+        }
+
+        List<String> longrules = new ArrayList<>();
+        if(longrulesFile != null) {
+            try (BufferedReader br = new BufferedReader(new FileReader(longrulesFile, StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    longrules.add(line);
+                }
+            }
+        }
+        List<MononialRule> symbRulesMonomials = new ArrayList<>();
+
+        if(symrulesMonomialFile != null) {
+            try (BufferedReader br = new BufferedReader(new FileReader(symrulesMonomialFile, StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                String[] comp = line.split("\\|");
+                String lhs = comp[0].trim();
+                String rhs = comp[1].trim();
+                String permutation = comp[2].trim();
+                List<Map<boolean[], boolean[]>> constraints = parseConstraints(permutation);
+                symbRulesMonomials.add(new MononialRule(lhs, rhs, constraints));
             }
         }
 
@@ -2385,7 +3829,7 @@ public class Optimizer {
                         List<SymbolicSolve.SparseMatrix.MatrixEntry> sentries = new ArrayList<>();
                         if(m.startsWith("Matrix(")) {
                             String content = m.substring("Matrix(".length(), m.length() - 1);
-                            System.out.println("content: " + content);
+                            //System.out.println("content: " + content);
                             String[] entries = content.split(";");
                             int rows = Integer.valueOf(entries[0]);
                             int cols = Integer.valueOf(entries[1]);
@@ -2406,27 +3850,32 @@ public class Optimizer {
         }
 
         String circuitString = new String(Files.readAllBytes(Paths.get(benchmarkFile)));
-        System.out.println(circuitString);
+        //System.out.println(circuitString);
         
 
         EggGen.Circuit circuit = QASMAstBuilder.parse(circuitString);
-        System.out.println(circuit.toEggString());
+        //System.out.println(circuit.toEggString());
 
         // Use timeoutint to limit the time to run optimize; when time is up, terminate the program
 
         // Assume timeoutint is defined somewhere above as the time limit in seconds
        
         Optimizer optimizer = new Optimizer();
+        new Thread(() -> {
+            try {
+                Thread.sleep(timeoutint * 1000);
+                System.exit(0);
+            } catch (InterruptedException ignored) {}
+        }).start();
         //optimizer.optimize(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), egraph);
         if(modeStr.equals("egraph")) {
-            optimizer.optimize(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), egraph, timeoutint);
-            egraph.stopEgglogREPL();
+            optimizer.optimize(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), rules, timeoutint);
         } else if(modeStr.equals("egraphsym")) {
             optimizer.optimize(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), rules, symbRules, 20, 5, timeoutint);
         } else if(modeStr.equals("SA")) {
             int minSymb = cmd.getOptionValue("minSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("minSymbSize")) : 10;
             int maxSymb = cmd.getOptionValue("maxSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("maxSymbSize")) : 30;
-            optimizer.optimize_SA(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), rules, symbRules, rules.size()/3*2, 2, minSymb, maxSymb, timeoutint, useSymb, commutative);
+            optimizer.optimize_SA(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), rules, longrules, symbRules, symbRulesMonomials, 1, 1, minSymb, maxSymb, timeoutint, useSymb, commutative);
         } else if(modeStr.equals("BEAM")) {
             int minSymb = cmd.getOptionValue("minSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("minSymbSize")) : 10;
             int maxSymb = cmd.getOptionValue("maxSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("maxSymbSize")) : 30;
@@ -2435,7 +3884,19 @@ public class Optimizer {
                     return a.circuit.getTwoQubitsCount() - b.circuit.getTwoQubitsCount();
                 }
             };
-            optimizer.optimize_BEAM(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), rules, symbRules, 10, rules.size()/3*2, 2, minSymb, maxSymb, timeoutint, useSymb, comparator, commutative);
+            optimizer.optimize_BEAM(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), rules, symbRules, 10, rules.size()/5*4, 1, minSymb, maxSymb, timeoutint, useSymb, comparator, commutative);
+        } else if(modeStr.equals("BEAMN")) {
+            int minSymb = cmd.getOptionValue("minSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("minSymbSize")) : 10;
+            int maxSymb = cmd.getOptionValue("maxSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("maxSymbSize")) : 20;
+            Comparator<EggGen.ConstrainedCircuit> comparator = new Comparator<EggGen.ConstrainedCircuit>() {
+                public int compare(EggGen.ConstrainedCircuit a, EggGen.ConstrainedCircuit b) {
+                    return a.circuit.getTwoQubitsCount() - b.circuit.getTwoQubitsCount();
+                }
+            };
+            EggGen.Circuit instantiatedCircuit = circuit.instantiate(new HashMap<>());
+            optimizer.optimize_BEAM_normal(QASMToDAGVisitor.parse(instantiatedCircuit.toQASM()), rules, symbRules, symbRulesMonomials, 10, 1, 1, minSymb, maxSymb, timeoutint, useSymb);
         }
     }
+}
+
 }

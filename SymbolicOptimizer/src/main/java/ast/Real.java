@@ -25,6 +25,6 @@ public final class Real extends Expr {
     if(number == Math.floor(number) && !Double.isInfinite(number)) {
       return String.format("(Real %.1f)", number);
     }
-    return String.format("(Real %f)", number);
+    return String.format("(Real %.17g)", number);
   }
 }
