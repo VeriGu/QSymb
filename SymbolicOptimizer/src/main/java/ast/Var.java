@@ -17,7 +17,7 @@ public final class Var extends Expr {
 
   @Override
   public String toString() {
-    return "Var [id=" + id + "]";
+    return id;
   }
 
   @Override

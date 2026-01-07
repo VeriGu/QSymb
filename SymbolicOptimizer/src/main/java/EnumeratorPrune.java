@@ -676,9 +676,9 @@ public class EnumeratorPrune {
           EggGen.ConstrainedCircuit c2 = CircuitTranslator.translate(rule.getValue());
           egg.addRewriteRule(new SimpleEntry<>(c1, c2), true);
         }
-        for(String r : egg.optrules) {
-            System.out.println("Add Processed Rule:" + r);
-            egg.addRewritev2(r, "opt", true);
+        List<Rule> rules = egg.processRules(egg.optrules);
+        for(Rule r : rules) {
+          egg.addOptRule(r, filename, filename);
         }
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> entries = new ArrayList<>();
         pruneECS();
@@ -765,8 +765,12 @@ public class EnumeratorPrune {
       EggGen.Circuit c1 = entry.getKey();
       EggGen.Circuit c2 = entry.getValue();
       Map<String, String> qubitToVar = new HashMap<>();
+      EggGen.Circuit canonical1 = EggGen.canonicalizeCircuit(c1, qubitToVar, true);
+      EggGen.Circuit canonical2 = EggGen.canonicalizeCircuit(c2, qubitToVar, true);
+      String lhsRule = EggGen.replaceNilWithVar(canonical1, "c");
+      String rhsRule = EggGen.replaceNilWithVar(canonical2, "c");
 
-      MatrixConstrainedRule rule = new MatrixConstrainedRule(EggGen.circuitToGeneralizedString(c1, qubitToVar, "c", true), EggGen.circuitToGeneralizedString(c2, qubitToVar, "c", true), "birewrite");
+      MatrixConstrainedRule rule = new MatrixConstrainedRule(lhsRule, rhsRule, "birewrite");
       if(learned_matrix_constrained.contains(rule)) {
         continue;
       }
@@ -862,8 +866,9 @@ public class EnumeratorPrune {
         for (SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule : learned_rules) {
           egg.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())), true);
         }
-        for(String r: egg.optrules) {
-            egg.addRewritev2(r, "opt", true);
+        List<Rule> rules = egg.processRules(egg.optrules);
+        for(Rule r : rules) {
+          egg.addOptRule(r, "opt", "birewrite");
         }
       }
       System.out.println("Added rules in C");
@@ -1075,14 +1080,17 @@ public class EnumeratorPrune {
     for (SimpleEntry<Integer, List<Integer>> entry : hash) {
       ConstrainedCircuit cc = new ConstrainedCircuit(c, entry.getValue());
       EggGen.ConstrainedCircuit eggcc = CircuitTranslator.translate(cc);
-      //System.out.println("Adding to egraph: " + eggcc.toEggString() + " with fingerprint " + entry.getKey());
+      System.out.println("Adding to egraph: " + c.getQasmString() + " with fingerprint " + entry.getKey());
       if(addEgraph) {
         //egraph.addConstrainedCircuit(eggcc);
         //egraph.setFingerprint(eggcc, entry.getKey());
       }
-      // if (c.getQasmString().equals("rz(pi/2.0) q[0]; sx q[0]; rz(pi/2.0) q[0];")) {
-      //   System.out.println("Circuit added to egraph with fingerprint " + entry.getKey());
-      // }
+      if (c.getQasmString().equals("rz(pi/2.0) q[0]; sx q[0]; rz(pi/2.0) q[0];")) {
+        System.out.println("Circuit added to egraph with fingerprint " + entry.getKey());
+      }
+      if (c.getQasmString().equals("sx q[0]; rz(pi/2.0) q[0]; sx q[0];")) {
+        System.out.println("Circuit added to egraph with fingerprint " + entry.getKey());
+      }
       if (map.containsKey(entry.getKey())) {
         map.get(entry.getKey()).add(cc);
       } else {

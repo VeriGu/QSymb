@@ -2485,54 +2485,7 @@ public class Optimizer {
         return output.toString().trim().equals("true");
     }
 
-    public void optimize(EggGen.ConstrainedCircuit circuit, List<String> rules, int timeout) {
-        EggGen egraph = new EggGen();
-        for(String rule: rules) {
-            egraph.addRewritev2(rule);
-        }
-        System.out.println("Original Gate Size: " + circuit.toEggString());
-        System.out.println("Original Gate Size: " + circuit.circuit.gates.size());
-        String name = egraph.addConstrainedCircuit(circuit);
-        EggGen.ConstrainedCircuit bestOptimized = circuit;
-        long startTime = System.nanoTime();
-        while(true) {
-            egraph.push();
-            egraph.runN("opt", 20);
-            EggGen.ConstrainedCircuit extracted = egraph.extract(name);
-            if(extracted.circuit.gates.size() < bestOptimized.circuit.gates.size()) {
-                bestOptimized = extracted;
-            }
-            System.out.println("Optimized Circuit: " + extracted.toEggString());
-            System.out.println("Optimized gate size:" + extracted.circuit.gates.size());
-            
-            String originalQasm = CircuitTranslator.translateBack(circuit, circuit.circuit.getMaxQubits()+1).getCircuit().getQasmString();
-            
-            String optimizedQasm = CircuitTranslator.translateBack(extracted, extracted.circuit.getMaxQubits()+1).getCircuit().getQasmString();
-            System.out.println(originalQasm);
-            System.out.println(optimizedQasm);
-            try {
-                boolean equivalent = checkEquivalenceWithQiskit(originalQasm, optimizedQasm, circuit.circuit.getMaxQubits()+1);
-                System.out.println("Circuits are equivalent (Qiskit): " + equivalent);
-            } catch (IOException | InterruptedException e) {
-                System.err.println("Error during Qiskit equivalence check: " + e.getMessage());
-            }
-            egraph.pop();
-            long endTime = System.nanoTime();
-            long duration = endTime - startTime;
-            if(duration / 1000000000 > timeout) {
-                break;
-            }
-        }
-        System.out.println("Final Gate Size:" + bestOptimized.circuit.gates.size());
-        System.out.println("Final 2q:" + bestOptimized.circuit.getTwoQubitsCount());
-    }
-
-
-    // private String substitute(Circuit s, String rhs) {
-
-    // }
-
-
+    
     // Helper method to build qubit mapping from concrete circuit to pattern circuit
     Map<String, String> buildQubitMap(EggGen.Circuit concrete, EggGen.Circuit pattern) {
         Map<String, String> qubitMap = new HashMap<>();
@@ -2592,126 +2545,6 @@ public class Optimizer {
         }
 
         return Math.exp((currentCost - newCost) / temperature);
-    }
-
-
-    public void optimize_BEAM(EggGen.ConstrainedCircuit circuit, List<String> rules, List<MatrixConstrainedRule> symbRules, int beam_width, int egraph_rule_limit, int symb_rule_limit, int min_symb_size, int max_symb_size, int timeout, boolean useSymb, Comparator<EggGen.ConstrainedCircuit> comparator, List<String> commutative) {
-        EggGen egraph = new EggGen();
-        for(String rule: commutative) {
-            egraph.addRewrite(rule);
-        }
-        System.out.println("Starting BEAM optimization..., timeout: " + timeout);
-        System.out.println("Original Size:" + circuit.circuit.gates.size());
-        System.out.println("Original 2q:" + circuit.circuit.getTwoQubitsCount());
-        EggGen.ConstrainedCircuit bestOptimized = circuit;
-        Random random = new Random(Params.SEED);
-        long startTime = System.nanoTime();
-        EggGen.ConstrainedCircuit optimized = bestOptimized;
-
-        PriorityQueue<EggGen.ConstrainedCircuit> q = new PriorityQueue<>(comparator);
-        Set<Integer> visited = new HashSet<>();
-        visited.add(circuit.circuit.toQASM().hashCode());
-        q.add(optimized);
-
-        long timesStart = System.nanoTime();
-        int iters = 0;
-        while(!q.isEmpty()) {
-            if((System.nanoTime() - timesStart) / 1000000000 > timeout) {
-                break;
-            }
-
-            iters++;
-
-            EggGen.ConstrainedCircuit current = q.peek();
-            if(comparator.compare(current, bestOptimized) <= 0) {
-                System.out.println("New best optimized: " + current.circuit.toQASM());
-                System.out.println("New best optimized 2q:" + current.circuit.getTwoQubitsCount());
-                System.out.println("New best optimized gate size:" + current.circuit.gates.size());
-                bestOptimized = current;
-            }
-
-            EggGen.ConstrainedCircuit candidate = dequeueCircuit(q, Params.TEMPERATURE, CircuitDAG.OptObj.TWO_Q, random);
-            
-            //sample rules
-            List<List<String>> rulesToUse = new ArrayList<>();
-            for(int j = 0; j < beam_width; j++) {
-                rulesToUse.add(new ArrayList<>());
-                List<String> copy = new ArrayList<>(rules);
-                for(int i = 0; i < Integer.min(copy.size(), egraph_rule_limit); i++) {
-                    int index = random.nextInt(copy.size());
-                    rulesToUse.get(j).add(copy.get(index));
-                    copy.remove(index);
-                }
-            }
-            //sample symbolic Rules
-            List<MatrixConstrainedRule> copysymb = new ArrayList<>(symbRules);
-            List<MatrixConstrainedRule> symbRulesToUse = new ArrayList<>();
-            for(int i = 0; i < Integer.min(copysymb.size(), symb_rule_limit); i++) {
-                int index = random.nextInt(copysymb.size());
-                symbRulesToUse.add(copysymb.get(index));
-                copysymb.remove(index);
-            }
-
-            //beam search
-            if(q.size() > Params.QUEUE_SIZE + 1000) {
-                System.out.println("Queue size: " + q.size());
-                System.out.println("Prune queue");
-                PriorityQueue<EggGen.ConstrainedCircuit> newQ = new PriorityQueue<>(comparator);
-                while(newQ.size() != beam_width) {
-                    newQ.add(q.poll());
-                }
-                q = newQ;
-            }
-
-            for(List<String> rs: rulesToUse) {
-                egraph.push();
-                egraph.clearRules();
-                String name = egraph.addConstrainedCircuit(current);
-                for(String rule: rs) {
-                    egraph.addRewritev2(rule);
-                }
-                egraph.runBackoff("opt", 25);
-                List<EggGen.ConstrainedCircuit> newcandidates = egraph.extract(name, beam_width);
-                System.out.println("New candidates: " + newcandidates.size());
-                for(EggGen.ConstrainedCircuit newcandidate: newcandidates) {
-                    int hashcode = newcandidate.circuit.toQASM().hashCode();
-                    if(newcandidate.circuit.getTwoQubitsCount() <= bestOptimized.circuit.getTwoQubitsCount()) {
-                        q.add(newcandidate);
-                    }
-                    //visited.add(hashcode);
-                }
-                egraph.pop();
-            }
-
-            if(useSymb) {
-                for(MatrixConstrainedRule r: symbRulesToUse) {
-                    System.out.println("Use Symb Rule: " + r.getLHS() + " -> " + r.getRHS());
-                    int reverse = random.nextInt(2);
-                    CircuitDAG optimizedDAG = null;
-                    if(reverse == 0) {
-                        optimizedDAG = symbolicMatchBeforeAfter(QASMToDAGVisitor.parse(candidate.circuit.toQASM()), r.getLHS(), r.getRHS(), min_symb_size, max_symb_size, r.getConstraint(), null);
-                    } else {
-                        optimizedDAG = symbolicMatchBeforeAfter(QASMToDAGVisitor.parse(candidate.circuit.toQASM()), r.getRHS(), r.getLHS(), min_symb_size, max_symb_size, r.getConstraint(), null);
-                    }
-                    if(optimizedDAG != null) {
-                        System.out.println("Optimized DAG: " + optimizedDAG.toQASM());
-                        String qasm = optimizedDAG.toQASM();
-                        EggGen.Circuit circuitnew = QASMAstBuilder.parse(qasm);
-                        int hashcode = circuitnew.toQASM().hashCode();
-                        double acceptP = saProbability(candidate.circuit.getTwoQubitsCount(), circuitnew.getTwoQubitsCount(), Params.TEMPERATURE);
-                        if(acceptP >= random.nextDouble()) {
-                            q.add(new EggGen.ConstrainedCircuit(circuitnew, new EggGen.Permutation(new ArrayList<>())));
-                            //visited.add(hashcode);
-                        }
-                    }
-                }
-            }
-        }
-
-        System.out.println("Final Gate Size:" + bestOptimized.circuit.gates.size());
-        System.out.println("Final 2q:" + bestOptimized.circuit.getTwoQubitsCount());
-        System.out.println("BEAM iterations:" + iters);
-        System.out.println("BEAM time:" + (System.nanoTime() - timesStart) / 1000000000.0 + " seconds");
     }
 
 
@@ -3294,8 +3127,6 @@ public class Optimizer {
                 q = newQ;
             }
             // choose egraph_rule_limit different rules from rules
-            
-            int rules_to_use = Integer.min(validLongRules.size(), rule_limit);
             List<String> rulesToUse = new ArrayList<>();
             
             if(Params.PRUNE_TEMPERATURE == 0) {
@@ -3326,13 +3157,10 @@ public class Optimizer {
                 EggGen.Circuit lhs = QASMAstBuilder.parse(splitRule[0]);
                 EggGen.Circuit rhs = QASMAstBuilder.parse(splitRule[1]);
                 Map<String, String> qubitMap = new HashMap<>();
-                String eggrule2 = String.format("%s|%s|rewrite", EggGen.circuitToGeneralizedString(rhs, qubitMap, "c", true), EggGen.circuitToGeneralizedString(lhs, qubitMap, "c", true));
+                String eggrule2 = String.format("%s|%s|rewrite", EggGen.circuitToGeneralizedOnlyRemoveQ(rhs, "c"), EggGen.circuitToGeneralizedOnlyRemoveQ(lhs,"c"));
                 //first derive cross wire commutations
                 //List<String> copySizePreservingRules = new ArrayList<>(sizePreservingRules);
-                // 
-                
-               
-                    //System.out.println("Adding size preserving rule: " + copyRules.size());
+                //System.out.println("Adding size preserving rule: " + copyRules.size());
                 List<Integer> addedRules = new ArrayList<>();
                 while(addedRules.size() < sizePreservingRuleslimit) {
                     int index = random.nextInt(sizePreservingRules.size());
@@ -3454,162 +3282,160 @@ public class Optimizer {
         System.out.println("Egraph Rule Obj Reductions Total:" + egraphRuleReductionsTotal);
     }
     
-    public void optimize(EggGen.ConstrainedCircuit circuit, List<String> rules, List<MatrixConstrainedRule> symbRules, int egraph_rule_limit, int symb_rule_limit, int timeout) {
-        EggGen egraph = new EggGen();
-        System.out.println("Original Size:" + circuit.circuit.gates.size());
-        System.out.println("Original 2q:" + circuit.circuit.getTwoQubitsCount());
-        EggGen.ConstrainedCircuit optimized = circuit;
-        Random random = new Random();
-        //We need to preprocess the symb rules to (rule .....).
-        int j = 0;
-        long startTime = System.nanoTime();
-        while(true) {
-            System.out.println("CURRENT iteration:" + j);
-            egraph.push();
-            String name = egraph.addConstrainedCircuit(optimized);
-            // choose egraph_rule_limit different rules from rules
-            List<String> copy = new ArrayList<>(rules);
-            for(int i = 0; i < Integer.min(copy.size(), egraph_rule_limit); i++) {
-                int index = random.nextInt(copy.size());
-                egraph.addRewritev2(copy.get(index));
-                copy.remove(index);
-            }
+    // public void optimize(EggGen.ConstrainedCircuit circuit, List<String> rules, List<MatrixConstrainedRule> symbRules, int egraph_rule_limit, int symb_rule_limit, int timeout) {
+    //     EggGen egraph = new EggGen();
+    //     System.out.println("Original Size:" + circuit.circuit.gates.size());
+    //     System.out.println("Original 2q:" + circuit.circuit.getTwoQubitsCount());
+    //     EggGen.ConstrainedCircuit optimized = circuit;
+    //     Random random = new Random();
+    //     //We need to preprocess the symb rules to (rule .....).
+    //     int j = 0;
+    //     long startTime = System.nanoTime();
+    //     while(true) {
+    //         System.out.println("CURRENT iteration:" + j);
+    //         egraph.push();
+    //         String name = egraph.addConstrainedCircuit(optimized);
+    //         // choose egraph_rule_limit different rules from rules
+    //         List<String> copy = new ArrayList<>(rules);
+    //         for(int i = 0; i < Integer.min(copy.size(), egraph_rule_limit); i++) {
+    //             int index = random.nextInt(copy.size());
+    //             egraph.addRewritev2(copy.get(index));
+    //             copy.remove(index);
+    //         }
 
-            egraph.runN("opt", 15);
+    //         egraph.runN("opt", 15);
             
-            // do ematching for symbolic rules
-            List<MatrixConstrainedRule> copysymb = new ArrayList<>(symbRules);
-            for (int i = 0; i < Integer.min(copysymb.size(), symb_rule_limit); i++){
-                System.out.println("Current RULE: " + i + "/" + Integer.min(symb_rule_limit, symbRules.size()));
-                int index = random.nextInt(copysymb.size());
-                // int index = i;
-                List<Triple<EggGen.Circuit, EggGen.Circuit, EggGen.Circuit>> matches = egraph.ematching(copysymb.get(index).getLHS(), copysymb.get(index).getRHS(), 500);
-                System.out.println("Match Sizes: " + matches.size());
-                int k = 0;
-                for(Triple<EggGen.Circuit, EggGen.Circuit, EggGen.Circuit> match : matches) {
-                    //now, we need to check that s satisfy the constraints
-                    System.out.println("Current Match: " + k + "/" + matches.size());
-                    k++;
-                    EggGen.Circuit matchedLhs = match.getMiddle();
-                    EggGen.Circuit matchedRhs = match.getRight();
-                    EggGen.Circuit s = match.getLeft();
+    //         // do ematching for symbolic rules
+    //         List<MatrixConstrainedRule> copysymb = new ArrayList<>(symbRules);
+    //         for (int i = 0; i < Integer.min(copysymb.size(), symb_rule_limit); i++){
+    //             System.out.println("Current RULE: " + i + "/" + Integer.min(symb_rule_limit, symbRules.size()));
+    //             int index = random.nextInt(copysymb.size());
+    //             // int index = i;
+    //             List<Triple<EggGen.Circuit, EggGen.Circuit, EggGen.Circuit>> matches = egraph.ematching(copysymb.get(index).getLHS(), copysymb.get(index).getRHS(), 500);
+    //             System.out.println("Match Sizes: " + matches.size());
+    //             int k = 0;
+    //             for(Triple<EggGen.Circuit, EggGen.Circuit, EggGen.Circuit> match : matches) {
+    //                 //now, we need to check that s satisfy the constraints
+    //                 System.out.println("Current Match: " + k + "/" + matches.size());
+    //                 k++;
+    //                 EggGen.Circuit matchedLhs = match.getMiddle();
+    //                 EggGen.Circuit matchedRhs = match.getRight();
+    //                 EggGen.Circuit s = match.getLeft();
 
-                    System.out.println("Match: s: " + match.getLeft().toEggString() +  "\nlhs:" + match.getMiddle().toEggString() + "\nrhs:" + match.getRight().toEggString());
-                    if(matchedLhs.toEggString().equals(matchedRhs.toEggString()) && s.gates.isEmpty()) {
-                        continue;
-                    }
+    //                 System.out.println("Match: s: " + match.getLeft().toEggString() +  "\nlhs:" + match.getMiddle().toEggString() + "\nrhs:" + match.getRight().toEggString());
+    //                 if(matchedLhs.toEggString().equals(matchedRhs.toEggString()) && s.gates.isEmpty()) {
+    //                     continue;
+    //                 }
                     
-                    String lhs = copysymb.get(index).getLHS();
-                    Pattern pattern = Pattern.compile("\\(Cons \\(SYMB \\d+\\)\\s+c\\)");
-                    Matcher matcher = pattern.matcher(lhs);
-                    String removedSymb = null;
-                    if(matcher.find()) {
-                        String matched = matcher.group();
-                        removedSymb = lhs.replace(matched, "(Nil)");
-                    }
+    //                 String lhs = copysymb.get(index).getLHS();
+    //                 Pattern pattern = Pattern.compile("\\(Cons \\(SYMB \\d+\\)\\s+c\\)");
+    //                 Matcher matcher = pattern.matcher(lhs);
+    //                 String removedSymb = null;
+    //                 if(matcher.find()) {
+    //                     String matched = matcher.group();
+    //                     removedSymb = lhs.replace(matched, "(Nil)");
+    //                 }
 
-                    // Map<String, String> qubitMap = null;
-                    // if(removedSymb != null) {
-                    //     removedSymb = removedSymb.replaceAll("q\\d+", "(Q \"$0\")");
-                    //     removedSymb = removedSymb.replaceAll("theta1|theta2|theta3", "(Symbol \"$0\")");
-                    //     System.out.println("replaced symb rule:" + removedSymb);
-                    //     EggGen.Circuit symblhs = EggAstBuilder.parseCircuit(removedSymb);
-                    //     qubitMap = buildQubitMap(matchedLhs, symblhs);
-                    // } else {
-                    //     Pattern pattern2 = Pattern.compile("\\(Cons \\(SYMB \\d+\\)\\s+(.*)\\)");
-                    //     Matcher matcher2 = pattern2.matcher(lhs);
-                    //     if (matcher2.find()) {
-                    //         removedSymb = matcher2.group(1).trim();
-                    //     }
-                    //     removedSymb = removedSymb.replaceAll("\\bc\\b", "(Nil)");
-                    //     removedSymb = removedSymb.replaceAll("q\\d+", "(Q \"$0\")");
-                    //     removedSymb = removedSymb.replaceAll("theta1|theta2|theta3", "(Symbol \"$0\")");
-                    //     System.out.println("replaced symb rule:" + removedSymb);
-                    //     List<EggGen.Gate> concretelhsgates = new ArrayList<>(matchedLhs.gates.subList(match.getLeft().gates.size(), matchedLhs.gates.size()));
-                    //     EggGen.Circuit concretecircuit = new EggGen.Circuit(concretelhsgates);
-                    //     System.out.println("replaced concrete lhs:" + concretecircuit.toEggString());
-                    //     EggGen.Circuit symbpattern = EggAstBuilder.parseCircuit(removedSymb);
-                    //     qubitMap = buildQubitMap(concretecircuit, symbpattern);
-                    // }
+    //                 // Map<String, String> qubitMap = null;
+    //                 // if(removedSymb != null) {
+    //                 //     removedSymb = removedSymb.replaceAll("q\\d+", "(Q \"$0\")");
+    //                 //     removedSymb = removedSymb.replaceAll("theta1|theta2|theta3", "(Symbol \"$0\")");
+    //                 //     System.out.println("replaced symb rule:" + removedSymb);
+    //                 //     EggGen.Circuit symblhs = EggAstBuilder.parseCircuit(removedSymb);
+    //                 //     qubitMap = buildQubitMap(matchedLhs, symblhs);
+    //                 // } else {
+    //                 //     Pattern pattern2 = Pattern.compile("\\(Cons \\(SYMB \\d+\\)\\s+(.*)\\)");
+    //                 //     Matcher matcher2 = pattern2.matcher(lhs);
+    //                 //     if (matcher2.find()) {
+    //                 //         removedSymb = matcher2.group(1).trim();
+    //                 //     }
+    //                 //     removedSymb = removedSymb.replaceAll("\\bc\\b", "(Nil)");
+    //                 //     removedSymb = removedSymb.replaceAll("q\\d+", "(Q \"$0\")");
+    //                 //     removedSymb = removedSymb.replaceAll("theta1|theta2|theta3", "(Symbol \"$0\")");
+    //                 //     System.out.println("replaced symb rule:" + removedSymb);
+    //                 //     List<EggGen.Gate> concretelhsgates = new ArrayList<>(matchedLhs.gates.subList(match.getLeft().gates.size(), matchedLhs.gates.size()));
+    //                 //     EggGen.Circuit concretecircuit = new EggGen.Circuit(concretelhsgates);
+    //                 //     System.out.println("replaced concrete lhs:" + concretecircuit.toEggString());
+    //                 //     EggGen.Circuit symbpattern = EggAstBuilder.parseCircuit(removedSymb);
+    //                 //     qubitMap = buildQubitMap(concretecircuit, symbpattern);
+    //                 // }
                     
-                    //EggGen.Circuit canonicalized = EggGen.canonicalizeCircuit(s, qubitMap);
-                    //System.out.println("Maxqubits:" + (canonicalized.getMaxQubits() + 1));
+    //                 //EggGen.Circuit canonicalized = EggGen.canonicalizeCircuit(s, qubitMap);
+    //                 //System.out.println("Maxqubits:" + (canonicalized.getMaxQubits() + 1));
                     
-                    //System.out.println("Canonicaled:" + canonicalized.toEggString());
+    //                 //System.out.println("Canonicaled:" + canonicalized.toEggString());
                     
-                        ConstrainedCircuit cc1 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedLhs, new EggGen.Permutation(new ArrayList<>())), matchedLhs.getMaxQubits()+1);
-                        ConstrainedCircuit cc2 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedRhs, new EggGen.Permutation(new ArrayList<>())), matchedRhs.getMaxQubits()+1);
-                        try {
-                            boolean equivalent = checkEquivalenceWithQiskit(cc1.getCircuit().getQasmString(), cc2.getCircuit().getQasmString(), matchedLhs.getMaxQubits()+1);
-                            if(equivalent) {
-                                egraph.sendCommand(String.format("(union %s %s)", matchedLhs.toEggString(), matchedRhs.toEggString()));
-                            }
-                            System.out.println("Circuits are equivalent (Qiskit): " + equivalent);
-                        } catch (IOException | InterruptedException e) {
-                            System.err.println("Error during Qiskit equivalence check: " + e.getMessage());
-                        }
-                        // if(checkLinearCombination(canonicalized, copysymb.get(index).getConstraint(), EnumeratorPrune.MAX_QUBITS_SYMB))  {
-                        //     System.out.println("S satisfy the constraints!");
-                        //     //substitube symb with matched s
-                        //     System.out.println("Union:\nLHS:" + matchedLhs.toEggString() + "'\nRHS:" + matchedRhs.toEggString());
-                        //     ConstrainedCircuit cc1 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedLhs, new EggGen.Permutation(new ArrayList<>())), matchedLhs.getMaxQubits()+1);
-                        //     ConstrainedCircuit cc2 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedRhs, new EggGen.Permutation(new ArrayList<>())), matchedRhs.getMaxQubits()+1);
-                        //     try {
-                        //         boolean equivalent = checkEquivalenceWithQiskit(cc1.getCircuit().getQasmString(), cc2.getCircuit().getQasmString(), matchedLhs.getMaxQubits()+1);
-                        //         System.out.println("Circuits are equivalent (Qiskit): " + equivalent);
-                        //     } catch (IOException | InterruptedException e) {
-                        //         System.err.println("Error during Qiskit equivalence check: " + e.getMessage());
-                        //     }
-                        //     egraph.sendCommand(String.format("(union %s %s)", matchedLhs.toEggString(), matchedRhs.toEggString()));
-                        // } else {
-                        //     // they are not equal, comfirme it with check equal
-                        //     ConstrainedCircuit cc1 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedLhs, new EggGen.Permutation(new ArrayList<>())), matchedLhs.getMaxQubits()+1);
-                        //     ConstrainedCircuit cc2 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedRhs, new EggGen.Permutation(new ArrayList<>())), matchedRhs.getMaxQubits()+1);
-                        //     try {
-                        //         boolean equivalent = checkEquivalenceWithQiskit(cc1.getCircuit().getQasmString(), cc2.getCircuit().getQasmString(), matchedLhs.getMaxQubits()+1);
-                        //         System.out.println("Circuits are equivalent (Qiskit): " + equivalent);
-                        //     } catch (IOException | InterruptedException e) {
-                        //         System.err.println("Error during Qiskit equivalence check: " + e.getMessage());
-                        //     }
-                        // }
+    //                     ConstrainedCircuit cc1 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedLhs, new EggGen.Permutation(new ArrayList<>())), matchedLhs.getMaxQubits()+1);
+    //                     ConstrainedCircuit cc2 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedRhs, new EggGen.Permutation(new ArrayList<>())), matchedRhs.getMaxQubits()+1);
+    //                     try {
+    //                         boolean equivalent = checkEquivalenceWithQiskit(cc1.getCircuit().getQasmString(), cc2.getCircuit().getQasmString(), matchedLhs.getMaxQubits()+1);
+    //                         if(equivalent) {
+    //                             egraph.sendCommand(String.format("(union %s %s)", matchedLhs.toEggString(), matchedRhs.toEggString()));
+    //                         }
+    //                         System.out.println("Circuits are equivalent (Qiskit): " + equivalent);
+    //                     } catch (IOException | InterruptedException e) {
+    //                         System.err.println("Error during Qiskit equivalence check: " + e.getMessage());
+    //                     }
+    //                     // if(checkLinearCombination(canonicalized, copysymb.get(index).getConstraint(), EnumeratorPrune.MAX_QUBITS_SYMB))  {
+    //                     //     System.out.println("S satisfy the constraints!");
+    //                     //     //substitube symb with matched s
+    //                     //     System.out.println("Union:\nLHS:" + matchedLhs.toEggString() + "'\nRHS:" + matchedRhs.toEggString());
+    //                     //     ConstrainedCircuit cc1 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedLhs, new EggGen.Permutation(new ArrayList<>())), matchedLhs.getMaxQubits()+1);
+    //                     //     ConstrainedCircuit cc2 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedRhs, new EggGen.Permutation(new ArrayList<>())), matchedRhs.getMaxQubits()+1);
+    //                     //     try {
+    //                     //         boolean equivalent = checkEquivalenceWithQiskit(cc1.getCircuit().getQasmString(), cc2.getCircuit().getQasmString(), matchedLhs.getMaxQubits()+1);
+    //                     //         System.out.println("Circuits are equivalent (Qiskit): " + equivalent);
+    //                     //     } catch (IOException | InterruptedException e) {
+    //                     //         System.err.println("Error during Qiskit equivalence check: " + e.getMessage());
+    //                     //     }
+    //                     //     egraph.sendCommand(String.format("(union %s %s)", matchedLhs.toEggString(), matchedRhs.toEggString()));
+    //                     // } else {
+    //                     //     // they are not equal, comfirme it with check equal
+    //                     //     ConstrainedCircuit cc1 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedLhs, new EggGen.Permutation(new ArrayList<>())), matchedLhs.getMaxQubits()+1);
+    //                     //     ConstrainedCircuit cc2 = CircuitTranslator.translateBack(new EggGen.ConstrainedCircuit(matchedRhs, new EggGen.Permutation(new ArrayList<>())), matchedRhs.getMaxQubits()+1);
+    //                     //     try {
+    //                     //         boolean equivalent = checkEquivalenceWithQiskit(cc1.getCircuit().getQasmString(), cc2.getCircuit().getQasmString(), matchedLhs.getMaxQubits()+1);
+    //                     //         System.out.println("Circuits are equivalent (Qiskit): " + equivalent);
+    //                     //     } catch (IOException | InterruptedException e) {
+    //                     //         System.err.println("Error during Qiskit equivalence check: " + e.getMessage());
+    //                     //     }
+    //                     // }
                    
                     
-                }
-                copysymb.remove(index);
-            }
+    //             }
+    //             copysymb.remove(index);
+    //         }
 
 
-            egraph.runN("opt", 5);
+    //         egraph.runN("opt", 5);
 
-            optimized = egraph.extract(name);
-            System.out.println("Current Gate Size:" + optimized.circuit.gates.size());
-            System.out.println("Current 2q:" + optimized.circuit.getTwoQubitsCount());
-            egraph.rules.clear();
-            egraph.optrules.clear();
-            egraph.pop();
-            j++;
+    //         optimized = egraph.extract(name);
+    //         System.out.println("Current Gate Size:" + optimized.circuit.gates.size());
+    //         System.out.println("Current 2q:" + optimized.circuit.getTwoQubitsCount());
+    //         egraph.rules.clear();
+    //         egraph.optrules.clear();
+    //         egraph.pop();
+    //         j++;
 
-            Map<String,Long> data = egraph.getProfilingData();
-            System.out.print("--------------------------Iteration Egraph Break Down-----------------\n");
-            System.out.println("ematchingSaturationTime" + data.get("ematchingSaturationTime") / 1000000);
-            System.out.println("ematchingPrefixTime" + data.get("ematchingPrefixTime") / 1000000);
-            System.out.println("ematchingSuffixTime:" + data.get("ematchingSuffixTime") / 1000000);
-            long endTime = System.nanoTime();
-            long duration = endTime - startTime;
-            if(duration / 1000000000 > timeout) {
-                break;   
-            }
-        }
-        System.out.println("Final Gate Size:" + optimized.circuit.gates.size());
-        System.out.println("Final 2q:" + optimized.circuit.getTwoQubitsCount());
-        Map<String,Long> data = egraph.getProfilingData();
-        System.out.print("--------------------------Egraph Break Down-----------------\n");
-        System.out.println("ematchingSaturationTime" + data.get("ematchingSaturationTime") / 1000000);
-        System.out.println("ematchingPrefixTime" + data.get("ematchingPrefixTime") / 1000000);
-        System.out.println("ematchingSuffixTime:" + data.get("ematchingSuffixTime") / 1000000);
-    }
-
-
+    //         Map<String,Long> data = egraph.getProfilingData();
+    //         System.out.print("--------------------------Iteration Egraph Break Down-----------------\n");
+    //         System.out.println("ematchingSaturationTime" + data.get("ematchingSaturationTime") / 1000000);
+    //         System.out.println("ematchingPrefixTime" + data.get("ematchingPrefixTime") / 1000000);
+    //         System.out.println("ematchingSuffixTime:" + data.get("ematchingSuffixTime") / 1000000);
+    //         long endTime = System.nanoTime();
+    //         long duration = endTime - startTime;
+    //         if(duration / 1000000000 > timeout) {
+    //             break;   
+    //         }
+    //     }
+    //     System.out.println("Final Gate Size:" + optimized.circuit.gates.size());
+    //     System.out.println("Final 2q:" + optimized.circuit.getTwoQubitsCount());
+    //     Map<String,Long> data = egraph.getProfilingData();
+    //     System.out.print("--------------------------Egraph Break Down-----------------\n");
+    //     System.out.println("ematchingSaturationTime" + data.get("ematchingSaturationTime") / 1000000);
+    //     System.out.println("ematchingPrefixTime" + data.get("ematchingPrefixTime") / 1000000);
+    //     System.out.println("ematchingSuffixTime:" + data.get("ematchingSuffixTime") / 1000000);
+    // }
 
     private boolean checkLinearCombination(EggGen.Circuit circuit, List<SymbolicSolve.SparseMatrix> basis, List<Integer> subspace, Map<String, Expr> symbolMap) throws IOException, InterruptedException {
         String jsonString = solver.circuitToJson(circuit.gates, circuit.getMaxQubits()+1);
@@ -3868,23 +3694,10 @@ public class Optimizer {
             } catch (InterruptedException ignored) {}
         }).start();
         //optimizer.optimize(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), egraph);
-        if(modeStr.equals("egraph")) {
-            optimizer.optimize(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), rules, timeoutint);
-        } else if(modeStr.equals("egraphsym")) {
-            optimizer.optimize(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), rules, symbRules, 20, 5, timeoutint);
-        } else if(modeStr.equals("SA")) {
+        if(modeStr.equals("SA")) {
             int minSymb = cmd.getOptionValue("minSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("minSymbSize")) : 10;
             int maxSymb = cmd.getOptionValue("maxSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("maxSymbSize")) : 30;
             optimizer.optimize_SA(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), rules, longrules, symbRules, symbRulesMonomials, 1, 1, minSymb, maxSymb, timeoutint, useSymb, commutative);
-        } else if(modeStr.equals("BEAM")) {
-            int minSymb = cmd.getOptionValue("minSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("minSymbSize")) : 10;
-            int maxSymb = cmd.getOptionValue("maxSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("maxSymbSize")) : 30;
-            Comparator<EggGen.ConstrainedCircuit> comparator = new Comparator<EggGen.ConstrainedCircuit>() {
-                public int compare(EggGen.ConstrainedCircuit a, EggGen.ConstrainedCircuit b) {
-                    return a.circuit.getTwoQubitsCount() - b.circuit.getTwoQubitsCount();
-                }
-            };
-            optimizer.optimize_BEAM(new EggGen.ConstrainedCircuit(circuit, new EggGen.Permutation(new ArrayList<>())), rules, symbRules, 10, rules.size()/5*4, 1, minSymb, maxSymb, timeoutint, useSymb, comparator, commutative);
         } else if(modeStr.equals("BEAMN")) {
             int minSymb = cmd.getOptionValue("minSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("minSymbSize")) : 10;
             int maxSymb = cmd.getOptionValue("maxSymbSize") != null ? Integer.valueOf(cmd.getOptionValue("maxSymbSize")) : 20;

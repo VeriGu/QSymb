@@ -25,13 +25,14 @@ import java.util.TreeSet;
 
 public class Verifier {
   private static final int TOLERANCE = -8;
-
+  private static final int RANDOM_SAMPLES = 10;
   private Random rand;
   private Map<Integer, boolean[][]> termsMap; // not worth using bitset unless > 8 qubits
   private Map<Integer, List<List<Integer>>> permsMap;
   private int maxQubits;
-  private List<Complex> randomQubitState;
-  private List<Complex> randomQubitState2;
+  private List<List<Complex>> randomQubitStates;
+  private List<List<Complex>> randomQubitStates2;
+
   public Verifier(Random rand, int maxQubits) {
     this.rand = rand;
     this.termsMap = new HashMap<>();
@@ -39,36 +40,46 @@ public class Verifier {
       termsMap.put(i, generateTerms(i));
     }
 
-    this.randomQubitState = new ArrayList<>();
-    double norm = 0.0;
-    for(int i = 0; i < 1 << maxQubits; i++) {
-      double theta1 = rand.nextGaussian();
-      double theta2 = rand.nextGaussian();
-      Complex phase = new Complex(theta1, theta2);
-      norm += theta1 * theta1 + theta2 * theta2;
-      randomQubitState.add(phase);
-    }
-    norm = Math.sqrt(norm);
-    for(int i = 0; i < randomQubitState.size(); i++) {
-      Complex v = randomQubitState.get(i).divide(new Complex(norm));
-      randomQubitState.set(i, v);
-    }
+    this.randomQubitStates = new ArrayList<>();
 
-    this.randomQubitState2 = new ArrayList<>();
-    norm = 0.0;
-    for(int i = 0; i < 1 << maxQubits; i++) {
-      double theta = rand.nextGaussian();
-      double theta2 = rand.nextGaussian();
-      Complex phase = new Complex(theta, theta2);
-      norm += theta * theta + theta2 * theta2;
-      randomQubitState2.add(phase);
+    for(int k = 0; k < RANDOM_SAMPLES; k++) {
+      List<Complex> randomQubitState = new ArrayList<>();
+      double norm = 0.0;
+      for(int i = 0; i < 1 << maxQubits; i++) {
+        double theta1 = rand.nextGaussian();
+        double theta2 = rand.nextGaussian();
+        Complex phase = new Complex(theta1, theta2);
+        norm += theta1 * theta1 + theta2 * theta2;
+        randomQubitState.add(phase);
+      }
+      norm = Math.sqrt(norm);
+      for(int i = 0; i < randomQubitState.size(); i++) {
+        Complex v = randomQubitState.get(i).divide(new Complex(norm));
+        randomQubitState.set(i, v);
+      }
+      this.randomQubitStates.add(randomQubitState);
     }
-    norm = Math.sqrt(norm);
-    for(int i = 0; i < randomQubitState2.size(); i++) {
-      Complex v = randomQubitState2.get(i).divide(new Complex(norm));
-      randomQubitState2.set(i, v);
-    }
+    
 
+    this.randomQubitStates2 = new ArrayList<>();
+    for (int k = 0; k < RANDOM_SAMPLES; k++) {
+      List<Complex> randomQubitState2 = new ArrayList<>();
+      double norm = 0.0;
+      for(int i = 0; i < 1 << maxQubits; i++) {
+        double theta = rand.nextGaussian();
+        double theta2 = rand.nextGaussian();
+        Complex phase = new Complex(theta, theta2);
+        norm += theta * theta + theta2 * theta2;
+        randomQubitState2.add(phase);
+      }
+      norm = Math.sqrt(norm);
+      for(int i = 0; i < randomQubitState2.size(); i++) {
+        Complex v = randomQubitState2.get(i).divide(new Complex(norm));
+        randomQubitState2.set(i, v);
+      }
+      this.randomQubitStates2.add(randomQubitState2);
+    }
+    
     if (maxQubits < 4) {
       this.permsMap = new HashMap<>();
       for (int i = 1; i <= maxQubits; i++) {
@@ -256,44 +267,50 @@ public class Verifier {
 
   public List<SimpleEntry<Integer, List<Integer>>> hashCode(Circuit c, Map<String, Double> symbolMap) {
     ArrayList<SimpleEntry<Integer, List<Integer>>> result = new ArrayList<>();
-
+    System.out.println("Qubit Size" + c.getQubits().size());
     List<Map<String, Integer>> qubitMaps = getQubitMaps(c, termsMap.get(c.getQubits().size()));
     
 
-    ArrayList<List<Double>> evaluatedCircuits = new ArrayList<>();
-    int i = 0;
-    List<Concrete> newcircuit = new ArrayList<>();
     // System.out.println("Random Qubit State:" + randomQubitState2.toString());
     // System.out.println("Random Qubit State1:" + randomQubitState.toString());
-    for(Complex v: randomQubitState2) {
-      Map<String, Integer> qubitMap = qubitMaps.get(i);
-      List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMap, symbolMap, new HashMap<>());
-      List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, termsMap.get(c.getQubits().size()));
-      for(Concrete concrete: groupedCircuit) {
-        Complex phi = concrete.getPhi();
-        Complex newphi = v.multiply(phi);
-        newcircuit.add(new Concrete(newphi, concrete.getF()));
+    List<Double> fingerprints = new ArrayList<>();
+    for(int k = 0; k < RANDOM_SAMPLES; k++) {
+      List<Complex> randomQubitState = randomQubitStates.get(k);
+      List<Complex> randomQubitState2 = randomQubitStates2.get(k);
+      System.out.println("Random Qubit State2:" + randomQubitState2.toString());
+      System.out.println("Random Qubit State1:" + randomQubitState.toString());
+      List<Concrete> newcircuit = new ArrayList<>();
+      //List<List<Concrete>> evaluatedCircuits = new ArrayList<>();
+      for(int i = 0; i < qubitMaps.size(); i++) {
+        Complex v = randomQubitState2.get(i);
+        Map<String, Integer> qubitMap = qubitMaps.get(i);
+        List<Concrete> evaluatedCircuit = evalCircuit(c, qubitMap, symbolMap, new HashMap<>());
+        List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, termsMap.get(c.getQubits().size()));
+        for(int j = 0; j < groupedCircuit.size(); j++) {
+          Complex phi = groupedCircuit.get(j).getPhi();
+          Complex finger = v.conjugate().multiply(phi);
+          newcircuit.add(new Concrete(finger, groupedCircuit.get(j).getF()));
+        }
       }
-      i++;
+      List<Concrete> groupedCircuit = groupTerms(newcircuit, termsMap.get(c.getQubits().size()));
+      System.out.println("Grouped Circuit" + groupedCircuit.toString());
+      Complex squaredmod = new Complex(0.0);
+      for (int j = 0; j < groupedCircuit.size(); j++) {
+        Complex phi = groupedCircuit.get(j).getPhi();
+        Complex finger = randomQubitState.get(j).conjugate().multiply(phi);
+        squaredmod = squaredmod.add(finger);
+      }
+      double finger = Math.rint(squaredmod.abs() / 1e-6) * 1e-6;
+      fingerprints.add(finger);
     }
-    List<Concrete> newgroupedCircuit = groupTerms(newcircuit, termsMap.get(c.getQubits().size()));
-    //System.out.println("Evaluated circuit for hashing: " + newgroupedCircuit.toString());
-    List<Double> mods = new ArrayList<>();
-    Complex squaredmod = new Complex(0.0);
-    for(int j = 0; j < newgroupedCircuit.size(); j++) {
-      Complex phi = newgroupedCircuit.get(j).getPhi();
-      Complex finger = randomQubitState.get(j).conjugate().multiply(phi);
-      squaredmod = squaredmod.add(finger);
-    }
-    double finger = Math.rint(squaredmod.abs() / 1e-6) * 1e-6;
-    if (c.getQasmString().equals("cx q[1], q[0]; x q[1];")) {
-      System.out.println("Circuit added to egraph with fingerprint raw" + finger);
-    }
-    if (c.getQasmString().equals("x q[1]; cx q[1], q[0];")) {
-      System.out.println("Circuit added to egraph with fingerprint raw" + finger);
-    }
-    result.add(new SimpleEntry<>(String.valueOf(finger).hashCode(), new ArrayList<>()));
 
+    if (c.getQasmString().equals(";")) {
+      System.out.println("Circuit added to egraph with fingerprint raw" + fingerprints.toString().hashCode());
+    }
+    if (c.getQasmString().equals("rz(pi/2) q0; sx q0; rz(pi/2) q0;")) {
+      System.out.println("Circuit added to egraph with fingerprint raw" + fingerprints.toString().hashCode());
+    }
+    result.add(new SimpleEntry<>(fingerprints.toString().hashCode(), new ArrayList<>()));
     return result;
   }
 
