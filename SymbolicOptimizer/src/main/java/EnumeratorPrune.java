@@ -33,6 +33,8 @@ import org.apache.commons.math3.analysis.function.Add;
 import org.apache.commons.math3.ml.distance.EarthMoversDistance;
 import org.checkerframework.checker.units.qual.s;
 import org.jgrapht.GraphTests;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ast.BinOp;
 import ast.Expr;
@@ -49,6 +51,7 @@ public class EnumeratorPrune {
   public long chooseTime = 0;
   public long enumerationTime = 0;
   public long filtertime = 0;
+  private static final Logger logger = LoggerFactory.getLogger(EnumeratorPrune.class);
   private static final String[] ANGLES = {"theta1", "theta2", "theta3"};
 //  private static final Expr[] symbAngles = {
 //    new Symbol("theta1"), // nam, rigetti
@@ -300,9 +303,8 @@ public class EnumeratorPrune {
     //egraph.addConstrainedCircuit(eggcc);
 
     previousReps.put(emptyCircuit.getQasmString(), new ConstrainedCircuit(emptyCircuit, new ArrayList<>()));
-    System.out.println("Symbolic Size: " + Symbsize);
     for (int i = 1; i <= Symbsize; i++) {
-      System.out.println("Enumerating size: " + i);
+      logger.debug("Enumerating size: " + i);
       long t1 = System.currentTimeMillis();
       long updateMapTime = 0;
       if (i == 1) {
@@ -321,7 +323,7 @@ public class EnumeratorPrune {
       } else {
         int j = 0;
         for (ConstrainedCircuit c : previousReps.values()) {
-          System.out.println(String.format("Enumerating circuit: %d/%d", j, previousReps.size()));
+          logger.debug(String.format("Enumerating circuit: %d/%d", j, previousReps.size()));
           j++;
           // apply symb
           // if (!c.getCircuit().hasQubitGreaterThan(MAX_QUBITS_SYMB)) {
@@ -365,7 +367,7 @@ public class EnumeratorPrune {
         }
       }
       String sizes = egraph.printSize("CCircuit");
-      System.out.println("Enode size:" + sizes);
+      logger.debug("Enode size:" + sizes);
       long t2 = System.currentTimeMillis();
       this.enumerationTime += (t2 - t1) - updateMapTime;
 
@@ -495,7 +497,6 @@ public class EnumeratorPrune {
 
     //gathering rules for symbolic rules, each class are ccs that are same for some permutation matrix
     //should we also collect mononial rules, or we just collect it altogether
-    System.out.println("Gathering Monomial Symb Rules");
     HashMap<String, List<List<Integer>>> constraintMap = new HashMap<>();
     for(EquivalenceClass ec : symbecs) {
       for (ConstrainedCircuit cc : ec.getCircuits()) {
@@ -648,22 +649,22 @@ public class EnumeratorPrune {
     egraph.pop();
     Map<String, Long> data = egraph.getProfilingData();
     egraph.stopEgglogREPL();
-    System.out.println("Concrete Rule sizes: " + rules.size());
-    System.out.println("Symbolic Rule sizes: " + learned_matrix_constrained.size());
-    System.out.println("Symbolic Rule generation time (s): " + symbtime);
+    logger.info("Concrete Rule sizes: " + rules.size());
+    logger.info("Symbolic Rule sizes: " + learned_matrix_constrained.size());
+    logger.info("Symbolic Rule generation time (s): " + symbtime);
     //System.out.println("Symbolic Rule sizes: " + added.size());
-    System.out.println("E-graph time (ms): " + this.egraphTime);
-    System.out.println("Translation time (ms): " + this.translateTime);
-    System.out.println("Choose rules time (ms): " + this.chooseTime);
-    System.out.println("Enumeration time (ms): " + this.enumerationTime);
-    System.out.println("Filter time (ms): " + this.filtertime);
+    logger.info("E-graph time (ms): " + this.egraphTime);
+    logger.info("Translation time (ms): " + this.translateTime);
+    logger.info("Choose rules time (ms): " + this.chooseTime);
+    logger.info("Enumeration time (ms): " + this.enumerationTime);
+    logger.info("Filter time (ms): " + this.filtertime);
 
-    System.out.print("--------------------------Egraph Break Down-----------------\n");
-    System.out.println("Add Circuit Time (ms):" + data.get("addNewCircuitTime") / 1000000);
-    System.out.println("Esat Time (ms):" + data.get("equalitySaturationTime") / 1000000);
-    System.out.println("Print function Time (ms):" + data.get("printFunctionTime") / 1000000);
-    System.out.println("add Rewrit Rule Time (ms):" + data.get("addRewriteRuleTime") / 1000000);
-    System.out.println("Check equality time (ms): " + data.get("checkEqualityTime") / 1000000);
+    logger.info("--------------------------Egraph Break Down-----------------");
+    logger.info("Add Circuit Time (ms):" + data.get("addNewCircuitTime") / 1000000);
+    logger.info("Esat Time (ms):" + data.get("equalitySaturationTime") / 1000000);
+    logger.info("Print function Time (ms):" + data.get("printFunctionTime") / 1000000);
+    logger.info("add Rewrit Rule Time (ms):" + data.get("addRewriteRuleTime") / 1000000);
+    logger.info("Check equality time (ms): " + data.get("checkEqualityTime") / 1000000);
   }
 
 
@@ -1582,7 +1583,7 @@ public class EnumeratorPrune {
                             new Symbol("theta1"),
                             new Symbol("theta2"),
                             new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2")),
-                            new BinOp(Op.DIV, new Symbol("pi"), new Real(2))
+                            //new BinOp(Op.DIV, new Symbol("pi"), new Real(2))
                     };
             enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset, genSymb);
             break;

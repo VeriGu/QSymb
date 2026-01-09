@@ -20,19 +20,20 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
 import ast.Expr;
 
-
 public class EggGen {
-
     private final StringBuilder content = new StringBuilder();
     public final Set<String> rules = new HashSet<>();
     public final Set<String> optrules = new HashSet<>();
     private final Set<String> canonicalRules = new HashSet<>();
+    private static final Logger logger = LoggerFactory.getLogger(EnumeratorPrune.class);
     private Integer numCircuits;
     
 
@@ -176,8 +177,7 @@ public class EggGen {
         // content.append("(union (BinOp (MULT) (Symbol \"pi\") (Real 2.0)) (Real 6.283185307179586476))\n");
         // content.append("(union (BinOp (MULT) (Symbol \"pi\") (Real 4.0)) (Real 12.56637061435917295))\n");
         // content.append("(union (BinOp (MULT) (Symbol \"pi\") (Real 8.0)) (Real 25.13274122871834591))\n");
-        System.out.println(content.toString());
-        
+        logger.debug(content.toString());
         try {
             startEgglogREPL();
         } catch (IOException e) {
@@ -185,7 +185,7 @@ public class EggGen {
             System.exit(0);
         }
         String output = sendCommand(content.toString());
-        System.out.println(output);
+        logger.debug(output);
     }
 
     public ConstrainedCircuit extract(String name) {
@@ -252,7 +252,7 @@ public class EggGen {
         printWriter.println(command);
         printWriter.flush();
         if (processInput == null || processOutput == null) {
-            System.out.println("REPL not started. Call startEgglogREPL() first.");
+            logger.error("REPL not started. Call startEgglogREPL() first.");
             return null;
         }
         
@@ -400,14 +400,13 @@ public class EggGen {
         String line;
         
         try {
-        while ((line = processError.readLine()) != null) {
-            error.append(line).append('\n');
-            System.out.println(line);
-            
-        }
+            while ((line = processError.readLine()) != null) {
+                error.append(line).append('\n');
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        logger.error(error.toString());
         return error.toString();
     }
 
@@ -432,7 +431,7 @@ public class EggGen {
     public boolean check(String predicate) {
         long startTime = System.nanoTime();
         String output = sendCommand(String.format("(check %s)",predicate), true);
-        System.out.println(output);
+        logger.debug(output);
         //System.out.println(predicate);
         if(output.contains("failed")) {
             //System.out.println(output);
@@ -929,7 +928,7 @@ public class EggGen {
 
     private void addOptRules(String rule) {
         if(!optrules.contains(rule)) {
-            System.out.println("Adding optimization rule: " + rule);
+            logger.info("Adding optimization rule: " + rule);
             optrules.add(rule);
         }
     };
@@ -1144,7 +1143,7 @@ public class EggGen {
 
     public String printSize(String name) {
         String output = sendCommand(String.format("(print-size %s)", name));
-        System.out.println(output);
+        logger.debug("print-size:" + output);
         int lastNewline = output.lastIndexOf('\n');
         if(lastNewline > 0) {
             output = output.substring(0, lastNewline).trim();
