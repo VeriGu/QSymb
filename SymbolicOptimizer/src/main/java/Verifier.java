@@ -267,18 +267,11 @@ public class Verifier {
 
   public List<SimpleEntry<Integer, List<Integer>>> hashCode(Circuit c, Map<String, Double> symbolMap) {
     ArrayList<SimpleEntry<Integer, List<Integer>>> result = new ArrayList<>();
-    System.out.println("Qubit Size" + c.getQubits().size());
     List<Map<String, Integer>> qubitMaps = getQubitMaps(c, termsMap.get(c.getQubits().size()));
-    
-
-    // System.out.println("Random Qubit State:" + randomQubitState2.toString());
-    // System.out.println("Random Qubit State1:" + randomQubitState.toString());
     List<Double> fingerprints = new ArrayList<>();
     for(int k = 0; k < RANDOM_SAMPLES; k++) {
       List<Complex> randomQubitState = randomQubitStates.get(k);
       List<Complex> randomQubitState2 = randomQubitStates2.get(k);
-      System.out.println("Random Qubit State2:" + randomQubitState2.toString());
-      System.out.println("Random Qubit State1:" + randomQubitState.toString());
       List<Concrete> newcircuit = new ArrayList<>();
       //List<List<Concrete>> evaluatedCircuits = new ArrayList<>();
       for(int i = 0; i < qubitMaps.size(); i++) {
@@ -293,7 +286,6 @@ public class Verifier {
         }
       }
       List<Concrete> groupedCircuit = groupTerms(newcircuit, termsMap.get(c.getQubits().size()));
-      System.out.println("Grouped Circuit" + groupedCircuit.toString());
       Complex squaredmod = new Complex(0.0);
       for (int j = 0; j < groupedCircuit.size(); j++) {
         Complex phi = groupedCircuit.get(j).getPhi();
@@ -304,12 +296,12 @@ public class Verifier {
       fingerprints.add(finger);
     }
 
-    if (c.getQasmString().equals(";")) {
-      System.out.println("Circuit added to egraph with fingerprint raw" + fingerprints.toString().hashCode());
-    }
-    if (c.getQasmString().equals("rz(pi/2) q0; sx q0; rz(pi/2) q0;")) {
-      System.out.println("Circuit added to egraph with fingerprint raw" + fingerprints.toString().hashCode());
-    }
+    // if (c.getQasmString().equals(";")) {
+    //   System.out.println("Circuit added to egraph with fingerprint raw" + fingerprints.toString().hashCode());
+    // }
+    // if (c.getQasmString().equals("rz(pi/2) q0; sx q0; rz(pi/2) q0;")) {
+    //   System.out.println("Circuit added to egraph with fingerprint raw" + fingerprints.toString().hashCode());
+    // }
     result.add(new SimpleEntry<>(fingerprints.toString().hashCode(), new ArrayList<>()));
     return result;
   }
