@@ -1580,10 +1580,10 @@ public class EnumeratorPrune {
         case "ibmnew": {
                     String[] gates = {"cx", "rz", "x", "sx"};
                     Expr[] symbAngles = {
-                            new Symbol("theta1"),
-                            new Symbol("theta2"),
-                            new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2")),
-                            //new BinOp(Op.DIV, new Symbol("pi"), new Real(2))
+                            //new Symbol("theta1"),
+                            //new Symbol("theta2"),
+                            //new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2")),
+                            new BinOp(Op.DIV, new Symbol("pi"), new Real(2))
                     };
             enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset, genSymb);
             break;

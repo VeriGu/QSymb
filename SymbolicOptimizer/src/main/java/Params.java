@@ -38,7 +38,7 @@ public class Params {
     /**
      * use size increasing nonsymb rules
      */
-    public static boolean USE_SIZE_INCREASING_RULES = false;
+    public static boolean USE_SIZE_INCREASING_RULES = true;
     /**
      * preserve connectivity of input circuit (preserve mapping)
      */

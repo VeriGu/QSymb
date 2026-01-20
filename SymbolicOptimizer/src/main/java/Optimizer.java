@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import ast.*;
+
+
 import java.util.concurrent.*;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -2606,6 +2608,56 @@ public class Optimizer {
         return distribution.length - 1;
     }
 
+     private boolean validRule(String pattern,
+                              String replace,
+                              CircuitDAG patternDag,
+                              CircuitDAG replaceDag,
+                              boolean removeSizePreservingRules,
+                              int maxRuleQubits) {
+        if (removeSizePreservingRules) {
+            if (StringUtils.countMatches(pattern, ";") == StringUtils.countMatches(replace, ";")) {
+                return false;
+            }
+        }
+
+        if (pattern.contains("+") || pattern.contains("-")) {
+            return false;
+        }
+
+        Set<String> patternQubits = patternDag.getQubits();
+
+        if (maxRuleQubits != -1 && patternQubits.size() > maxRuleQubits) {
+            return false;
+        }
+
+        if (replace.contains("theta1") && !pattern.contains("theta1")) {
+            return false;
+        }
+        if (replace.contains("theta2") && !pattern.contains("theta2")) {
+            return false;
+        }
+        if (replace.contains("theta3") && !pattern.contains("theta3")) {
+            return false;
+        }
+        if (replace.contains("theta4") && !pattern.contains("theta4")) {
+            return false;
+        }
+
+        if (!GraphTests.isConnected(patternDag.getDag())) {
+            return false;
+        }
+
+        Set<String> replaceQubits = replaceDag.getQubits();
+        if (!patternQubits.containsAll(replaceQubits)) {
+            return false;
+        }
+
+        if (patternDag.getDagHash() == replaceDag.getDagHash()) {
+            return false;
+        }
+
+        return true;
+    }
 
     public List<String> filterValidRules(List<String> rules) {
         List<String> validRules = new ArrayList<>();
@@ -2615,44 +2667,17 @@ public class Optimizer {
             String replace = splitRule[0];
             CircuitDAG patternDag = QASMToDAGVisitor.parse(pattern);
             CircuitDAG replaceDag = QASMToDAGVisitor.parse(replace);
-            if (pattern.contains("+") || pattern.contains("-")) {
-                continue;
-            }
-            
-            if(patternDag.getDagHash() == replaceDag.getDagHash()) {
-                continue;
+            if (validRule(splitRule[1], splitRule[0], patternDag, replaceDag, Params.REMOVE_SIZE_PRESERVING_RULES, Params.MAX_RULE_QUBITS)) {
+                validRules.add(rule);
             }
 
-            if(!GraphTests.isConnected(patternDag.getDAG())) {
-                continue;
+            if (Params.USE_SIZE_INCREASING_RULES) {
+                if (StringUtils.countMatches(splitRule[0], ";") < StringUtils.countMatches(splitRule[1], ";")) {
+                    if (validRule(splitRule[0], splitRule[1], replaceDag, patternDag, !Params.USE_SIZE_PRESERVE_RULE_REFLECTION, Params.MAX_RULE_QUBITS)) {
+                        validRules.add(splitRule[1] + " | " + splitRule[0]);
+                    }
+                }
             }
-
-            if(replace.contains("theta1") && !pattern.contains("theta1")) {
-                continue;
-            }
-            if(replace.contains("theta2") && !pattern.contains("theta2")) {
-                continue;
-            }
-            if(replace.contains("theta3") && !pattern.contains("theta3")) {
-                continue;
-            }
-            if(replace.contains("theta4") && !pattern.contains("theta4")) {
-                continue;
-            }
-
-            Set<String> replaceQubits = replaceDag.getQubits();
-            Set<String> patternQubits = patternDag.getQubits();
-            if(!patternQubits.containsAll(replaceQubits)) {
-                continue;
-            }
-
-            validRules.add(rule);
-
-            // if (StringUtils.countMatches(splitRule[0], ";") == StringUtils.countMatches(splitRule[1], ";")) {
-            //     if (GraphTests.isConnected(lhs.getDAG())) {
-            //         validRules.add(splitRule[1] + " | " + splitRule[0]);
-            //     }
-            // }
         }
 
         return validRules;
@@ -2879,7 +2904,6 @@ public class Optimizer {
             boolean concreteruleApplied = false;
             for(String rule: rulesToUse) {
                 String[] splitRule = rule.split(" \\| ");
-                //System.out.println("Rule: " + rule);
                 CircuitDAG candidate = applyRule(c, QASMToDAGVisitor.parse(splitRule[1]), splitRule[0], false, rand);
                 if(candidate != c) {
                     //System.out.println("Apply Rule: " + rule);
@@ -3030,6 +3054,7 @@ public class Optimizer {
         List<Rule> sizeDecreasingRules = new ArrayList<>();
         List<Rule> sizePreservingRules = new ArrayList<>();
         List<Rule> sizeIncreasingRules = new ArrayList<>();
+        int k = 1; //exploration parameter
         for(Rule rule: parsedRules) {
             int lhssize = rule.lhs.gates.size();
             int rhssize = rule.rhs.gates.size();
@@ -3063,23 +3088,16 @@ public class Optimizer {
         System.out.println("Size increasing rules: " + sizeIncreasingRules.size());
         System.out.println("Size preserving rules: " + sizePreservingRules.size());
         System.out.println("Size decreasing rules: " + sizeDecreasingRules.size());
+        System.out.println("Filtering Valid Long Rules.txt");
         List<String> validLongRules = filterValidRules(longrules);
-        try {
-        FileWriter fileWriter = new FileWriter("validLongRules.txt");
-        for(String rule: validLongRules) {
-                fileWriter.write(rule + "\n");
-        }
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        System.out.println("Filtering Valid Symbolic Rules");
         List<MononialRule> validMonomialRules = filterValidMonomialRules(symbMonomialRules);
         List<MatrixConstrainedRule> validMatrixRules = filterValidMatrixRules(symbRules);
         //System.out.println("circuit: " + circuit.circuit.toQASM());
-        int sizeIncreasingRuleslimit = 17;
-        int sizePreservingRuleslimit = 26;
-        int sizeDecreasingRuleslimit = 21;
-        int egg_rule_limit = Integer.min(rules.size(), 25);
+        int sizeIncreasingRuleslimit = 0;
+        int sizePreservingRuleslimit = 64;
+        int sizeDecreasingRuleslimit = 71;
         
        //EggGen.Circuit instantiatedCircuit = circuit.circuit.instantiate(new HashMap<>());
        //EggGen.ConstrainedCircuit instantiatedCircuitC = new EggGen.ConstrainedCircuit(instantiatedCircuit, new EggGen.Permutation(new ArrayList<>()));
@@ -3108,7 +3126,9 @@ public class Optimizer {
         PriorityQueue<CircuitDAG> q = new PriorityQueue<>(circuitComparator);
         q.add(optimized);
         SymbolicThread symbolicThread = null;
+        int EGRAPH_MAX_DEPTH = 12;
         while(!q.isEmpty()) {
+            System.out.println("Current Depth:" + k);
             egraph.push();
             egraph.clearRules();
             if(circuitComparator.compare(q.peek(), bestOptimized) <= 0) {
@@ -3121,7 +3141,7 @@ public class Optimizer {
             //System.out.println("Current Circuit: " + c.toQASM());
             if(q.size() > Params.QUEUE_SIZE+2) {
                 PriorityQueue<CircuitDAG> newQ = new PriorityQueue<>(new CircuitComparator(Params.OPTIMIZATION_OBJECTIVE));
-                while(newQ.size() != Params.QUEUE_SIZE) {
+                while(newQ.size() != Params.QUEUE_SIZE+2) {
                     newQ.add(q.poll());
                 }
                 q = newQ;
@@ -3129,38 +3149,57 @@ public class Optimizer {
             // choose egraph_rule_limit different rules from rules
             List<String> rulesToUse = new ArrayList<>();
             
-            if(Params.PRUNE_TEMPERATURE == 0) {
-                while(rulesToUse.size() < Integer.min(rule_limit, validLongRules.size())) {
+            // if(Params.PRUNE_TEMPERATURE == 0) {
+            //     while(rulesToUse.size() < Integer.min(rule_limit, validLongRules.size())) {
+            //         int index = random.nextInt(validLongRules.size());
+            //         String rule = validLongRules.get(index);
+            //         if(!rulesToUse.contains(rule)) {
+            //             rulesToUse.add(rule);
+            //         }
+            //     }
+            // } else {
+            //     CircuitDAG bestOptimizedCopy = new CircuitDAG(bestOptimized);
+            //     Map<String, Integer> rewriteRulesApplied = new HashMap<>(rewriteRulesUsed);
+            //     List<Integer> weights = validLongRules.stream().map(r -> scoreRule(r, bestOptimizedCopy.countRulesApplied(r), rewriteRulesApplied.getOrDefault(r, 0))).collect(Collectors.toList());
+            //     while(rulesToUse.size() < Integer.min(rule_limit, validLongRules.size())) {
+            //         int index = sampleSoftMax(weights, Params.TEMPERATURE, random);
+            //         String rule = validLongRules.get(index);
+            //         if(!rulesToUse.contains(rule)) {
+            //             rulesToUse.add(rule);
+            //         }
+            //     }
+            // }
+
+            boolean randomRuleApplied = false;
+            CircuitDAG glob_candidate = c;
+            for(int i = 0;i < k; i++) {
+                while(true) {
                     int index = random.nextInt(validLongRules.size());
                     String rule = validLongRules.get(index);
-                    if(!rulesToUse.contains(rule)) {
-                        rulesToUse.add(rule);
+                    String[] splitRule = rule.split(" \\| ");
+                    if(StringUtils.countMatches(splitRule[0], ";") > StringUtils.countMatches(splitRule[1], ";")) {
+                        if(random.nextDouble() < 0.95) {
+                            continue;
+                        }
                     }
-                }
-            } else {
-                CircuitDAG bestOptimizedCopy = new CircuitDAG(bestOptimized);
-                Map<String, Integer> rewriteRulesApplied = new HashMap<>(rewriteRulesUsed);
-                List<Integer> weights = validLongRules.stream().map(r -> scoreRule(r, bestOptimizedCopy.countRulesApplied(r), rewriteRulesApplied.getOrDefault(r, 0))).collect(Collectors.toList());
-                while(rulesToUse.size() < Integer.min(rule_limit, validLongRules.size())) {
-                    int index = sampleSoftMax(weights, Params.TEMPERATURE, random);
-                    String rule = validLongRules.get(index);
-                    if(!rulesToUse.contains(rule)) {
-                        rulesToUse.add(rule);
+                    CircuitDAG candidate = applyRule(glob_candidate, QASMToDAGVisitor.parse(splitRule[1]), splitRule[0], false, random);
+                    if(candidate != glob_candidate) {
+                        System.out.println("Apply LONG Rule: " + rule);
+                        List<String> rulesApplied = new ArrayList<>(c.getRulesApplied());
+                        rulesApplied.add(rule);
+                        candidate.setRulesApplied(rulesApplied);
+                        rewriteRulesUsed.put(rule, rewriteRulesUsed.getOrDefault(rule, 0) + 1);
+                        randomRuleApplied = true;
+                        glob_candidate = candidate;
+                        q.add(candidate);
+                        break;
                     }
                 }
             }
+
             
-            
-            String name = egraph.addCircuit(QASMAstBuilder.parse(c.toQASM()));
-            for(String rule: rulesToUse) {
-                String[] splitRule = rule.split(" \\| ");
-                EggGen.Circuit lhs = QASMAstBuilder.parse(splitRule[0]);
-                EggGen.Circuit rhs = QASMAstBuilder.parse(splitRule[1]);
-                Map<String, String> qubitMap = new HashMap<>();
-                String eggrule2 = String.format("%s|%s|rewrite", EggGen.circuitToGeneralizedOnlyRemoveQ(rhs, "c"), EggGen.circuitToGeneralizedOnlyRemoveQ(lhs,"c"));
-                //first derive cross wire commutations
-                //List<String> copySizePreservingRules = new ArrayList<>(sizePreservingRules);
-                //System.out.println("Adding size preserving rule: " + copyRules.size());
+            if(randomRuleApplied) {
+                String name = egraph.addCircuit(QASMAstBuilder.parse(glob_candidate.toQASM()));
                 List<Integer> addedRules = new ArrayList<>();
                 while(addedRules.size() < sizePreservingRuleslimit) {
                     int index = random.nextInt(sizePreservingRules.size());
@@ -3173,7 +3212,6 @@ public class Optimizer {
                     }
                 }
                 
-
                 addedRules = new ArrayList<>();
                 while(addedRules.size() < sizeIncreasingRuleslimit) {
                     //System.out.println("Adding size increasing rule: " + copyRules.size());
@@ -3200,48 +3238,23 @@ public class Optimizer {
                     }
                 }
 
-                //egraph.addRewritev2(eggrule2, "wire");
-                // egraph.runN("wire", 10);
-                // egraph.runN("opt2", 15);
-                //egraph.runBackoff("wire", 15);
-                EggGen.Circuit candidate = null;
                 int i = 0;
-                //egraph.runN("wire", 1);
-                while(i < 9) {
+                while(i < Math.min(EGRAPH_MAX_DEPTH,k)) {
                     i++;
                     egraph.runSaturation("const");
-                
                     egraph.runN("opt1", 1);
-                    //graph.runN("wire", 1);
-                    //egraph.runN("opt2", 1);
-                    candidate = egraph.extractCircuit(name);
-                    CircuitDAG candidateDAG = QASMToDAGVisitor.parse(candidate.toQASM());
-                    //System.out.println("Candidate: " + candidateDAG.toQASM());
-                    //System.out.println("Candidate EGG String: " + candidate.toEggString());
-                    if(!candidateDAG.toQASM().equals(c.toQASM())) {
-                        q.add(candidateDAG);
-                        break;
-                    }
+                    EggGen.Circuit candidate = egraph.extractCircuit(name);
+                    //CircuitDAG candidateDAG = QASMToDAGVisitor.parse(candidate.toQASM());
+                    // if(!candidateDAG.toQASM().equals(glob_candidate.toQASM())) {
+                    //     q.add(candidateDAG);
+                    // } 
                 }
-               
+                EggGen.Circuit candidate = egraph.extractCircuit(name);
                 CircuitDAG candidateDAG = QASMToDAGVisitor.parse(candidate.toQASM());
-                System.out.println("Candidate Total Gates: " + candidate.gates.size());
-                System.out.println("Candidate 2q Gates: " + candidate.getTwoQubitsCount());
-                if(circuitComparator.compare(candidateDAG, c) <= 0) {
-                    q.add(candidateDAG);
-                } else {
-                    double acceptP = Math.min(1, Math.exp(-Params.TEMPERATURE * ((double) candidateDAG.cost(Params.OPTIMIZATION_OBJECTIVE) / optimized.cost(Params.OPTIMIZATION_OBJECTIVE))));
-                    if(random.nextDouble() <= acceptP) {
-                        System.out.println("Accept");
-                        System.out.println("From " + optimized.cost(Params.OPTIMIZATION_OBJECTIVE) + " to " + candidateDAG.cost(Params.OPTIMIZATION_OBJECTIVE));
-                        q.add(candidateDAG);
-                        rewriteRulesUsed.put(rule, rewriteRulesUsed.getOrDefault(rule, 0) + 1);
-                    } else {
-                        q.add(c);
-                    }
-                }
-                
+                q.add(candidateDAG);
+                System.out.println("ESAT Candidate Cost: " + candidateDAG.cost(Params.OPTIMIZATION_OBJECTIVE));
             }
+               
             if(useSymb) {
                 c = dequeue(q, Params.TEMPERATURE, Params.OPTIMIZATION_OBJECTIVE, random);
                 System.out.println("Using symbolic rules");
@@ -3261,15 +3274,8 @@ public class Optimizer {
             }
 
             egraph.pop();
-
-            // if(circuitComparator.compare(optimized, bestOptimized) <= 0) {
-            //     bestOptimized = optimized;
-            //     System.out.println("Best Optimized Size:" + bestOptimized.totalGateCount());
-            //     System.out.println("Best Optimized 2q:" + bestOptimized.twoQGateCount());
-            // }
-            
-          
-            //System.out.println("Egraph Rule Reduction 2q:" + egraphRuleReduction2q);
+            k++;
+    
             long endTime = System.nanoTime();
             long duration = endTime - startTime;
             if(duration / 1000000000 > timeout) {
