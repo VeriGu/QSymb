@@ -690,10 +690,10 @@ public class EggGen {
           return new EggGen.CZ(canonicalizeQubit(cz.control, qubitMap), canonicalizeQubit(cz.target, qubitMap));
         }
         if (gate instanceof EggGen.RXX rxx) {
-          return new EggGen.RXX(canonicalizeQubit(rxx.qubit1, qubitMap), canonicalizeQubit(rxx.qubit2, qubitMap), rxx.angle);
+          return new EggGen.RXX(canonicalizeQubit(rxx.qubit1, qubitMap), canonicalizeQubit(rxx.qubit2, qubitMap), replaceSymbol ? replaceSymbolWithVar(rxx.angle) : rxx.angle);
         }
         if (gate instanceof EggGen.MS ms) {
-          return new EggGen.MS(canonicalizeQubit(ms.qubit1, qubitMap), canonicalizeQubit(ms.qubit2, qubitMap), ms.phi1, ms.phi2);
+          return new EggGen.MS(canonicalizeQubit(ms.qubit1, qubitMap), canonicalizeQubit(ms.qubit2, qubitMap), replaceSymbol ? replaceSymbolWithVar(ms.phi1) : ms.phi1, replaceSymbol ? replaceSymbolWithVar(ms.phi2) : ms.phi2);
         }
         if (gate instanceof EggGen.SYMB symb) {
           return new EggGen.SYMB(symb.maxQubits);
@@ -1465,6 +1465,20 @@ public class EggGen {
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new Gate();
         }
+
+        public String gateName() {
+            return "Gate";
+        }
+
+
+        public List<Expr> getParameters() {
+            return new ArrayList<>();
+        }
+
+
+        public List<String> getQubits() {
+            return new ArrayList<>();
+        }
     }
 
     public static class Circuit implements EggExpr {
@@ -1669,6 +1683,18 @@ public class EggGen {
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new X(qubit);
         }
+
+        @Override
+        public String gateName() {
+            return "X";
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
+        }
     }
 
     public static class CX extends Gate {
@@ -1725,6 +1751,19 @@ public class EggGen {
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new CX(control, target);
         }
+
+        @Override
+        public String gateName() {
+            return "CX";
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(control);
+            qubits.add(target);
+            return qubits;
+        }
     }
     
     public static class RZ extends Gate {
@@ -1779,6 +1818,27 @@ public class EggGen {
            return new RZ(qubit, CircuitDAG.eval(angle, angleMap));
         }
 
+
+        @Override
+        public String gateName() {
+            return "RZ";
+        }
+
+
+        @Override
+        public List<Expr> getParameters() {
+            List<Expr> params = new ArrayList<>();
+            params.add(angle);
+            return params;
+        }
+
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
+        }
     }
     
     public static class H extends Gate {
@@ -1827,6 +1887,18 @@ public class EggGen {
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new H(qubit);
         }
+
+        @Override
+        public String gateName() {
+            return "H";
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
+        }
     }
 
     public static class SYMB extends Gate {
@@ -1861,6 +1933,11 @@ public class EggGen {
         @Override
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new SYMB(maxQubits);
+        }
+
+        @Override
+        public String gateName() {
+            return "SYMB";
         }
     }
 
@@ -1910,6 +1987,26 @@ public class EggGen {
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new U1(qubit, CircuitDAG.eval(lambda, angleMap));
         }
+
+        @Override
+        public String gateName() {
+            return "U1";
+        }
+
+
+        @Override
+        public List<Expr> getParameters() {
+            List<Expr> params = new ArrayList<>();
+            params.add(lambda);
+            return params;
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
+        }
     }
 
     public static class U2 extends Gate {
@@ -1958,6 +2055,27 @@ public class EggGen {
         @Override
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new U2(qubit, CircuitDAG.eval(phi, angleMap), CircuitDAG.eval(lambda, angleMap));
+        }
+
+        @Override
+        public String gateName() {
+            return "U2";
+        }
+
+
+        @Override
+        public List<Expr> getParameters() {
+            List<Expr> params = new ArrayList<>();
+            params.add(phi);
+            params.add(lambda);
+            return params;
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
         }
     }
 
@@ -2010,6 +2128,28 @@ public class EggGen {
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new U3(qubit, CircuitDAG.eval(theta, angleMap), CircuitDAG.eval(phi, angleMap), CircuitDAG.eval(lambda, angleMap));
         }
+
+        @Override
+        public String gateName() {
+            return "U3";
+        }
+
+
+        @Override
+        public List<Expr> getParameters() {
+            List<Expr> params = new ArrayList<>();
+            params.add(theta);
+            params.add(phi);
+            params.add(lambda);
+            return params;
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
+        }
     }
 
     public static class RX extends Gate {
@@ -2056,6 +2196,25 @@ public class EggGen {
         @Override
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new RX(qubit, CircuitDAG.eval(angle, angleMap));
+        }
+
+        @Override
+        public String gateName() {
+            return "RX";
+        }
+
+        @Override
+        public List<Expr> getParameters() {
+            List<Expr> params = new ArrayList<>();
+            params.add(angle);
+            return params;
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
         }
     }
 
@@ -2105,6 +2264,19 @@ public class EggGen {
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new CZ(control, target);
         }
+
+        @Override
+        public String gateName() {
+            return "CZ";
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(control);
+            qubits.add(target);
+            return qubits;
+        }
     }
 
     public static class RY extends Gate {
@@ -2151,6 +2323,26 @@ public class EggGen {
                 return String.format("ry(%s) %s;", angle.toString(), qubit);
             }
         }
+
+        @Override
+        public String gateName() {
+            return "RY";
+        }
+
+
+        @Override
+        public List<Expr> getParameters() {
+            List<Expr> params = new ArrayList<>();
+            params.add(angle);
+            return params;
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
+        }
     }
 
     public static class RXX extends Gate {
@@ -2158,14 +2350,26 @@ public class EggGen {
         public final String qubit2;
         public final Expr angle;
         public RXX(String qubit1, String qubit2, Expr angle) { this.qubit1 = qubit1; this.qubit2 = qubit2; this.angle = angle; }
+        @Override
         public String toEggString() { return String.format("(RXX (Q \"%s\") (Q \"%s\") %s)", qubit1, qubit2, angle.toEggString()); }
 
         @Override
         public int getTwoQubitsCount() {
             return 1;
         }
+        
+        @Override
+        public String gateName() {
+            return "RXX";
+        }
 
         @Override
+        public List<Expr> getParameters() {
+            List<Expr> params = new ArrayList<>();
+            params.add(angle);
+            return params;
+        }
+
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
             String qubit1Var = qubitMap.computeIfAbsent(qubit1, q -> "q" + qubitMap.size());
             String qubit2Var = qubitMap.computeIfAbsent(qubit2, q -> "q" + qubitMap.size());
@@ -2199,6 +2403,14 @@ public class EggGen {
         @Override
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new RXX(qubit1, qubit2, CircuitDAG.eval(angle, angleMap));
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit1);
+            qubits.add(qubit2);
+            return qubits;
         }
     }
 
@@ -2248,6 +2460,26 @@ public class EggGen {
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new GPI(qubit, CircuitDAG.eval(phi, angleMap));
         }
+
+
+        @Override
+        public String gateName() {
+            return "GPI";
+        }
+
+        @Override
+        public List<Expr> getParameters() {
+            List<Expr> params = new ArrayList<>();
+            params.add(phi);
+            return params;
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
+        }
     }
 
     public static class GPI2 extends Gate {
@@ -2294,6 +2526,26 @@ public class EggGen {
         @Override
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new GPI2(qubit, CircuitDAG.eval(phi, angleMap));
+        }
+
+        @Override
+        public String gateName() {
+            return "GPI2";
+        }
+
+
+        @Override
+        public List<Expr> getParameters() {
+            List<Expr> params = new ArrayList<>();
+            params.add(phi);
+            return params;
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
         }
     }
 
@@ -2342,6 +2594,25 @@ public class EggGen {
         @Override
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new VZ(qubit, CircuitDAG.eval(theta, angleMap));
+        }
+
+        @Override
+        public String gateName() {
+            return "VZ";
+        }
+
+        @Override
+        public List<Expr> getParameters() {
+            List<Expr> params = new ArrayList<>();
+            params.add(theta);
+            return params;
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
         }
     }
 
@@ -2395,6 +2666,30 @@ public class EggGen {
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new MS(qubit1, qubit2, CircuitDAG.eval(phi1, angleMap), CircuitDAG.eval(phi2, angleMap));
         }
+
+
+        @Override
+        public String gateName() {
+            return "MS";
+        }
+
+
+        @Override
+        public List<Expr> getParameters() {
+            List<Expr> params = new ArrayList<>();
+            params.add(phi1);
+            params.add(phi2);
+            return params;
+        }
+
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit1);
+            qubits.add(qubit2);
+            return qubits;
+        }
     }
 
     public static class SX extends Gate {
@@ -2436,6 +2731,18 @@ public class EggGen {
         @Override
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new SX(qubit);
+        }
+
+        @Override
+        public String gateName() {
+            return "SX";
+        }
+
+        @Override
+        public List<String> getQubits() {
+            List<String> qubits = new ArrayList<>();
+            qubits.add(qubit);
+            return qubits;
         }
     }
 }

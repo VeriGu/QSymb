@@ -33,6 +33,10 @@ public class MatrixConstrainedRule {
         return constraint;
     }
 
+    public String getType() {
+        return type;
+    }
+
     public void setConstraint(List<SymbolicSolve.SparseMatrix> constraint) {
         this.constraint = constraint;
     }

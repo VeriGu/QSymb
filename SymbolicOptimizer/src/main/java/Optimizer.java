@@ -714,7 +714,7 @@ public class Optimizer {
         //CircuitDAG dag = QASMToDAGVisitor.parse(circuit.toQASM());
         Map<String, Expr> angleMap = new HashMap<>();
         rule = rule.replaceAll("\\bc\\b", "(Nil)");
-        rule = rule.replaceAll("q\\d+", "(Q \"$0\")");
+        //rule = rule.replaceAll("q\\d+", "(Q \"$0\")");
         rule = rule.replaceAll("theta1|theta2|theta3", "(Symbol \"$0\")");
         // System.out.println("Rule: " + rule);
         EggGen.Circuit symblhs = EggAstBuilder.parseCircuit(rule);
@@ -763,7 +763,7 @@ public class Optimizer {
         }
         // System.out.println("Reverse Map: " + reverseMap.toString());
         rhs = rhs.replaceAll("\\bc\\b", "(Nil)");
-        rhs = rhs.replaceAll("q\\d+", "(Q \"$0\")");
+        //rhs = rhs.replaceAll("q\\d+", "(Q \"$0\")");
         rhs = rhs.replaceAll("theta1|theta2|theta3", "(Symbol \"$0\")");
         EggGen.Circuit symbrhs = EggAstBuilder.parseCircuit(rhs);
         EggGen.Circuit symbrhsCan = EggGen.canonicalizeCircuit(symbrhs, reverseMap);
@@ -815,13 +815,15 @@ public class Optimizer {
         if(matcher.find()) {
             String matched = matcher.group();
             removedSymb = rule.replace(matched, "(Nil)");
-            removedSymb = removedSymb.replaceAll("q\\d+", "(Q \"$0\")");
+            //removedSymb = removedSymb.replaceAll("q\\d+", "(Q \"$0\")");
             removedSymb = removedSymb.replaceAll("theta1|theta2|theta3", "(Symbol \"$0\")");
+            System.out.println("Removed LHS: " + removedSymb);
             EggGen.Circuit symblhs = EggAstBuilder.parseCircuit(removedSymb);
             EggGen.ConstrainedCircuit constrainedSymblhs = new EggGen.ConstrainedCircuit(symblhs, new EggGen.Permutation(new ArrayList<>()));
+            System.out.println("Symbolic LHS QASM: " + constrainedSymblhs.circuit.toQASM());
             CircuitDAG symbdag = QASMToDAGVisitor.parse(constrainedSymblhs.circuit.toQASM());
             if (!GraphTests.isConnected(symbdag.getDAG())) {
-                //System.out.println("Symbolic LHS is not connected");
+                System.out.println("Symbolic LHS is not connected");
                 return null;
             }
             Map<String, String> qubitMap = new HashMap<>();
@@ -829,7 +831,7 @@ public class Optimizer {
             //System.out.println("LHS DAG: " + symbdag.toQASM());
             List<Node> matchedNodes = matchBefore(dag, symbdag, angleMap, Params.MAX_QUBITS_SYMB, minSymbSize, maxSymbSize, null, basis, qubitMap, reverseMap, false);
             if(matchedNodes == null) {
-                //System.out.println("No Match Before found");
+                System.out.println("No Match Before found");
                 return null;
             }
             //System.out.println("Reverse Map: " + reverseMap.toString());
@@ -842,7 +844,8 @@ public class Optimizer {
                 removedRhs = matcher2.group(1).trim();
             }
             removedRhs = removedRhs.replaceAll("\\bc\\b", "(Nil)");
-            removedRhs = removedRhs.replaceAll("q\\d+", "(Q \"$0\")"); 
+            System.out.println("Removed RHS before replacing angles: " + removedRhs);
+            //removedRhs = removedRhs.replaceAll("q\\d+", "(Q \"$0\")"); 
             Map<String, String> premap = new HashMap<>();
             premap.put("theta1+theta2", "(BinOp (PLUS) theta1 theta2)");
             for(String angle: angleMap.keySet()) {
@@ -887,7 +890,7 @@ public class Optimizer {
                 removedSymb = matcher2.group(1).trim();
             }
             removedSymb = removedSymb.replaceAll("\\bc\\b", "(Nil)");
-            removedSymb = removedSymb.replaceAll("q\\d+", "(Q \"$0\")");
+            //removedSymb = removedSymb.replaceAll("q\\d+", "(Q \"$0\")");
             removedSymb = removedSymb.replaceAll("theta1|theta2|theta3", "(Symbol \"$0\")");
             //System.out.println("Removed LHS: " + removedSymb);
             EggGen.Circuit symblhs = EggAstBuilder.parseCircuit(removedSymb);
@@ -915,7 +918,7 @@ public class Optimizer {
             if (matcher.find()) {
                 String matched = matcher.group();
                 removedRhs = rhs.replace(matched, "(Nil)");
-                removedRhs = removedRhs.replaceAll("q\\d+", "(Q \"$0\")"); 
+                //removedRhs = removedRhs.replaceAll("q\\d+", "(Q \"$0\")");
                 //removedRhs = removedRhs.replaceAll("theta1|theta2|theta3", "(Symbol \"$0\")");
             }
 
@@ -2188,6 +2191,7 @@ public class Optimizer {
                             continue;
                         }
                     }
+                    System.out.println("Matched the root node: " + node.getId());
                     // System.out.println("Angle Map:" + angleMap);
                     // System.out.println("matched node: " + node.getId());
                     for(int j = 0; j < node.getQubits().size(); j++) {
@@ -2286,6 +2290,8 @@ public class Optimizer {
 
                         continue;
                     }
+
+                    System.out.println("grow symbolic circuit");
                     //start to grow symbolic circuit
                     Set<String> blockQubits = new HashSet<>();
                     Set<String> trackedQubits = new HashSet<>();
@@ -2306,11 +2312,12 @@ public class Optimizer {
                         }
                         List<Node> layerJ = layers.get(j);
                         for(Node circN: layerJ) {
-                            //System.out.println("Checking node: " + circN.getId());
+                            System.out.println("Checking node: " + circN.getId());
                             if(!circN.isGate()) {
                                 Circuit symbCirc = opsToCircuit(symb);
                                 EggGen.ConstrainedCircuit symbCircConst = CircuitTranslator.translate(symbCirc);
                                 if(symbCirc.getUsedQubits().size() <= maxSymbQubits && symb.size() >= minSymbSize) {
+                                    System.out.println("Symb: " + symb.toString());
                                     //check for constraints
                                     //canonicalize the circuit based on qubit map
                                     if(isMono) {
