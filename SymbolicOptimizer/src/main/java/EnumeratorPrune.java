@@ -627,7 +627,7 @@ public class EnumeratorPrune {
       rejectedByQubitCount += rejQubit.get();
       rejectedByEigen += rejEigen.get();
       rejectedByDistinctSymbols += rejSymbols.get();
-      logger.debug("Symb Candidates Size:" + symbenties.size());
+      logger.debug("Symb Candidates Size (completeness pass):" + symbenties.size());
       finalSymbCandidates = symbenties.size();
       // Pairs are (i, j) with j >= i over all eligible representatives, so the
       // count is N*(N+1)/2. Pairs not in the same trace bucket are implicitly
@@ -635,6 +635,23 @@ public class EnumeratorPrune {
       // filter; that's the rejectedByTrace bucket.
       totalSymbPairs = eligibleSymbCircuits * (eligibleSymbCircuits + 1) / 2;
       rejectedByTrace = totalSymbPairs - withinBucketPairs;
+
+      // Priority pass: append Clifford-orbit candidates. For each native 2q
+      // gate L, R = (U_a ⊗ U_b) · L · (U_a ⊗ U_b)† for a small fixed set of
+      // Clifford pairs. R is decomposed into the native gateset. The
+      // intertwiner equation L·S = S·R has guaranteed non-trivial solutions
+      // (Sylvester) -- the existing infer_symb pipeline re-derives the basis
+      // when it processes these pairs. This costs O(|orbit_set|) extra solver
+      // calls and reaches R-circuits whose native size would otherwise
+      // require maxSize >= 5 to enumerate.
+      List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> orbitCandidates =
+          CliffordOrbitCandidates.generateForGateset(gatesetName);
+      if (!orbitCandidates.isEmpty()) {
+        logger.info("Priority pass: adding " + orbitCandidates.size()
+            + " Clifford-orbit candidates for gateset " + gatesetName);
+        symbenties.addAll(orbitCandidates);
+      }
+
       List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> canonicalSymbEntries = canonicalizeSymbEntries(symbenties);
       infer_symb(canonicalSymbEntries, MAX_QUBITS_SYMB);
       Set<String> added = new HashSet<>();
