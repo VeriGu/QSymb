@@ -84,6 +84,12 @@ public class EnumeratorPrune {
   private List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> learned_rules;
   private List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> learned_symbolic_rules;
   private HashSet<MatrixConstrainedRule> learned_matrix_constrained;
+
+  /** Read-only view of the canonical symbolic rules learned by the most recent
+   *  enumerateEqsat or infer_symb call. Used by tests; do not mutate. */
+  public java.util.Set<MatrixConstrainedRule> getLearnedMatrixConstrained() {
+    return java.util.Collections.unmodifiableSet(learned_matrix_constrained);
+  }
   public String filename;
   public String fileSymname;
   public String gatesetName;
