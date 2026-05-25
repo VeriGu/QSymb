@@ -209,31 +209,114 @@ public class SymbolicSolve {
     }
 
 
-    public String solveSymb(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
-        String circuitj1 = circuitToJson(c1.gates, nqubits);
-        String circuitj2 = circuitToJson(c2.gates, nqubits);
-        try {
-            ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", "-solve", circuitj1, circuitj2);
-            Process process = pb.start();
+    // ---- persistent semantics.py server pool ----
+    // Pool of long-lived `python3 semantics.py --server` processes. Each slot
+    // serializes its own request/response so multiple threads in the JVM can
+    // make concurrent solveSymb / checkBig / etc. calls -- one per slot at a
+    // time. Each slot independently restarts itself every SERVER_RESTART_INTERVAL
+    // requests to bound sympy global-state accumulation.
+    private static final int POOL_SIZE = Math.max(1,
+            Integer.parseInt(System.getProperty("semantics.pool.size",
+                    Integer.toString(Math.max(1, Runtime.getRuntime().availableProcessors() / 2)))));
+    private static final int SERVER_RESTART_INTERVAL = 500;
+    private static final java.util.concurrent.BlockingQueue<ServerSlot> pool =
+            new java.util.concurrent.LinkedBlockingQueue<>();
+    private static volatile boolean poolInitialized = false;
+    private static final Object poolInitLock = new Object();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),java.nio.charset.StandardCharsets.UTF_8));
-            StringBuilder content = new StringBuilder();
-            BufferedReader ereader = new BufferedReader(new InputStreamReader(process.getErrorStream(),java.nio.charset.StandardCharsets.UTF_8));
-            String line;
-            while ((line = reader.readLine()) != null) {                                                  
-                content.append(line);
-                content.append("\n");
-            }
-            while ((line = ereader.readLine()) != null) {                                                  
-                System.err.println(line);
-            }
-            process.waitFor();
-            return content.toString();
+    private static final class ServerSlot {
+        final int id;
+        Process proc;
+        java.io.BufferedWriter in;
+        BufferedReader out;
+        int requestCount;
 
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return null;
+        ServerSlot(int id) throws IOException { this.id = id; start(); }
+
+        void start() throws IOException {
+            ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", "--server");
+            pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+            proc = pb.start();
+            in = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                    proc.getOutputStream(), java.nio.charset.StandardCharsets.UTF_8));
+            out = new BufferedReader(new InputStreamReader(
+                    proc.getInputStream(), java.nio.charset.StandardCharsets.UTF_8));
+            requestCount = 0;
         }
+
+        void stop() {
+            try { in.write("SHUTDOWN\n"); in.flush(); } catch (Exception ignored) {}
+            try { proc.waitFor(2, java.util.concurrent.TimeUnit.SECONDS); } catch (Exception ignored) {}
+            if (proc.isAlive()) proc.destroyForcibly();
+            proc = null;
+            in = null;
+            out = null;
+        }
+    }
+
+    private static void initPool() throws IOException {
+        synchronized (poolInitLock) {
+            if (poolInitialized) return;
+            System.err.println("[SEMSERVER] initializing pool of " + POOL_SIZE + " python servers");
+            for (int i = 0; i < POOL_SIZE; i++) {
+                pool.offer(new ServerSlot(i));
+            }
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                for (ServerSlot s : pool) {
+                    try { s.stop(); } catch (Exception ignored) {}
+                }
+            }));
+            poolInitialized = true;
+        }
+    }
+
+    /** Sends one request to a slot from the pool and returns its output.
+     *  Acquires a free slot, sends the request, releases the slot. */
+    private static String runSemantics(String... argv) {
+        ServerSlot slot = null;
+        try {
+            if (!poolInitialized) initPool();
+            slot = pool.take();
+            // Restart if dead or quota reached.
+            if (slot.proc == null || !slot.proc.isAlive()) {
+                System.err.println("[SEMSERVER #" + slot.id + "] starting fresh (was null/dead)");
+                slot.start();
+            } else if (slot.requestCount >= SERVER_RESTART_INTERVAL) {
+                System.err.println("[SEMSERVER #" + slot.id + "] restarting after " + slot.requestCount + " requests");
+                slot.stop();
+                slot.start();
+            }
+            slot.requestCount++;
+            StringBuilder req = new StringBuilder();
+            for (int i = 0; i < argv.length; i++) {
+                if (i > 0) req.append('\t');
+                req.append(java.util.Base64.getEncoder().encodeToString(
+                        argv[i].getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+            }
+            slot.in.write(req.toString());
+            slot.in.write('\n');
+            slot.in.flush();
+            String line = slot.out.readLine();
+            if (line == null) {
+                throw new IOException("semantics.py server #" + slot.id + " closed unexpectedly");
+            }
+            return new String(java.util.Base64.getDecoder().decode(line),
+                    java.nio.charset.StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        } finally {
+            if (slot != null) {
+                try { pool.put(slot); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); }
+            }
+        }
+    }
+
+    public static int getPoolSize() { return POOL_SIZE; }
+
+    public String solveSymb(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
+        return runSemantics("-solve", circuitToJson(c1.gates, nqubits),
+                circuitToJson(c2.gates, nqubits));
     }
 
 
@@ -291,161 +374,94 @@ public class SymbolicSolve {
 
 
     public boolean checkTrace(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
-        String circuitj1 = circuitToJson(c1.gates, nqubits);
-        String circuitj2 = circuitToJson(c2.gates, nqubits);
-        try {
-            ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", "-tracecheck", circuitj1, circuitj2);
-            Process process = pb.start();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),java.nio.charset.StandardCharsets.UTF_8));
-            StringBuilder content = new StringBuilder();
-            BufferedReader ereader = new BufferedReader(new InputStreamReader(process.getErrorStream(),java.nio.charset.StandardCharsets.UTF_8));
-            String line;
-            while ((line = reader.readLine()) != null) {                                                  
-                content.append(line);
-                content.append("\n");
-            }
-            while ((line = ereader.readLine()) != null) {                                                  
-                System.err.println(line);
-            }
-            process.waitFor();
-            return content.toString().contains("True");
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return runSemantics("-tracecheck", circuitToJson(c1.gates, nqubits),
+                circuitToJson(c2.gates, nqubits)).contains("True");
     }
 
 
     public boolean checkEigen(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
-        String circuitj1 = circuitToJson(c1.gates, nqubits);
-        String circuitj2 = circuitToJson(c2.gates, nqubits);
-        try {
-            ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", "-eigencheck", circuitj1, circuitj2);
-            Process process = pb.start();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),java.nio.charset.StandardCharsets.UTF_8));
-            StringBuilder content = new StringBuilder();
-            BufferedReader ereader = new BufferedReader(new InputStreamReader(process.getErrorStream(),java.nio.charset.StandardCharsets.UTF_8));
-            String line;
-            while ((line = reader.readLine()) != null) {                                                  
-                content.append(line);
-                content.append("\n");
-            }
-            while ((line = ereader.readLine()) != null) {                                                  
-                System.err.println(line);
-            }
-            process.waitFor();
-            return content.toString().contains("True");
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return runSemantics("-eigencheck", circuitToJson(c1.gates, nqubits),
+                circuitToJson(c2.gates, nqubits)).contains("True");
     }
 
     public boolean checkBig(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
-        String circuitj1 = circuitToJson(c1.gates, nqubits);
-        String circuitj2 = circuitToJson(c2.gates, nqubits);
-        try {
-            ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", "-bigcheck", circuitj1, circuitj2);
-            Process process = pb.start();
+        return checkBig(c1, c2, nqubits, null, 1);
+    }
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),java.nio.charset.StandardCharsets.UTF_8));
-            StringBuilder content = new StringBuilder();
-            BufferedReader ereader = new BufferedReader(new InputStreamReader(process.getErrorStream(),java.nio.charset.StandardCharsets.UTF_8));
-            String line;
-            while ((line = reader.readLine()) != null) {                                                  
-                content.append(line);
-                content.append("\n");
-            }
-            while ((line = ereader.readLine()) != null) {                                                  
-                System.err.println(line);
-            }
-            process.waitFor();
+    /** True iff L (the intertwiner LHS) has all distinct eigenvalues at a random
+     *  concrete sample. Such cases produce dim(intertwiner) = n -- the smallest
+     *  non-trivial basis (3-torus of unitary middles mod global phase). When the
+     *  caller's enumerator wants only "richer" rules (degenerate eigenvalue
+     *  cases with off-diagonal freedom), it filters these out via this check. */
+    public boolean hasAllDistinctEigen(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
+        return runSemantics("-distincteigen", circuitToJson(c1.gates, nqubits),
+                circuitToJson(c2.gates, nqubits)).contains("True");
+    }
 
-            //System.out.println(content.toString());
-            return content.toString().contains("True");
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return false;
-        }
+    /** Eigenvalue fingerprint string of L (from compute_L_R(c1, c2)) at a random
+     *  concrete sample. Two circuits with identical fingerprints share the same
+     *  eigenvalue multiset at that sample -- so they're plausible intertwiner
+     *  partners. Cheap bucket-key for the filter phase. Pass seed to reproduce. */
+    public String getEigenFingerprint(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits, Long seed) {
+        String[] argv = (seed != null)
+                ? new String[]{"-eigenfp", circuitToJson(c1.gates, nqubits), circuitToJson(c2.gates, nqubits),
+                               "-seed", Long.toString(seed)}
+                : new String[]{"-eigenfp", circuitToJson(c1.gates, nqubits), circuitToJson(c2.gates, nqubits)};
+        return runSemantics(argv).trim();
+    }
+
+    /** Per-circuit eigenvalue fingerprint at a random concrete sample (SYMB
+     *  treated as identity). Same-fingerprint circuits inside a trace bucket
+     *  are unitarily similar -- only those can form intertwiner pairs, so we
+     *  use this for pre-bucketing before O(N^2) pair-wise checkBig. */
+    public String getCircuitEigenFingerprint(List<EggGen.Gate> gates, int nqubits, Long seed) {
+        String[] argv = (seed != null)
+                ? new String[]{"-singleeigenfp", circuitToJson(gates, nqubits),
+                               "-seed", Long.toString(seed)}
+                : new String[]{"-singleeigenfp", circuitToJson(gates, nqubits)};
+        return runSemantics(argv).trim();
+    }
+
+    public boolean checkSymbolicEigen(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
+        return runSemantics("-symbeigencheck", circuitToJson(c1.gates, nqubits),
+                circuitToJson(c2.gates, nqubits)).contains("True");
+    }
+
+    public boolean checkBig(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits, Long seed, int ntraces) {
+        String j1 = circuitToJson(c1.gates, nqubits);
+        String j2 = circuitToJson(c2.gates, nqubits);
+        String content = (seed != null)
+                ? runSemantics("-bigcheck", j1, j2, "-seed", Long.toString(seed),
+                        "-ntraces", Integer.toString(Math.max(1, ntraces)))
+                : runSemantics("-bigcheck", j1, j2);
+        return content.contains("True");
     }
 
 
     public String getTrace(List<EggGen.Gate> gates, int nqubits) {
-        String circuitj1 = circuitToJson(gates, nqubits);
-        try {
-            ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", "-trace", circuitj1);
-            Process process = pb.start();
+        return getTrace(gates, nqubits, null, 1);
+    }
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),java.nio.charset.StandardCharsets.UTF_8));
-            StringBuilder content = new StringBuilder();
-            BufferedReader ereader = new BufferedReader(new InputStreamReader(process.getErrorStream(),java.nio.charset.StandardCharsets.UTF_8));
-            String line;
-            while ((line = reader.readLine()) != null) {                                                  
-                content.append(line);
-            }
-            while ((line = ereader.readLine()) != null) {                                                  
-                System.err.println(line);
-            }
+    public String getTrace(List<EggGen.Gate> gates, int nqubits, Long seed) {
+        return getTrace(gates, nqubits, seed, 1);
+    }
 
-            System.out.println(content.toString());
-            process.waitFor();
-            return content.toString();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public String getTrace(List<EggGen.Gate> gates, int nqubits, Long seed, int ntraces) {
+        String j1 = circuitToJson(gates, nqubits);
+        String content = (seed != null)
+                ? runSemantics("-trace", j1, "-seed", Long.toString(seed),
+                        "-ntraces", Integer.toString(Math.max(1, ntraces)))
+                : runSemantics("-trace", j1);
+        return content.trim();
     }
 
     public String getEigenvalues(List<EggGen.Gate> gates, int nqubits) {
-        String circuitj1 = circuitToJson(gates, nqubits);
-        try {
-            ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", "-eigenvals", circuitj1);
-            Process process = pb.start();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),java.nio.charset.StandardCharsets.UTF_8));
-            StringBuilder content = new StringBuilder();
-            BufferedReader ereader = new BufferedReader(new InputStreamReader(process.getErrorStream(),java.nio.charset.StandardCharsets.UTF_8));
-            String line;
-            while ((line = reader.readLine()) != null) {                                                  
-                content.append(line);
-            }
-            while ((line = ereader.readLine()) != null) {                                                  
-                System.err.println(line);
-            }
-
-            System.out.println(content.toString());
-            process.waitFor();
-            return content.toString();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return runSemantics("-eigenvals", circuitToJson(gates, nqubits)).trim();
     }
 
     public void computeAndPrintMatrix(String jsonCircuit) {
-        try {
-            ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", jsonCircuit);
-            Process process = pb.start();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),java.nio.charset.StandardCharsets.UTF_8));
-            BufferedReader ereader = new BufferedReader(new InputStreamReader(process.getErrorStream(),java.nio.charset.StandardCharsets.UTF_8));
-            System.out.println("Matrix representation:");
-            StringBuilder content = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {                                                  
-                System.out.println(line);
-            }
-            while ((line = ereader.readLine()) != null) {                                                  
-                System.err.println(line);
-            }
-            //System.out.println(content.toString());
-            process.waitFor();
-
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        System.out.println("Matrix representation:");
+        System.out.println(runSemantics(jsonCircuit));
     }
 
     /**

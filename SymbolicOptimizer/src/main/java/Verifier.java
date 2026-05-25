@@ -137,61 +137,82 @@ public class Verifier {
 
 
   public boolean verifyv2(Circuit c1, Circuit c2, Map<String, Double> symbolMap) {
-    // c1 - c2
-    List<Double> thetas = new ArrayList<>();
-    thetas.add(Math.PI);
-    thetas.add(Math.PI / 2);
-    thetas.add(Math.PI / 4);
-    thetas.add(3 * Math.PI / 4);
-    thetas.add(5 * Math.PI / 4);
-    thetas.add(3 * Math.PI / 2);
-    thetas.add(7 * Math.PI / 4);
-    List<Complex> phases = new ArrayList<>();
-    phases.add(Complex.ONE);
-    for (Double theta : thetas) {
-      phases.add(new Complex(Math.cos(theta), Math.sin(theta)));
+    // enumerate qubits over the UNION of c1 and c2 declared qubits so that
+    // gates touching qubits unique to one side actually get evaluated
+    // (otherwise empty-vs-single-gate pairs spuriously pass).
+    java.util.LinkedHashSet<String> qubitSet = new java.util.LinkedHashSet<>(c1.getQubits());
+    qubitSet.addAll(c2.getQubits());
+    List<String> unionQubits = new ArrayList<>(qubitSet);
+
+    boolean[][] terms = termsMap.get(unionQubits.size());
+
+    List<Map<String, Integer>> qubitMaps = new ArrayList<>();
+    for (boolean[] qubitMapping : terms) {
+      HashMap<String, Integer> qubitMap = new HashMap<>();
+      int idx = 0;
+      for (String qubit : unionQubits) {
+        qubitMap.put(qubit, qubitMapping[idx] ? 1 : 0);
+        idx++;
+      }
+      qubitMaps.add(qubitMap);
     }
-    // enumerate qubits
-    boolean[][] terms = termsMap.get(c1.getQubits().size());
-    
 
-    boolean[][] funTerms = c1.getUsedQubits().size() > 0 ? termsMap.get(c1.getUsedQubits().size()) : terms;
-    boolean[][] funTerm2 = c2.getUsedQubits().size() > 0 ? termsMap.get(c2.getUsedQubits().size()) : terms;
-
-    List<Map<String, Integer>> qubitMaps = getQubitMaps(c1, terms);
-
-    for(Map<String, Integer> qubitMap: qubitMaps) {
+    // Collect every (phi1, phi2) amplitude pair across all qubitMaps and
+    // basis-state buckets. A valid equivalence-up-to-global-phase requires a
+    // SINGLE complex constant p with |p|=1 such that phi1 = p * phi2 holds for
+    // every pair (zero/zero pairs are trivially consistent). The previous loop
+    // re-picked a phase per qubitMap, allowing rx(π) and ry(π) to pass even
+    // though their amplitudes differ by +i on |0⟩→|1⟩ and -i on |1⟩→|0⟩.
+    List<Complex[]> phiPairs = new ArrayList<>();
+    for (Map<String, Integer> qubitMap : qubitMaps) {
       List<Concrete> evaluatedCircuit = evalCircuit(c1, qubitMap, symbolMap, new HashMap<>());
       List<Concrete> evaluatedCircuit2 = evalCircuit(c2, qubitMap, symbolMap, new HashMap<>());
       List<Concrete> groupedCircuit = groupTerms(evaluatedCircuit, terms);
       List<Concrete> groupedCircuit2 = groupTerms(evaluatedCircuit2, terms);
-      if(groupedCircuit.size() != groupedCircuit2.size()) {
+      if (groupedCircuit.size() != groupedCircuit2.size()) {
         return false;
       }
-      for(Complex phase: phases) {
-        boolean matched = true;
-        for(int i = 0; i < groupedCircuit.size(); i++) {
-          Concrete cc1 = groupedCircuit.get(i);
-          Concrete cc2 = groupedCircuit2.get(i);
-          Complex phi1 = cc1.getPhi();
-          Complex phi2 = cc2.getPhi();
-          if((phi1.subtract(phi2).abs() < Math.pow(10, TOLERANCE))) {
-            continue;
-          }
-
-          Complex newphi2 = phase.multiply(phi2);
-          if(!(phi1.subtract(newphi2).abs() < Math.pow(10, TOLERANCE))) {
-            matched = false;
-            break;
-          }
-        }
-        if(matched) {
-          return true;
-        }
+      for (int i = 0; i < groupedCircuit.size(); i++) {
+        phiPairs.add(new Complex[]{groupedCircuit.get(i).getPhi(), groupedCircuit2.get(i).getPhi()});
       }
     }
-    return false;
+
+    double tol = Math.pow(10, TOLERANCE);
+
+    // Derive the candidate phase from the pair with the largest |phi2| to
+    // avoid division by a noisy near-zero amplitude.
+    Complex candidate = null;
+    double bestMag = -1;
+    for (Complex[] pp : phiPairs) {
+      double m1 = pp[0].abs();
+      double m2 = pp[1].abs();
+      boolean z1 = m1 < tol;
+      boolean z2 = m2 < tol;
+      if (z1 != z2) return false;          // one side zero, the other not -- no phase fixes that
+      if (z1) continue;                    // both zero -- trivial
+      if (m2 > bestMag) {
+        bestMag = m2;
+        candidate = pp[0].divide(pp[1]);
+      }
+    }
+
+    // All amplitudes zero on both sides -> the circuits agree trivially.
+    if (candidate == null) return true;
+
+    // A real global phase has |p|=1. Reject scale-only matches.
+    if (Math.abs(candidate.abs() - 1.0) >= tol) return false;
+
+    // Verify the candidate phase across every pair.
+    for (Complex[] pp : phiPairs) {
+      Complex phi1 = pp[0];
+      Complex phi2 = pp[1];
+      if (phi1.subtract(candidate.multiply(phi2)).abs() >= tol) {
+        return false;
+      }
+    }
+    return true;
   }
+
 
   public boolean verify(Circuit c, Map<String, Integer> qubitMap, Map<String, Boolean> expectedMap) {
     if (c.getSize() == 0) {

@@ -117,7 +117,11 @@ public class QASMAstBuilder extends QASMBaseVisitor<Object> {
         List<String> qubits = new ArrayList<>();
         for (QASMParser.QubitContext qubitCtx : ctx.qubits().qubit()) {
             if (qubitCtx.ID() != null) {
-                qubits.add(qubitCtx.ID().getText() + qubitCtx.INT_LITERAL().getText());
+                if (qubitCtx.INT_LITERAL() != null) {
+                    qubits.add(qubitCtx.ID().getText() + qubitCtx.INT_LITERAL().getText());
+                } else {
+                    qubits.add(qubitCtx.ID().getText());
+                }
             } else {
                 qubits.add(qubitCtx.QUBIT().getText());
             }
@@ -153,11 +157,24 @@ public class QASMAstBuilder extends QASMBaseVisitor<Object> {
             case "sx":
                 return new EggGen.SX(qubits.get(0));
 
+            case "rxx":
+                return new EggGen.RXX(qubits.get(0), qubits.get(1), params.get(0));
+
+            case "ms":
+                return new EggGen.MS(qubits.get(0), qubits.get(1), params.get(0), params.get(1));
+
+            case "gpi":
+                return new EggGen.GPI(qubits.get(0), params.get(0));
+
+            case "gpi2":
+                return new EggGen.GPI2(qubits.get(0), params.get(0));
+
+            case "vz":
+                return new EggGen.VZ(qubits.get(0), params.get(0));
+
             default:
-                System.err.println("Unsupported gate: " + gateName);
-                break;
+                throw new RuntimeException("Unsupported gate in QASMAstBuilder: " + gateName);
         }
-        return null; // Gate statements don't return a value themselves
     }
 
     @Override

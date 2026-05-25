@@ -124,7 +124,7 @@ public class Node {
         }
 
         result = result.concat(" ");
-        result = result.concat(String.join(",", qubits.stream().map(q -> qubitRenameMap.inverse().getOrDefault(q, "q" + "["+q.replaceAll("q", "")+"]")).collect(Collectors.toList())));
+        result = result.concat(String.join(",", qubits.stream().map(q -> qubitRenameMap.inverse().getOrDefault(q, q.replaceAll("(\\d+)$", "[$1]"))).collect(Collectors.toList())));
 
         return result;
     }

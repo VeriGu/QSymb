@@ -89,7 +89,11 @@ public class QASMToDAGVisitor extends QASMBaseVisitor<Object> {
         List<String> qubits = new ArrayList<>();
         for (QASMParser.QubitContext qubitCtx : ctx.qubits().qubit()) {
             if (qubitCtx.ID() != null) {
-                qubits.add(qubitCtx.ID().getText() + qubitCtx.INT_LITERAL().getText());
+                if (qubitCtx.INT_LITERAL() != null) {
+                    qubits.add(qubitCtx.ID().getText() + qubitCtx.INT_LITERAL().getText());
+                } else {
+                    qubits.add(qubitCtx.ID().getText());
+                }
             } else {
                 qubits.add(qubitCtx.QUBIT().getText());
             }

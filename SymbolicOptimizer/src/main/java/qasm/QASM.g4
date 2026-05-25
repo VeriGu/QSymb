@@ -25,7 +25,7 @@ gate_statement : ID ( '(' expression (',' expression)* ')' )? qubits ';';
 
 qubits : qubit (',' qubit)*;
 
-qubit : (ID '[' num=INT_LITERAL ']') | QUBIT;
+qubit : (ID '[' num=INT_LITERAL ']') | QUBIT | ID;
 
 measure_statement : MEASURE_KW ( ID | ID '[' INT_LITERAL ']' ) TO ( ID | ID '[' INT_LITERAL ']' ) ';';
 

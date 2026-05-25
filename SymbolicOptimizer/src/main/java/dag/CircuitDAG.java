@@ -2,18 +2,26 @@
 
 
 import org.jgrapht.graph.DirectedMultigraph;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
+
 import org.jgrapht.Graphs;
+
 import java.util.Map;
 import java.util.HashMap;
+
 import org.jgrapht.traverse.TopologicalOrderIterator;
+
 import ast.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Iterator;
+
+import org.checkerframework.checker.units.qual.s;
 public class CircuitDAG {
     private DirectedMultigraph<Node, Edge> dag;
     private List<String> rulesApplied;
@@ -229,14 +237,25 @@ public class CircuitDAG {
     }
 
 
+    private static boolean isZeroAngleGate(Node n) {
+        List<Expr> angles = n.getAngles();
+        return angles != null && !angles.isEmpty() && allAnglesZero(angles);
+    }
+
     public int totalGateCount() {
-        return dag.vertexSet().size() - (2 * qubits.size()); // vertices that are not qubit source or sink nodes
+        int size = 0;
+        for (Node n : dag.vertexSet()) {
+            if (n.isGate() && !isZeroAngleGate(n)) {
+                size++;
+            }
+        }
+        return size;
     }
 
     public int twoQGateCount() {
         int size = 0;
         for (Node n : dag.vertexSet()) {
-            if (n.is2QGate()) {
+            if (n.is2QGate() && !isZeroAngleGate(n)) {
                 size++;
             }
         }
@@ -246,7 +265,7 @@ public class CircuitDAG {
     public int tGateCount() {
         int size = 0;
         for (Node n : dag.vertexSet()) {
-            if (n.isTGate()) {
+            if (n.isTGate() && !isZeroAngleGate(n)) {
                 size++;
             }
         }
@@ -256,7 +275,7 @@ public class CircuitDAG {
     public int totalGateCountIgnoreRz() {
         int size = 0;
         for (Node n : dag.vertexSet()) {
-            if (n.isGate()) {
+            if (n.isGate() && !isZeroAngleGate(n)) {
                 if (!n.getId().equals("rz") && !n.getId().equals("u1")) {
                     size++;
                 }
@@ -268,6 +287,9 @@ public class CircuitDAG {
     public int fidelity() {
         int size = 0;
         for (Node n : dag.vertexSet()) {
+            if (isZeroAngleGate(n)) {
+                continue;
+            }
             if (n.is2QGate()) {
                 size += Params.FIDELITY_BREAKEVEN;
                 continue;
@@ -332,6 +354,36 @@ public class CircuitDAG {
             }
             case UnOp uo:
                 return evalUnOp(uo, angleMap);
+            default:
+                assert false;
+                return null; // stupid hack to make the compiler happy ugh
+        }
+    }
+
+
+    public static Expr substitute(Expr e, Map<String, Expr> angleMap) {
+        switch (e) {
+            case Real r:
+                return r;
+            case BinOp bo:
+                return new BinOp(bo.getOp(), substitute(bo.getE1(), angleMap), substitute(bo.getE2(), angleMap));
+            case Symbol s: {
+                if (s.getSymbol().equals("pi")) {
+                    return new Real(Math.PI);
+                } else {
+                    if(!angleMap.containsKey(s.getSymbol())) {
+                        return s;
+                    }
+                    return angleMap.get(s.getSymbol());
+                }
+            }
+            case UnOp uo:
+                return new UnOp(uo.getOp(), substitute(uo.getE(), angleMap));
+            case Var v:
+                if (!angleMap.containsKey(v.getId())) {
+                    return v;
+                }
+                return angleMap.get(v.getId());
             default:
                 assert false;
                 return null; // stupid hack to make the compiler happy ugh

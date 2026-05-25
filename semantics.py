@@ -238,15 +238,117 @@ def calculate_circuit_matrix(n_qubits, circuit):
 
 def intertwiner_basis(L, R):
     """
-    Return a list of basis matrices {S_k} spanning all solutions to L S = S R
-    (no unitarity enforced here; purely the linear intertwiner space).
-    Works with numeric or symbolic entries.
+    Return basis matrices {S_k} spanning the (parametric) intertwiner space
+    L S = S R. S is allowed to depend on the rule's free angles -- at rule-apply
+    time the matched θ gets substituted into the basis matrices, yielding the
+    full at-θ nullspace. Restricting to constant S was sound but conservative;
+    the parametric basis captures the full intertwiner space and accepts more
+    valid matches.
+
+    Rules whose L and R do not share the same set of free angle symbols are
+    discarded (return empty basis): the two sides aren't even talking about the
+    same parameters, so an intertwiner between them would be a coincidence,
+    not a semantically meaningful rewrite.
+
+    Method: replace exp(iθ/2) with a formal variable W (so exp(-iθ/2) becomes
+    1/W and the matrix becomes Laurent-polynomial in the W's), take the full
+    `K.nullspace()` over Q(W), then back-substitute W -> exp(iθ/2) on the
+    result.
     """
+    import sys, time
+    def _stage(msg):
+        print(f"[INT {time.strftime('%H:%M:%S')}] {msg}", file=sys.stderr, flush=True)
+    _stage(f"entry: L.free={sorted(map(str,L.free_symbols))}, R.free={sorted(map(str,R.free_symbols))}")
+    if L.free_symbols != R.free_symbols:
+        _stage("DISCARD: free_symbols differ")
+        return [], None
     n = L.shape[0]
+    _stage(f"build K (size {n*n}x{n*n})")
     K = sympy.kronecker_product(L.T, sympy.eye(n)) - sympy.kronecker_product(sympy.eye(n), R)
-    null = K.nullspace()
-    
-    basis = [sympy.Matrix(n, n, v) for v in null]  # reshape vec -> n×n
+    _stage("K built")
+
+    angles = sorted(K.free_symbols, key=str)
+    back = {}
+    Ws = []
+    if angles:
+        _stage(f"rewrite(exp) + expand on K  (angles={list(map(str,angles))})")
+        K_exp = sympy.expand(K.rewrite(sympy.exp))
+        _stage("rewrite+expand DONE")
+        fwd = {}
+        for th in angles:
+            W = sympy.Symbol('W_' + str(th))
+            Ws.append(W)
+            fwd[sympy.exp(sympy.I * th / 2)] = W
+            back[W] = sympy.exp(sympy.I * th / 2)
+        _stage("subs exp->W")
+        K = K_exp.subs(fwd)
+        _stage(f"subs DONE; K.free={sorted(map(str,K.free_symbols))}")
+
+    # Normalize remaining concrete exp(I*const)/cos/sin entries to exact
+    # algebraic form via nsimplify (plain simplify leaves float-times-pi
+    # untouched). Without this, DomainMatrix can't recognize them as field
+    # elements and the K.nullspace fallback explodes from expression growth.
+    if Ws:
+        W_set = set(Ws)
+        _stage("normalize concrete exp/cos/sin via nsimplify")
+        def _norm(entry):
+            if not hasattr(entry, 'replace'):
+                return entry
+            e = entry.replace(
+                lambda x: isinstance(x, sympy.exp) and not (x.args[0].free_symbols & W_set),
+                lambda x: sympy.nsimplify(x.rewrite(sympy.cos)))
+            e = e.replace(
+                lambda x: isinstance(x, (sympy.cos, sympy.sin)) and not x.args[0].free_symbols,
+                lambda x: sympy.nsimplify(x))
+            return e
+        K = K.applyfunc(_norm).applyfunc(sympy.expand)
+        _stage("normalize DONE")
+
+    # Pick the smallest algebraic field that covers the concrete angles in K.
+    # - QQ_I  = Q(i): cheapest, covers integer multiples of pi (cos/sin in {0, ±1}).
+    # - Q(ζ_8): adds sqrt(2), needed for π/2 (cos(π/4) = sqrt(2)/2).
+    # - Q(ζ_16): covers π/4 fractions.
+    # We try in order and fall back to K.nullspace() if all fail.
+    null = None
+    if Ws:
+        from sympy.polys.matrices import DomainMatrix
+        from sympy import QQ_I, QQ
+        # Try in increasing-cost order: QQ_I first, then Q(ζ₈), then Q(ζ_{16}).
+        domain_candidates = [
+            ("QQ_I", lambda: QQ_I.frac_field(*Ws)),
+            ("QQ(ζ_8)", lambda: QQ.algebraic_field(sympy.exp(sympy.I*sympy.pi/4)).frac_field(*Ws)),
+            ("QQ(ζ_16)", lambda: QQ.algebraic_field(sympy.exp(sympy.I*sympy.pi/8)).frac_field(*Ws)),
+        ]
+        for name, build in domain_candidates:
+            try:
+                _stage(f"trying DomainMatrix over {name}")
+                F = build()
+                dm = DomainMatrix.from_Matrix(K).convert_to(F)
+                null_dm = dm.nullspace()
+                null_mat = null_dm.to_Matrix()
+                null = [null_mat.row(i).T for i in range(null_mat.rows)]
+                _stage(f"DomainMatrix({name}).nullspace() DONE -> {len(null)} null vectors")
+                break
+            except Exception as e:
+                _stage(f"{name} failed ({type(e).__name__}: {str(e)[:80]})")
+    if null is None:
+        _stage("calling K.nullspace() (fallback) ...")
+        null = K.nullspace()
+        _stage(f"K.nullspace() DONE -> {len(null)} null vectors")
+    null = [v.applyfunc(sympy.cancel) for v in null]
+    _stage("cancel DONE")
+    basis = []
+    for v in null:
+        S = sympy.Matrix(n, n, v).subs(back)
+        # Cheap canonicalization: rewrite to cos/sin form, then cancel common
+        # factors. The previous step used `simplify(expand_trig(...))` which
+        # made the matrices "pretty" but at huge cost (5000x slower on two-
+        # symbol cases -- 77s vs 0.16s for typical heavy candidates). The
+        # downstream Java parser doesn't care about the canonical form, just
+        # that two semantically-equal entries serialize to equal strings.
+        S = S.applyfunc(lambda e:
+            sympy.cancel(e.rewrite(sympy.cos)) if getattr(e, 'free_symbols', None) else e)
+        basis.append(S)
     return basis, K
 
 
@@ -322,66 +424,50 @@ def have_same_determinant(matrix1, matrix2):
     else:
         return False
 
+# Per-circuit cache: circuit JSON -> (n_qubits, pre-SYMB matrix, post-SYMB matrix).
+# These depend only on the one circuit, so they are reused across every pair the
+# circuit appears in -- the pairwise eigenvalue-testing phase revisits each
+# circuit many times. Lives for the lifetime of the `--server` process.
+_circuit_parts_cache = {}
+
+
+def _circuit_parts(circuit_json):
+    """Returns (n_qubits, pre-SYMB matrix, post-SYMB matrix) for a circuit,
+    memoized by its JSON string. The matrices are a function of this circuit
+    alone (unlike L/R, which couple a pair), so they cache cleanly."""
+    cached = _circuit_parts_cache.get(circuit_json)
+    if cached is not None:
+        return cached
+    circuit = json.loads(circuit_json)
+    n_qubits = circuit.get("n_qubits")
+    if n_qubits is None:
+        raise ValueError("Circuit must specify 'n_qubits'.")
+    gates = circuit.get("gates", [])
+    for op in gates:
+        if 'params' in op:
+            op['params'] = {param_symbol_map.get(k, sympy.Symbol(k)): sympy.sympify(v, locals=param_symbol_map) for k, v in op['params'].items()}
+    try:
+        symb_index = [op['gate'] for op in gates].index('symb')
+    except ValueError:
+        raise ValueError("Circuit does not contain a 'symb' gate.")
+    pre = calculate_circuit_matrix(n_qubits, gates[:symb_index])
+    post = calculate_circuit_matrix(n_qubits, gates[symb_index + 1:])
+    parts = (n_qubits, pre, post)
+    _circuit_parts_cache[circuit_json] = parts
+    return parts
+
+
 def compute_L_R(circuit1_json, circuit2_json):
-    circuit1 = json.loads(circuit1_json)
-    circuit2 = json.loads(circuit2_json)
-    
-    n_qubits1 = circuit1.get("n_qubits")
-    n_qubits2 = circuit2.get("n_qubits")
-
-    if n_qubits1 is None or n_qubits2 is None:
-        raise ValueError("Both circuits must specify 'n_qubits'.")
-
+    n_qubits1, A, B = _circuit_parts(circuit1_json)
+    n_qubits2, C, D = _circuit_parts(circuit2_json)
     if n_qubits1 != n_qubits2:
         raise ValueError("The two circuits must have the same number of qubits.")
-    
-    n_qubits = n_qubits1
-    
-    gates1 = circuit1.get("gates", [])
-    for op in gates1:
-        if 'params' in op:
-            op['params'] = {param_symbol_map.get(k, sympy.Symbol(k)): sympy.sympify(v, locals=param_symbol_map) for k, v in op['params'].items()}
-            
-    gates2 = circuit2.get("gates", [])
-    for op in gates2:
-        if 'params' in op:
-            op['params'] = {param_symbol_map.get(k, sympy.Symbol(k)): sympy.sympify(v, locals=param_symbol_map) for k, v in op['params'].items()}
-    
 
-    # Find the symbolic gate in each circuit
-    try:
-        symb_index1 = [op['gate'] for op in gates1].index('symb')
-    except ValueError:
-        raise ValueError("Circuit 1 (LHS) does not contain a 'symb' gate.")
-
-    try:
-        symb_index2 = [op['gate'] for op in gates2].index('symb')
-    except ValueError:
-        raise ValueError("Circuit 2 (RHS) does not contain a 'symb' gate.")
-
-    # Split circuits into parts before and after the symbolic gate
-    pre_symb1_gates = gates1[:symb_index1]
-    post_symb1_gates = gates1[symb_index1+1:]
-
-    pre_symb2_gates = gates2[:symb_index2]
-    post_symb2_gates = gates2[symb_index2+1:]
-
-    # A;S;B form for circuit 1
-    A = calculate_circuit_matrix(n_qubits, pre_symb1_gates)
-    B = calculate_circuit_matrix(n_qubits, post_symb1_gates)
-
-    # C;S;D form for circuit 2
-    C = calculate_circuit_matrix(n_qubits, pre_symb2_gates)
-    D = calculate_circuit_matrix(n_qubits, post_symb2_gates)
-
-    # We are solving A; S; B = C; S; D
-    # THe applying order is [B] [S] [A] = [D] [S] [C]
-    # This is equivalent to [S] [A][C]^-1 =  [B]^-1 [D] [S]
-    # Let L = [A][C]^-1  R = [B]^-1 [D]
-    # Since C and B are unitary, their inverse is their conjugate transpose (dagger)
+    # Solving A;S;B = C;S;D  ->  S;(A C^-1) = (B^-1 D);S.
+    # A,B,C,D unitary, so inverse = conjugate transpose (dagger):
+    #   L = A C†,  R = B† D.
     L = A @ C.H
     R = B.H @ D
-
     return (L, R)
 
 def solve_trace(circuit_json1, circuit_json2):
@@ -431,8 +517,26 @@ def is_linear_combination(matrix_m, list_of_matrices_a):
         if isinstance(solution, list):
             solution = solution[0]
         return True, solution
-    else:
-        return False, None
+
+    # Numerical fallback: when matrix_m contains floats (e.g. Real angles
+    # serialized as '1.5707963...'), sympy.linsolve fails to recognize that
+    # 0.5000000001 * I cancels against 0.5 * I etc. Solve the same equations
+    # numerically and accept if the residual is below tolerance.
+    try:
+        M_num = np.array(matrix_m.evalf().tolist(), dtype=np.complex128)
+        B_flat = np.stack([
+            np.array(B.evalf().tolist(), dtype=np.complex128).reshape(-1)
+            for B in list_of_matrices_a
+        ], axis=1)  # shape (rows*cols, num_matrices)
+        m_flat = M_num.reshape(-1)
+        x, *_ = np.linalg.lstsq(B_flat, m_flat, rcond=None)
+        residual = np.linalg.norm(B_flat @ x - m_flat)
+        if residual < 1e-6:
+            return True, None
+    except Exception as e:
+        print(f"numerical fallback failed: {e}")
+
+    return False, None
     
 
 def solve_intertwiner_equation(circuit1_json, circuit2_json, output_file=None):
@@ -576,6 +680,7 @@ def is_subspace_linear_combination(circuit_json, sparse_basis, qubits_to_check, 
     # The basis is already defined on the subspace, so no projection is needed.
     basis_matrices = sparse_to_basis(sparse_basis, symbol_map)
     print("basis_matrices: " + str(basis_matrices))
+    print("subspace_matrices: " + str(subspace_matrices))
     for sm in subspace_matrices:
         is_combo, _ = is_linear_combination(sm, basis_matrices)
         if(not is_combo):
@@ -712,10 +817,19 @@ def calculate_subspace_circuit_matrix(n_qubits, circuit, qubits_to_check):
 
             # Embed the operator in the k-qubit subspace
             op_matrix = embed_operator(k, gate_matrix, subspace_targets)
-            
+
             temp_subspace_matrices = []
             for sm in subspace_matrices:
                 new_sub = op_matrix @ sm
+                # Collapse symbolic-float bloat: if every entry has no free
+                # symbols (all angles were concrete), evaluate to numeric
+                # complex floats. Otherwise leave symbolic for downstream
+                # symbolic checks.
+                try:
+                    if not new_sub.free_symbols:
+                        new_sub = sympy.Matrix(np.array(new_sub.evalf().tolist(), dtype=np.complex128))
+                except Exception:
+                    pass
                 temp_subspace_matrices.append(new_sub)
             subspace_matrices = temp_subspace_matrices
 
@@ -729,7 +843,9 @@ def calculate_subspace_circuit_matrix(n_qubits, circuit, qubits_to_check):
             # This is equivalent to checking both appending X gate and appending nothing to the subspace
             temp_subspace_matrices = []
             for sm in subspace_matrices:
-                new_sub = gate_matrix['x'] @ sm
+                x = gate_semantics['x']
+                op_matrix = embed_operator(k, x, [qubit_map[targets[1]]])
+                new_sub = op_matrix @ sm
                 temp_subspace_matrices.append(new_sub)
             subspace_matrices = temp_subspace_matrices
 
@@ -784,28 +900,182 @@ def solve_eigen(circuit1_json, circuit2_json):
 
 def solve_big_check(circuit1_json, circuit2_json):
     L,R = compute_L_R(circuit1_json, circuit2_json)
-    
+
     if have_same_trace(L, R):
         return True
     return False
 
+
+_BIGCHECK_EIGEN_TOL = 1e-7
+
+
+def _sorted_concrete_eigvals(mat, sub):
+    """Substitute ``sub`` into the sympy matrix ``mat``, convert to a numpy
+    complex array, return its eigenvalues sorted lexicographically by
+    (real, imag) and rounded to suppress floating-point jitter."""
+    numeric = mat.subs(sub)
+    arr = numpy.array(numeric.tolist(), dtype=numpy.complex128)
+    vals = numpy.linalg.eigvals(arr)
+    sortable = sorted(((v.real, v.imag) for v in vals), key=lambda p: (round(p[0], 8), round(p[1], 8)))
+    return [complex(round(r, 8), round(i, 8)) for r, i in sortable]
+
+
+def solve_eigen_symbolic_check(circuit1_json, circuit2_json):
+    """Exact symbolic check that L and R share the same multiset of
+    eigenvalues, by comparing their characteristic polynomials coefficient
+    by coefficient under sympy simplification.
+
+    Returns True iff every coefficient of charpoly(L) - charpoly(R)
+    simplifies (with trig simplification) to zero. Intended as a final
+    gate after the probabilistic concrete-eigen check has already passed.
+    """
+    L, R = compute_L_R(circuit1_json, circuit2_json)
+    # Use a Dummy so we never collide with the `lam` parameter symbol.
+    lam_var = sympy.Dummy('chrlambda')
+    poly_L = L.charpoly(lam_var)
+    poly_R = R.charpoly(lam_var)
+    coeffs_L = poly_L.all_coeffs()
+    coeffs_R = poly_R.all_coeffs()
+    if len(coeffs_L) != len(coeffs_R):
+        return False
+    for a, b in zip(coeffs_L, coeffs_R):
+        diff = sympy.trigsimp(sympy.expand(sympy.simplify(a - b)))
+        if diff != 0:
+            return False
+    return True
+
+
+def single_circuit_eigen_fingerprint(circuit_json, seed=None):
+    """Per-circuit eigenvalue fingerprint at a concrete random sample. The
+    SYMB placeholder (if present) is treated as identity. Two circuits with
+    the same fingerprint are unitarily similar at that sample, so they're
+    plausible intertwiner partners -- a cheap bucket key for the filter
+    phase that avoids O(N^2) checkBig calls."""
+    import json as _json
+    circuit = _json.loads(circuit_json)
+    n_qubits = circuit.get("n_qubits", 0)
+    gates = [op for op in circuit.get("gates", []) if op.get("gate") != "symb"]
+    for op in gates:
+        if 'params' in op:
+            op['params'] = {param_symbol_map.get(k, sympy.Symbol(k)): sympy.sympify(v, locals=param_symbol_map)
+                            for k, v in op['params'].items()}
+    M = calculate_circuit_matrix(n_qubits, gates)
+    rng = numpy.random.default_rng(int(seed) if seed is not None else 0)
+    sub = {
+        theta1: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        theta2: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        theta3: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        phi:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        lam:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        gamma:  float(rng.uniform(0.0, 2.0 * numpy.pi)),
+    }
+    vals = _sorted_concrete_eigvals(M, sub)
+    return ";".join(f"{v.real:.8f}+{v.imag:.8f}i" for v in vals)
+
+
+def eigenvalue_fingerprint(circuit1_json, circuit2_json, seed=None):
+    """Return the L-matrix eigenvalues (sorted, rounded) at a concrete random
+    sample of the symbolic angles -- intended as a bucket key for the
+    pre-filter phase. Two circuits with the same fingerprint are eigen-
+    equivalent at this sample; ``solve_big_check_eigen`` with the same seed
+    then verifies across ntraces draws.
+
+    The interface mirrors solve_distinct_eigen / solve_big_check_eigen (takes
+    two circuits, computes L from compute_L_R). Use circuit2_json = the empty
+    circuit JSON if you want raw eigenvalues of c1's matrix; otherwise it's
+    eigen(c1) at concrete sample.
+    """
+    L, _R = compute_L_R(circuit1_json, circuit2_json)
+    rng = numpy.random.default_rng(int(seed) if seed is not None else 0)
+    sub = {
+        theta1: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        theta2: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        theta3: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        phi:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        lam:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        gamma:  float(rng.uniform(0.0, 2.0 * numpy.pi)),
+    }
+    vals = _sorted_concrete_eigvals(L, sub)
+    # Stable string key
+    return ";".join(f"{v.real:.8f}+{v.imag:.8f}i" for v in vals)
+
+
+def all_distinct_eigen(circuit1_json, circuit2_json, seed=None):
+    """Returns True iff at a random concrete substitution the L matrix has
+    all distinct eigenvalues. Used as an early skip for the symbolic
+    intertwiner solve: dim(intertwiner) = n in this case, producing a
+    relatively small / "diagonal" basis (3-torus of unitary intertwiners
+    modulo global phase) — a less expressive symbolic rule.
+    """
+    L, _R = compute_L_R(circuit1_json, circuit2_json)
+    rng = numpy.random.default_rng(int(seed) if seed is not None else 0)
+    sub = {
+        theta1: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        theta2: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        theta3: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        phi:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        lam:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        gamma:  float(rng.uniform(0.0, 2.0 * numpy.pi)),
+    }
+    vals = _sorted_concrete_eigvals(L, sub)
+    for i in range(len(vals) - 1):
+        if abs(vals[i+1] - vals[i]) < _BIGCHECK_EIGEN_TOL:
+            return False
+    return True
+
+
+def solve_big_check_eigen(circuit1_json, circuit2_json, seed, ntraces):
+    """Concrete-eigenvalue version of ``solve_big_check``: draws ``ntraces``
+    independent random substitutions for the symbolic params from a
+    seeded RNG and returns True only if L and R share their sorted
+    eigenvalue tuple on every draw. Stronger than a single-trace check;
+    intended to be called after circuits have already been grouped by
+    trace upstream.
+    """
+    L, R = compute_L_R(circuit1_json, circuit2_json)
+    rng = numpy.random.default_rng(int(seed))
+    n = max(1, int(ntraces))
+    for _ in range(n):
+        sub = {
+            theta1: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            theta2: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            theta3: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            phi:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            lam:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            gamma:  float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        }
+        lvals = _sorted_concrete_eigvals(L, sub)
+        rvals = _sorted_concrete_eigvals(R, sub)
+        if len(lvals) != len(rvals):
+            return False
+        for a, b in zip(lvals, rvals):
+            if abs(a - b) > _BIGCHECK_EIGEN_TOL:
+                return False
+    return True
+
 import argparse
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description='Quantum circuit semantics analysis.')
     parser.add_argument('-eigenvals', nargs=1, metavar=('C_JSON'),
                         help='Compute and print the eigenvalues of the input circuit matrix.')
     parser.add_argument('-tracecheck', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='Solve A;S;B = C;S;D -> L;S = S;R, check trace(L) = trace(R)')
     parser.add_argument('-trace', nargs=1, metavar=('C1_JSON'), help='Compute and print the trace of the input circuit matrix.')
+    parser.add_argument('-seed', nargs=1, metavar=('SEED'), help='If set, draw concrete random values for symbolic params (theta1, theta2, theta3, phi, lam, gamma) using this integer seed, and print a numeric trace instead of a symbolic one. Same seed across invocations yields the same substitution, so circuits with the same matrix get the same numeric trace.')
+    parser.add_argument('-ntraces', nargs=1, metavar=('N'), help='Number of independent random substitutions to perform when -seed is set. Each draws fresh random values from the same seeded RNG stream, so the printed output is a tuple of N numeric traces. Larger N lowers the chance of two unrelated circuits sharing a fingerprint. Default 1.')
+    parser.add_argument('-symbeigencheck', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='Exact symbolic check that L and R from A;S;B = C;S;D have equal characteristic polynomials (i.e. matching eigenvalues with multiplicity). Use after the probabilistic -bigcheck with -seed.')
     parser.add_argument('-solve', nargs=2, metavar=('C1_JSON', 'C2_JSON'),
                         help='Solve A;S;B = C;S;D for S. Takes two circuit JSON strings as input.')
     parser.add_argument('circuit_json', nargs='?', default=None,
                         help='The input circuit as a JSON string.')
     parser.add_argument('-eigencheck', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='Solve A;S;B = C;S;D -> L;S = S;R, check eigen(L) = eigen(R)')
     parser.add_argument('-bigcheck', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='Solve A;S;B = C;S;D -> L;S = S;R, check trace(L) = trace(R), Det(T) = Det(R), trace(L^2) = trace(R^2)')
+    parser.add_argument('-distincteigen', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='Returns True iff L has all distinct eigenvalues at a random concrete sample. Use to filter out structurally simple intertwiner cases.')
+    parser.add_argument('-eigenfp', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='Return a string fingerprint of L\'s eigenvalues at a random concrete sample. Use for cheap bucket-grouping before solving full intertwiner.')
+    parser.add_argument('-singleeigenfp', nargs=1, metavar=('C_JSON'), help='Per-circuit eigenvalue fingerprint at a random concrete sample (SYMB treated as identity). For pre-bucket grouping inside trace buckets.')
     parser.add_argument('-islinear', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='check that a circuit is in linear combination of basis')
     parser.add_argument('-is_subspace_linear', nargs=4, metavar=('C1_JSON', 'C2_JSON', 'SUBSPACE_JSON', 'SYMBOL_MAP_JSON'), help='check that a circuit is in linear combination of basis')
     parser.add_argument('-check_rule_not_affect_other', nargs=3, metavar=('CIRCUIT_JSON', 'L_JSON', 'QUBIT_TO_CHECK'), help='Check that a rule does not affect other parts of the circuit')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.eigenvals:
         circuit_json = args.eigenvals[0]
@@ -830,7 +1100,33 @@ def main():
         circuit_matrix = calculate_circuit_matrix(circuit["n_qubits"], circuit["gates"])
         try:
             res = circuit_matrix.trace()
-            print(res)
+            if args.seed is not None:
+                # Substitute concrete random values for the known symbolic params
+                # so two circuits with the same matrix produce the same numeric
+                # trace. Seed makes the draws reproducible across invocations;
+                # ntraces controls how many independent substitutions to perform
+                # (a larger fingerprint lowers the chance of accidental
+                # collision between unrelated circuits).
+                seed = int(args.seed[0])
+                ntraces = int(args.ntraces[0]) if args.ntraces is not None else 1
+                rng = numpy.random.default_rng(seed)
+                parts = []
+                for _ in range(ntraces):
+                    sub = {
+                        theta1: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+                        theta2: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+                        theta3: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+                        phi:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+                        lam:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+                        gamma:  float(rng.uniform(0.0, 2.0 * numpy.pi)),
+                    }
+                    numeric = complex(sympy.N(res.subs(sub)))
+                    # Round to suppress floating-point jitter so equal circuits
+                    # hash to the same string key.
+                    parts.append(f"({round(numeric.real, 10)}{'+' if numeric.imag >= 0 else '-'}{round(abs(numeric.imag), 10)}j)")
+                print(",".join(parts))
+            else:
+                print(res)
         except Exception as e:
             print(e)
         return
@@ -865,9 +1161,57 @@ def main():
         print(res)
         return
 
+    if args.symbeigencheck:
+        try:
+            res = solve_eigen_symbolic_check(args.symbeigencheck[0], args.symbeigencheck[1])
+            print(res)
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+        return
+
     if args.bigcheck:
         try:
-            res = solve_big_check(args.bigcheck[0], args.bigcheck[1])
+            # When -seed is provided, swap the symbolic-trace check for the
+            # concrete-eigenvalue check (ntraces independent draws). The
+            # caller is expected to have already grouped by trace upstream;
+            # this second pass tests the stronger eigenvalue invariant.
+            if args.seed is not None:
+                seed = int(args.seed[0])
+                ntraces = int(args.ntraces[0]) if args.ntraces is not None else 1
+                res = solve_big_check_eigen(args.bigcheck[0], args.bigcheck[1], seed, ntraces)
+            else:
+                res = solve_big_check(args.bigcheck[0], args.bigcheck[1])
+            print(res)
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+        return
+
+    if args.distincteigen:
+        try:
+            seed = int(args.seed[0]) if args.seed is not None else 0
+            res = all_distinct_eigen(args.distincteigen[0], args.distincteigen[1], seed)
+            print(res)
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+        return
+
+    if args.eigenfp:
+        try:
+            seed = int(args.seed[0]) if args.seed is not None else 0
+            res = eigenvalue_fingerprint(args.eigenfp[0], args.eigenfp[1], seed)
+            print(res)
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+        return
+
+    if args.singleeigenfp:
+        try:
+            seed = int(args.seed[0]) if args.seed is not None else 0
+            res = single_circuit_eigen_fingerprint(args.singleeigenfp[0], seed)
             print(res)
         except Exception as e:
             print(f"Error: {e}", file=sys.stderr)
@@ -1394,6 +1738,87 @@ def main():
         '''
         print(f"solve_big_check test (fail expected): {not solve_big_check(circuit1_json, circuit2_json)}")
 
+        # --- Test 24b: solve_big_check_eigen (concrete eigenvalue check) ---
+        print("\n--- Test 24b: solve_big_check_eigen tests ---")
+        # Equal case: identical circuit on both sides => L = R = I => eigen test passes.
+        eq_circuit = '''
+        {
+            "n_qubits": 1,
+            "gates": [
+                {"gate": "x", "targets": [0]},
+                {"gate": "symb", "targets": [0]},
+                {"gate": "x", "targets": [0]}
+            ]
+        }
+        '''
+        eq_pass = solve_big_check_eigen(eq_circuit, eq_circuit, seed=42, ntraces=5)
+        print(f"solve_big_check_eigen identical (pass expected): {eq_pass}")
+        assert eq_pass is True
+        # Unequal case: X-vs-Z surrounding S has L = X, R = Z; same trace (0) but
+        # eigenvalues match too ({-1,+1}). So pick a clearly different pair: X
+        # surrounding S vs. H surrounding S — Hadamard has the same eigenvalues
+        # as X actually, so use X vs S (the S-gate, not the symb gate).
+        x_circuit = '''
+        {
+            "n_qubits": 1,
+            "gates": [
+                {"gate": "symb", "targets": [0]},
+                {"gate": "x", "targets": [0]}
+            ]
+        }
+        '''
+        s_circuit = '''
+        {
+            "n_qubits": 1,
+            "gates": [
+                {"gate": "symb", "targets": [0]},
+                {"gate": "s", "targets": [0]}
+            ]
+        }
+        '''
+        neq_pass = solve_big_check_eigen(x_circuit, s_circuit, seed=42, ntraces=5)
+        print(f"solve_big_check_eigen X vs S (fail expected): {not neq_pass}")
+        assert neq_pass is False
+        # Seed reproducibility: same seed must produce the same verdict.
+        rep1 = solve_big_check_eigen(eq_circuit, eq_circuit, seed=123, ntraces=3)
+        rep2 = solve_big_check_eigen(eq_circuit, eq_circuit, seed=123, ntraces=3)
+        print(f"solve_big_check_eigen seed reproducibility: {rep1 == rep2 == True}")
+        assert rep1 == rep2 == True
+
+        # --- Test 24c: solve_eigen_symbolic_check (charpoly equality) ---
+        print("\n--- Test 24c: solve_eigen_symbolic_check tests ---")
+        # Equal case: identical circuits => L=R => identical charpoly => pass.
+        sc_pass = solve_eigen_symbolic_check(eq_circuit, eq_circuit)
+        print(f"solve_eigen_symbolic_check identical (pass expected): {sc_pass}")
+        assert sc_pass is True
+        # Unequal case: X vs S surrounding SYMB => different charpolys => fail.
+        sc_fail = solve_eigen_symbolic_check(x_circuit, s_circuit)
+        print(f"solve_eigen_symbolic_check X vs S (fail expected): {not sc_fail}")
+        assert sc_fail is False
+        # Parametric equal case: RZ(theta1) before vs after SYMB => L = RZ(theta1),
+        # R = RZ(theta1). Same charpoly (parameterised in theta1) => pass.
+        rz_left = '''
+        {
+            "n_qubits": 1,
+            "gates": [
+                {"gate": "rz", "targets": [0], "params": {"theta1": "theta1"}},
+                {"gate": "symb", "targets": [0]}
+            ]
+        }
+        '''
+        rz_right = '''
+        {
+            "n_qubits": 1,
+            "gates": [
+                {"gate": "symb", "targets": [0]},
+                {"gate": "rz", "targets": [0], "params": {"theta1": "theta1"}}
+            ]
+        }
+        '''
+        sc_param = solve_eigen_symbolic_check(rz_left, rz_right)
+        print(f"solve_eigen_symbolic_check RZ(theta1) before/after SYMB (pass expected): {sc_param}")
+        assert sc_param is True
+
         # Test cases for linear_span_test
         print("\n--- Testing linear_span_test ---")
 
@@ -1459,7 +1884,47 @@ def main():
         except Exception as e:
             print(f"Could not compute eigenvalues: {e}")
 
+def serve():
+    """Persistent-server mode (`semantics.py --server`).
+
+    Reads one request per line from stdin, runs the same dispatch as main(),
+    and writes one response line. Both request args and response are base64
+    so the protocol is newline-safe. Started once by SymbolicSolve so the
+    enumerator avoids a process spawn + sympy import on every call; results
+    are memoized in-process, keyed by the request.
+    """
+    import base64, io, contextlib
+    real_stdout = sys.stdout
+    cache = {}
+    for raw in sys.stdin:
+        raw = raw.strip()
+        if not raw:
+            continue
+        if raw == "SHUTDOWN":
+            break
+        if raw in cache:
+            result = cache[raw]
+        else:
+            argv = [base64.b64decode(f).decode("utf-8") for f in raw.split("\t")]
+            buf = io.StringIO()
+            try:
+                with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+                    main(argv)
+            except SystemExit:
+                pass
+            except Exception as e:
+                buf.write(f"Error: {e}")
+            result = buf.getvalue()
+            cache[raw] = result
+        real_stdout.write(base64.b64encode(result.encode("utf-8")).decode("ascii"))
+        real_stdout.write("\n")
+        real_stdout.flush()
+
+
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1 and sys.argv[1] == "--server":
+        serve()
+    else:
+        main()
 
     

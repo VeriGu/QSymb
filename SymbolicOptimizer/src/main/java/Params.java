@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class Params {
-    public static int MAX_QUBITS_SYMB = 7;
+    public static int MAX_QUBITS_SYMB = 5;
     /**
      * max priority queue size
      */
@@ -38,7 +38,7 @@ public class Params {
     /**
      * use size increasing nonsymb rules
      */
-    public static boolean USE_SIZE_INCREASING_RULES = true;
+    public static boolean USE_SIZE_INCREASING_RULES = false;
     /**
      * preserve connectivity of input circuit (preserve mapping)
      */
@@ -61,7 +61,7 @@ public class Params {
      * 
      * Cost of a 2q gate in terms of 1q gates for FIDELITY opt obj. Or weight of T gate vs. 2q gate for FT opt obj.
      */
-    public static int FIDELITY_BREAKEVEN = 1;
+    public static int FIDELITY_BREAKEVEN = 40;
     /**
      *
      */
@@ -137,5 +137,43 @@ public class Params {
 
     public static String RULES_DIR = "";
 
-   
+    /**
+     * If circuit size (gate count) is greater than this threshold, the egraph
+     * step in optimize_SA splits the circuit into sequential chunks and
+     * processes each chunk independently to avoid OOM / hangs in egglog.
+     */
+    public static int EGRAPH_CHUNK_THRESHOLD = 5000;
+    /**
+     * Number of gates per chunk when chunking is active.
+     */
+    public static int EGRAPH_CHUNK_SIZE = 1000;
+
+    /**
+     * Python interpreter used to run the ILP compaction wrapper. Must point
+     * at an environment with qiskit + pulp available (e.g. Quasar's venv).
+     */
+    public static String ILP_PYTHON = "/root/Quasar/.venv/bin/python3";
+    /**
+     * Path to the ILP compaction wrapper script (reuses Quasar's
+     * dag.linearized_circuit_from_dag).
+     */
+    public static String ILP_SCRIPT = "/root/SymbolicOptimizer/scripts/ilp_compact.py";
+    /**
+     * Per-call time budget (seconds) for the MinLA ILP solver.
+     */
+    public static int ILP_TIME_LIMIT_SEC = 10;
+    /**
+     * ILP compaction cadence. Following Quasar (which runs ILP once at init
+     * and once per escalation round, not per iteration), compaction runs once
+     * before the search loop and then every ILP_PERIOD iterations. Running it
+     * every iteration is far too expensive and starves the search.
+     */
+    public static int ILP_PERIOD = 10;
+    /**
+     * Maximum circuit size (gate count) eligible for ILP compaction. The MinLA
+     * ILP has O(n^2) binary variables, so it is only viable on small circuits;
+     * larger circuits skip compaction. A ~2500-gate circuit would build a
+     * ~6M-variable model that never finishes.
+     */
+    public static int ILP_MAX_GATES = 300;
 }

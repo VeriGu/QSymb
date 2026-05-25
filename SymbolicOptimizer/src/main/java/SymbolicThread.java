@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SymbolicThread extends Thread {
     private final CircuitDAG circuit;
@@ -33,72 +37,77 @@ public class SymbolicThread extends Thread {
 
     @Override
     public void run() {
-        List<MatrixConstrainedRule> copysymb = new ArrayList<>(symbRules);
-        List<MononialRule> copysymbMonomial = new ArrayList<>(symbRulesMonomials);
-        List<MatrixConstrainedRule> symbRulesToUse = new ArrayList<>();
-        List<MononialRule> symbMonomialRulesToUse = new ArrayList<>();
-        
-       
-        int index1 = rand.nextInt(copysymb.size() + copysymbMonomial.size());
-        if(index1 < copysymb.size()) symbRulesToUse.add(copysymb.get(index1));
-        else symbMonomialRulesToUse.add(copysymbMonomial.get(index1 - copysymb.size()));
-    
+        // Draw ONE random rule from the combined pool per spawn -- the SA loop
+        // exploration relies on rule-level diversity across many spawns, not
+        // on each spawn exhausting the rule list. A cheap LHS-gate-set
+        // prefilter still applies: if the picked rule wants a gate that isn't
+        // even in the circuit, we skip it (no work) instead of paying for the
+        // matcher + checkLinearCombination on a guaranteed miss.
+        int total = symbRules.size() + symbRulesMonomials.size();
+        if (total == 0) return;
+        int idx = rand.nextInt(total);
 
-        for (int i = 0; i < symbMonomialRulesToUse.size(); i++){
-            //System.out.println("Current Monomial RULE: " + i + "/" + Integer.min(symb_rule_limit, symbMonomialRules.size()));
-            int index = i;
-            //System.out.println("Current SYMB MONOMIAL RULE: " + symbMonomialRulesToUse.get(index).getRhs() + " -> " + symbMonomialRulesToUse.get(index).getLhs());
-            CircuitDAG optimizedDAG = optimizer.symbolicMatchBeforeAfterMono(circuit, symbMonomialRulesToUse.get(index).getRhs(), symbMonomialRulesToUse.get(index).getLhs(), minSymb, maxSymb, symbMonomialRulesToUse.get(index).getConstraints(), null);
-            
-            if(optimizedDAG != null) {
-                //System.out.println("Applyed Monomial Rule: " + symbMonomialRulesToUse.get(index).getRhs() + " -> " + symbMonomialRulesToUse.get(index).getLhs());
-                List<String> rulesApplied = new ArrayList<>(circuit.getRulesApplied());
-                //rulesApplied.add(symbMonomialRulesToUse.get(index).getRhs() + "|" + symbMonomialRulesToUse.get(index).getLhs());
-                optimizedDAG.setRulesApplied(rulesApplied);
-                //symbMonomialRulesUsed.put(symbMonomialRulesToUse.get(index).getRhs() + "|" + symbMonomialRulesToUse.get(index).getLhs(), symbMonomialRulesUsed.getOrDefault(symbMonomialRulesToUse.get(index), 0) + 1);
-                //System.out.println("Optimized Using Monomial Rule: " + optimizedDAG.toQASM());
-                if(optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE) <= circuit.cost(Params.OPTIMIZATION_OBJECTIVE)) {
-                    result = optimizedDAG;
-                } else {
-                
-                    double acceptP = Math.min(1, Math.exp(-Params.TEMPERATURE * ((double) optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE) / circuit.cost(Params.OPTIMIZATION_OBJECTIVE))));
-                    if (rand.nextDouble() <= acceptP) {
-                        result = optimizedDAG;
-                    } else {
-                        result = circuit;
-                    }
-        
-                }
+        Set<String> circuitGates = circuitGateNames(circuit);
+        CircuitDAG optimizedDAG;
+        if (idx < symbRulesMonomials.size()) {
+            MononialRule rule = symbRulesMonomials.get(idx);
+            optimizedDAG = optimizer.symbolicMatchBeforeAfterMono(
+                    circuit, rule.getRhs(), rule.getLhs(), minSymb, maxSymb, rule.getConstraints(), null);
+        } else {
+            MatrixConstrainedRule rule = symbRules.get(idx - symbRulesMonomials.size());
+            if (!circuitGates.containsAll(ruleLhsGateNames(rule.getLHS()))) {
+                return;   // picked rule's LHS gates aren't in this circuit -- skip
             }
+            // [SYMB_PICK idx=...] line removed -- enable Optimizer.logger.debug if needed.
+            optimizedDAG = optimizer.symbolicMatchBeforeAfter(
+                    circuit, rule.getLHS(), rule.getRHS(), minSymb, maxSymb, rule.getConstraint(), null);
         }
 
-        
-        for (int i = 0; i < symbRulesToUse.size(); i++){
-            //System.out.println("Current RULE: " + i + "/" + Integer.min(symb_rule_limit, symbRules.size()));
-            int index = i;
-            System.out.println("Current SYMB RULE: " + symbRulesToUse.get(index).getLHS() + " -> " + symbRulesToUse.get(index).getRHS());
-            
-            CircuitDAG optimizedDAG = optimizer.symbolicMatchBeforeAfter(circuit, symbRulesToUse.get(index).getLHS(), symbRulesToUse.get(index).getRHS(), minSymb, maxSymb, symbRulesToUse.get(index).getConstraint(), null);
-            if(optimizedDAG != null) {
-                List<String> rulesApplied = new ArrayList<>(circuit.getRulesApplied());
-                //rulesApplied.add(symbRulesToUse.get(index).getLHS() + "|" + symbRulesToUse.get(index).getRHS());
-                optimizedDAG.setRulesApplied(rulesApplied);
-                //symbRulesUsed.put(symbRulesToUse.get(index).getLHS() + "|" + symbRulesToUse.get(index).getRHS(), symbRulesUsed.getOrDefault(symbRulesToUse.get(index), 0) + 1);
-                //System.out.println("Optimized DAG: " + optimizedDAG.toQASM());
-                
-                if(optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE) <= circuit.cost(Params.OPTIMIZATION_OBJECTIVE)) {
-                    //System.out.println("Symb Rule Reduced: " + (c.cost(Params.OPTIMIZATION_OBJECTIVE) - optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE)));
-                    //System.out.println("From " + c.cost(Params.OPTIMIZATION_OBJECTIVE) + " to " + optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE));
-                    result = optimizedDAG;
-                } else {
-                    double acceptP = Math.min(1, Math.exp(-Params.TEMPERATURE * ((double) optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE) / circuit.cost(Params.OPTIMIZATION_OBJECTIVE))));
-                    if (rand.nextDouble() <= acceptP) {
-                        result = optimizedDAG;
-                    } else {
-                        result = circuit;
-                    }
-                }
-            }
-        } 
+        if (optimizedDAG != null) {
+            applySAaccept(optimizedDAG);
+        }
+        // else: result stays null; main loop treats this as a symbolic-skip.
+    }
+
+    /**
+     * Pattern that finds gate-like tokens in a rule LHS: an upper-case head
+     * right after an opening paren. Skips structural / non-gate tokens
+     * (Cons, Nil, SYMB, BinOp, UnOp, Real, Symbol, Q, ...).
+     */
+    private static final Pattern RULE_GATE = Pattern.compile("\\(([A-Z][A-Za-z0-9]*)\\b");
+    private static final Set<String> NOT_GATES = new HashSet<>(java.util.Arrays.asList(
+            "Cons", "Nil", "SYMB", "BinOp", "UnOp", "Real", "Symbol", "Q",
+            "PLUS", "MINUS", "MULT", "DIV", "SUBTRACT"));
+
+    private static Set<String> ruleLhsGateNames(String lhs) {
+        Set<String> names = new HashSet<>();
+        Matcher m = RULE_GATE.matcher(lhs);
+        while (m.find()) {
+            String tok = m.group(1);
+            if (!NOT_GATES.contains(tok)) names.add(tok.toLowerCase());
+        }
+        return names;
+    }
+
+    private static Set<String> circuitGateNames(CircuitDAG c) {
+        Set<String> names = new HashSet<>();
+        for (Node n : c.nodes()) {
+            if (n.isGate()) names.add(n.getId().toLowerCase());
+        }
+        return names;
+    }
+
+    /** Apply the SA accept/reject decision and store the resulting DAG. */
+    private void applySAaccept(CircuitDAG optimizedDAG) {
+        List<String> rulesApplied = new ArrayList<>(circuit.getRulesApplied());
+        optimizedDAG.setRulesApplied(rulesApplied);
+        if (optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE) <= circuit.cost(Params.OPTIMIZATION_OBJECTIVE)) {
+            result = optimizedDAG;
+        } else {
+            double acceptP = Math.min(1, Math.exp(-Params.TEMPERATURE
+                    * ((double) optimizedDAG.cost(Params.OPTIMIZATION_OBJECTIVE)
+                       / circuit.cost(Params.OPTIMIZATION_OBJECTIVE))));
+            result = (rand.nextDouble() <= acceptP) ? optimizedDAG : circuit;
+        }
     }
 }
