@@ -374,6 +374,234 @@ def unitary_solutions_from_basis(basis):
     
     return sympy.simplify(S), eqs
 
+
+# ---------------------------------------------------------------------------
+# Clifford-orbit priority-pass utilities
+#
+# Given a canonical commutant rule  L; SYMB ≡ SYMB; L  with basis {B_i}, the
+# rule  L; SYMB ≡ SYMB; R  is *also* a valid canonical intertwiner rule for
+# every R = (U_a ⊗ U_b) · L · (U_a ⊗ U_b)†, with transformed basis
+# {(U_a ⊗ U_b) · B_i}. Sylvester's theorem guarantees the new basis has the
+# same dimension as the original (eigenvalues are conjugation-invariant).
+#
+# This is the "priority pass" of the hybrid Algorithm 2: cheap, predictable,
+# captures the Clifford-orbit family of rules that the completeness pass
+# (enumerate-R-as-circuit) cannot reach without paying maxSize >= |R-decomp|.
+# ---------------------------------------------------------------------------
+
+def clifford_orbit_image(L, U_a, U_b):
+    """Return R = (U_a ⊗ U_b) · L · (U_a ⊗ U_b)† for L a 2-qubit unitary.
+
+    The intertwiner equation  S · L = R · S  is guaranteed to have an
+    8-dimensional solution space when L is `RXX(θ)`-family (or more generally
+    when L's commutant is 8-dimensional and U is single-qubit Clifford).
+
+    Args:
+        L (sympy.Matrix): 4×4 unitary.
+        U_a, U_b (sympy.Matrix): 2×2 unitaries acting on qubits 0 and 1.
+
+    Returns:
+        sympy.Matrix: 4×4 unitary R.
+    """
+    if L.shape != (4, 4):
+        raise ValueError(f"L must be 4×4, got {L.shape}")
+    if U_a.shape != (2, 2) or U_b.shape != (2, 2):
+        raise ValueError(f"U_a, U_b must be 2×2, got {U_a.shape}, {U_b.shape}")
+    UU = sympy.kronecker_product(U_a, U_b)
+    return UU * L * UU.H
+
+
+def _clifford_orbit_set_ion():
+    """Per-gateset orbit table for ion (native 2q = RXX).
+
+    Returns a list of dicts: name, U_a, U_b, R_decomp(theta) where
+        - name             : human-readable orbit label
+        - U_a, U_b         : 2×2 single-qubit unitaries (sympy.Matrix)
+        - R_decomp(theta)  : list-of-gate-dicts producing R = (U_a⊗U_b)·L·(U_a⊗U_b)†
+                             in ion-native gates, parameterised by theta (sympy
+                             expr or symbol). theta is a string in the gate dict
+                             so that the same dict is reusable across symbolic
+                             and concrete-angle calls.
+
+    The "identity" pair (U_a = U_b = I) is intentionally omitted -- that orbit
+    image equals L itself, which is the canonical commutant rule the
+    completeness pass already finds.
+    """
+    PI = sympy.pi
+    Ry_p = sympy.Matrix([[sympy.cos(PI/4), -sympy.sin(PI/4)],
+                         [sympy.sin(PI/4),  sympy.cos(PI/4)]])  # Ry(π/2)
+    Ry_n = sympy.Matrix([[sympy.cos(PI/4),  sympy.sin(PI/4)],
+                         [-sympy.sin(PI/4), sympy.cos(PI/4)]])  # Ry(-π/2)
+    Rz_p = sympy.diag(sympy.exp(-sympy.I*PI/4), sympy.exp(sympy.I*PI/4))   # Rz(π/2)
+    Rz_n = sympy.diag(sympy.exp(sympy.I*PI/4),  sympy.exp(-sympy.I*PI/4))  # Rz(-π/2)
+
+    def _ion_rzz_decomp(theta_str, theta_neg_str):
+        """RZZ(θ) implemented as Ry(-π/2)q0; Ry(-π/2)q1; RXX(θ); Ry(π/2)q0; Ry(π/2)q1
+        when both U_a = U_b = Ry(π/2). The dagger goes BEFORE L in the circuit
+        (left-to-right gate order = right-to-left matrix multiplication)."""
+        return [
+            {'gate': 'ry', 'targets': [0], 'params': {'theta1': '-pi/2'}},
+            {'gate': 'ry', 'targets': [1], 'params': {'theta1': '-pi/2'}},
+            {'gate': 'rxx', 'targets': [0, 1], 'params': {'theta1': theta_str}},
+            {'gate': 'ry', 'targets': [0], 'params': {'theta1': 'pi/2'}},
+            {'gate': 'ry', 'targets': [1], 'params': {'theta1': 'pi/2'}},
+        ]
+
+    def _ion_rzz_neg_decomp(theta_str, theta_neg_str):
+        """RZZ(-θ) — anti-pair (U_a, U_b) = (Ry(π/2), Ry(-π/2)). Dagger sandwich
+        with mixed signs."""
+        return [
+            {'gate': 'ry', 'targets': [0], 'params': {'theta1': '-pi/2'}},
+            {'gate': 'ry', 'targets': [1], 'params': {'theta1': 'pi/2'}},
+            {'gate': 'rxx', 'targets': [0, 1], 'params': {'theta1': theta_str}},
+            {'gate': 'ry', 'targets': [0], 'params': {'theta1': 'pi/2'}},
+            {'gate': 'ry', 'targets': [1], 'params': {'theta1': '-pi/2'}},
+        ]
+
+    def _ion_ryy_decomp(theta_str, theta_neg_str):
+        """RYY(θ) — same-pair (U_a, U_b) = (Rz(π/2), Rz(π/2))."""
+        return [
+            {'gate': 'rz', 'targets': [0], 'params': {'gamma': '-pi/2'}},
+            {'gate': 'rz', 'targets': [1], 'params': {'gamma': '-pi/2'}},
+            {'gate': 'rxx', 'targets': [0, 1], 'params': {'theta1': theta_str}},
+            {'gate': 'rz', 'targets': [0], 'params': {'gamma': 'pi/2'}},
+            {'gate': 'rz', 'targets': [1], 'params': {'gamma': 'pi/2'}},
+        ]
+
+    def _ion_ryy_neg_decomp(theta_str, theta_neg_str):
+        return [
+            {'gate': 'rz', 'targets': [0], 'params': {'gamma': '-pi/2'}},
+            {'gate': 'rz', 'targets': [1], 'params': {'gamma': 'pi/2'}},
+            {'gate': 'rxx', 'targets': [0, 1], 'params': {'theta1': theta_str}},
+            {'gate': 'rz', 'targets': [0], 'params': {'gamma': 'pi/2'}},
+            {'gate': 'rz', 'targets': [1], 'params': {'gamma': '-pi/2'}},
+        ]
+
+    return [
+        {'name': 'ion_Ry_same', 'U_a': Ry_p, 'U_b': Ry_p, 'decomp': _ion_rzz_decomp},
+        {'name': 'ion_Ry_anti', 'U_a': Ry_p, 'U_b': Ry_n, 'decomp': _ion_rzz_neg_decomp},
+        {'name': 'ion_Rz_same', 'U_a': Rz_p, 'U_b': Rz_p, 'decomp': _ion_ryy_decomp},
+        {'name': 'ion_Rz_anti', 'U_a': Rz_p, 'U_b': Rz_n, 'decomp': _ion_ryy_neg_decomp},
+    ]
+
+
+# Table of orbit sets keyed by gateset name. Extend by adding new entries.
+CLIFFORD_ORBIT_SETS = {
+    'ion': _clifford_orbit_set_ion(),
+}
+
+
+def clifford_orbit_set(gateset):
+    """Return the orbit set for a gateset. Raises if unknown."""
+    if gateset not in CLIFFORD_ORBIT_SETS:
+        raise ValueError(f"unknown gateset {gateset!r}; known: {sorted(CLIFFORD_ORBIT_SETS)}")
+    return CLIFFORD_ORBIT_SETS[gateset]
+
+
+def _commutant_basis_for_gateset(gateset):
+    """The L-commutant basis used by the priority pass. For ion (L=RXX(θ))
+    the commutant is the 8-dim X⊗X commutant {II, XI, IX, XX, YY, YZ, ZY, ZZ}
+    -- θ-independent for any non-zero θ. Other gatesets get their own native
+    commutant.
+    """
+    I2 = sympy.eye(2)
+    X = sympy.Matrix([[0, 1], [1, 0]])
+    Y = sympy.Matrix([[0, -sympy.I], [sympy.I, 0]])
+    Z = sympy.Matrix([[1, 0], [0, -1]])
+    if gateset == 'ion':
+        return [
+            sympy.kronecker_product(I2, I2),
+            sympy.kronecker_product(X,  I2),
+            sympy.kronecker_product(I2, X ),
+            sympy.kronecker_product(X,  X ),
+            sympy.kronecker_product(Y,  Y ),
+            sympy.kronecker_product(Y,  Z ),
+            sympy.kronecker_product(Z,  Y ),
+            sympy.kronecker_product(Z,  Z ),
+        ]
+    raise ValueError(f"no commutant basis defined for gateset {gateset!r}")
+
+
+def _l_circuit_for_gateset(gateset, theta_symbol_name='theta1'):
+    """The size-1 L-circuit (the native 2q gate parameterised by a free
+    angle) that the priority pass uses as its anchor."""
+    if gateset == 'ion':
+        return [{'gate': 'rxx', 'targets': [0, 1],
+                 'params': {'theta1': theta_symbol_name}}]
+    raise ValueError(f"no L-circuit defined for gateset {gateset!r}")
+
+
+def priority_candidates(gateset, theta_symbol_name='theta1'):
+    """Generate Clifford-orbit priority-pass candidates for a gateset.
+
+    For each (U_a, U_b) in the gateset's orbit set, returns a tuple
+        (L_gates, R_gates, basis)
+    where
+        L_gates : the L-circuit gates (the native 2q gate with free θ)
+        R_gates : the R-circuit gates (decomp implementing U·L·U†)
+        basis   : list of sympy.Matrix forming the intertwiner basis for (L, R)
+
+    Each tuple corresponds to a canonical symbolic rule  L_gates; SYMB ≡ SYMB; R_gates
+    discovered by the priority pass. The completeness pass (existing algorithm)
+    runs independently and provides any rules whose L and R are both small.
+    """
+    orbit = clifford_orbit_set(gateset)
+    commutant = _commutant_basis_for_gateset(gateset)
+    L_gates = _l_circuit_for_gateset(gateset, theta_symbol_name)
+
+    candidates = []
+    for entry in orbit:
+        U_a = entry['U_a']
+        U_b = entry['U_b']
+        # R-side gates: decomp produces gate dicts using theta1 as the free angle.
+        # We replace the 'theta1' placeholder in the rxx parameter with the
+        # caller-chosen theta_symbol_name (so it agrees with L_gates).
+        R_gates = []
+        for op in entry['decomp'](theta_symbol_name, '-(' + theta_symbol_name + ')'):
+            new_op = dict(op)
+            new_op['targets'] = list(new_op['targets'])
+            if 'params' in new_op:
+                new_op['params'] = dict(new_op['params'])
+            R_gates.append(new_op)
+        basis = transform_basis(commutant, U_a, U_b)
+        candidates.append({
+            'name': entry['name'],
+            'L_gates': L_gates,
+            'R_gates': R_gates,
+            'basis': basis,
+        })
+    return candidates
+
+
+def transform_basis(basis, U_a, U_b):
+    """Transform a commutant basis {B_i} into the intertwiner basis for the
+    orbit image R = (U_a ⊗ U_b) · L · (U_a ⊗ U_b)†.
+
+    Codebase convention (matches `intertwiner_basis`): basis matrices satisfy
+    L · S = S · R (this is what is_subspace_linear_combination accepts at
+    runtime, and what compute_L_R / intertwiner_basis emit).
+
+    Derivation: if B_i commutes with L, then S_i = B_i · (U_a ⊗ U_b)†
+    satisfies L · S_i = S_i · R:
+        L · S_i = L · B_i · (U_a⊗U_b)†
+                = B_i · L · (U_a⊗U_b)†
+        S_i · R = B_i · (U_a⊗U_b)† · (U_a⊗U_b) · L · (U_a⊗U_b)†
+                = B_i · L · (U_a⊗U_b)†
+
+    So the transformation right-multiplies by (U_a ⊗ U_b)†.
+
+    Args:
+        basis (list[sympy.Matrix]): 4×4 commutant basis matrices for L.
+        U_a, U_b (sympy.Matrix): 2×2 unitaries used to build R.
+
+    Returns:
+        list[sympy.Matrix]: transformed basis.
+    """
+    UU = sympy.kronecker_product(U_a, U_b)
+    UU_dag = UU.H
+    return [B * UU_dag for B in basis]
+
+
 def have_same_eigenvalues(matrix1, matrix2):
     """
     Checks if two symbolic matrices have the same eigenvalues with the same multiplicities.
