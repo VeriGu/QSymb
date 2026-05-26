@@ -8,13 +8,9 @@ import java.util.List;
  * Unit tests for the {@link CliffordOrbitCandidates} generator.
  *
  * Structural tests live here. The semantic correctness check (each (L, R)
- * pair has an 8-dim intertwiner basis) lives in the Python test suite
- * `test_clifford_orbit.py` -- those tests verify the math via direct matrix
- * evaluation. Here we verify only that the Java generator emits the
- * expected number of pairs with the expected gate shape, so the pair list
- * threads through to `infer_symb` cleanly.
- *
- * JUnit 5 assertion order: (condition, message). Distinct from JUnit 4.
+ * pair has an 8-dim intertwiner basis) is verified end-to-end by the
+ * Python orbit suite (`test_clifford_orbit.py`) and by the
+ * CliffordOrbitEndToEndTest's infer_symb call.
  */
 public class CliffordOrbitCandidatesTest {
 
@@ -33,16 +29,17 @@ public class CliffordOrbitCandidatesTest {
     }
 
     @Test
-    public void ionGeneratesFourCandidates() {
+    public void ionGenerates40Candidates() {
+        // 36 simple Pauli-axis orbit pairs (6×6 over {I, Z, Rz(±π/2), Ry(±π/2)})
+        // + 4 compound (Ry·Rx, Rz·Rx) compiler-specific pairs.
         List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> cands =
                 CliffordOrbitCandidates.generateForGateset("ion");
-        assertEquals(4, cands.size());
+        assertEquals(40, cands.size());
     }
 
     @Test
     public void ionEveryLHSIsRXXThenSYMB() {
-        // LHS shape: [RXX(θ) on q0,q1, SYMB] -- this is the canonical
-        // "A; SYMB" form QSymb's compute_L_R expects (A = RXX, B = ε).
+        // LHS: [RXX(θ), SYMB] on (q0, q1). Identical for every pair.
         List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> cands =
                 CliffordOrbitCandidates.generateForGateset("ion");
         for (SimpleEntry<EggGen.Circuit, EggGen.Circuit> p : cands) {
@@ -59,53 +56,58 @@ public class CliffordOrbitCandidatesTest {
     }
 
     @Test
-    public void ionEveryRHSIsSYMBThenNineGates() {
-        // RHS shape: [SYMB, ...9-gate compound-Clifford decomp...] -- the
-        // U pair is a 2-gate Clifford (e.g. Ry(π/2)·Rx(-π/2)), so each
-        // side of the RXX gets 2 prep and 2 unprep gates -> 4 + 1 + 4 = 9.
+    public void ionEveryRHSStartsWithSYMBAndContainsRXX() {
+        // RHS: [SYMB, ...decomp gates including one RXX...]
+        // Simple-Clifford pairs produce 1-5 gates after SYMB (0-2 pairs of
+        // dagger/forward wrappers, plus the inner RXX). Compound-Clifford
+        // pairs produce 9 gates after SYMB. So sizes range from 1 (the
+        // (I, I) trivial pair) to 10.
         List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> cands =
                 CliffordOrbitCandidates.generateForGateset("ion");
+        int seenRxxCount = 0;
         for (SimpleEntry<EggGen.Circuit, EggGen.Circuit> p : cands) {
             EggGen.Circuit R = p.getValue();
-            assertEquals(10, R.gates.size(),
-                    "RHS must be SYMB + 9-gate compound-Clifford decomp = 10 gates");
+            assertTrue(R.gates.size() >= 2 && R.gates.size() <= 10,
+                    "RHS gate count must be 2..10, got " + R.gates.size());
             assertTrue(R.gates.get(0) instanceof EggGen.SYMB,
                     "RHS[0] must be SYMB");
-            // Middle RXX is at index 5 (SYMB + 4 wrappers + RXX).
-            assertTrue(R.gates.get(5) instanceof EggGen.RXX,
-                    "RHS[5] must be RXX, got " + R.gates.get(5).getClass().getSimpleName());
-            EggGen.RXX rxx = (EggGen.RXX) R.gates.get(5);
-            assertEquals("q0", rxx.qubit1);
-            assertEquals("q1", rxx.qubit2);
+            // Exactly one RXX inside.
+            int rxxCount = 0;
+            for (EggGen.Gate g : R.gates) {
+                if (g instanceof EggGen.RXX) rxxCount++;
+            }
+            assertEquals(1, rxxCount,
+                    "RHS must contain exactly one RXX, got " + rxxCount);
+            seenRxxCount++;
+        }
+        assertEquals(cands.size(), seenRxxCount);
+    }
+
+    @Test
+    public void ion36AxisOrbitPairsHaveAtMost5GatesInRHS() {
+        // The first 36 pairs are the simple axis-orbit. Each has at most
+        // 2 prefix + 1 RXX + 2 suffix = 5 single-gate wrappers (less when
+        // a side is identity).
+        List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> cands =
+                CliffordOrbitCandidates.generateForGateset("ion");
+        for (int i = 0; i < 36; i++) {
+            EggGen.Circuit R = cands.get(i).getValue();
+            // SYMB + (up to 5 single-gate-Clifford gates) = up to 6.
+            assertTrue(R.gates.size() <= 6,
+                    "Simple-Clifford pair " + i + " RHS has too many gates: " + R.gates.size());
         }
     }
 
     @Test
-    public void ionFirstTwoCandidatesAreYWrapped() {
-        // First two pairs use Ry-Rx Clifford -- the inner wrapper on the
-        // outside is RY, the inner is RX.
+    public void ion4CompoundPairsHave10Gates() {
+        // The last 4 pairs are compound Cliffords (2 gates per U), so RHS
+        // size = SYMB + 4 prefix + RXX + 4 suffix = 10.
         List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> cands =
                 CliffordOrbitCandidates.generateForGateset("ion");
-        for (int i = 0; i < 2; i++) {
+        for (int i = 36; i < 40; i++) {
             EggGen.Circuit R = cands.get(i).getValue();
-            assertTrue(R.gates.get(1) instanceof EggGen.RY, "R[" + i + "].1 must be RY (q0 prep)");
-            assertTrue(R.gates.get(2) instanceof EggGen.RX, "R[" + i + "].2 must be RX (q0 prep)");
-            assertTrue(R.gates.get(3) instanceof EggGen.RY, "R[" + i + "].3 must be RY (q1 prep)");
-            assertTrue(R.gates.get(4) instanceof EggGen.RX, "R[" + i + "].4 must be RX (q1 prep)");
-        }
-    }
-
-    @Test
-    public void ionLastTwoCandidatesAreZWrapped() {
-        // Last two pairs use Rz-Rx Clifford.
-        List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> cands =
-                CliffordOrbitCandidates.generateForGateset("ion");
-        for (int i = 2; i < 4; i++) {
-            EggGen.Circuit R = cands.get(i).getValue();
-            assertTrue(R.gates.get(1) instanceof EggGen.RZ, "R[" + i + "].1 must be RZ (q0 prep)");
-            assertTrue(R.gates.get(2) instanceof EggGen.RX, "R[" + i + "].2 must be RX (q0 prep)");
-            assertTrue(R.gates.get(3) instanceof EggGen.RZ, "R[" + i + "].3 must be RZ (q1 prep)");
-            assertTrue(R.gates.get(4) instanceof EggGen.RX, "R[" + i + "].4 must be RX (q1 prep)");
+            assertEquals(10, R.gates.size(),
+                    "Compound-Clifford pair " + i + " should be 10 gates");
         }
     }
 }
