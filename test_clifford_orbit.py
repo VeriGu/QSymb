@@ -171,9 +171,7 @@ def xx_commutant_basis():
 
 def test_transform_basis_preserves_intertwiner_eq():
     """For each commutant basis element B, the transformed S should satisfy
-    L · S = S · R where R is the orbit image. Convention: `intertwiner_basis`
-    emits matrices satisfying L·S = S·R (verified empirically on asymmetric
-    test pair; we mirror it here for consistency with downstream consumers)."""
+    S · L = R · S (the runtime convention M·L = R·M)."""
     L = RXX(PI/2)
     U_a = Ry(PI/2) * Rx(-PI/2)
     U_b = Ry(-PI/2) * Rx(-PI/2)
@@ -182,8 +180,8 @@ def test_transform_basis_preserves_intertwiner_eq():
     new_basis = semantics.transform_basis(basis, U_a, U_b)
     assert len(new_basis) == len(basis), "basis size changed"
     for i, S in enumerate(new_basis):
-        lhs = L * S
-        rhs = S * R
+        lhs = S * L
+        rhs = R * S
         assert_matrices_equal(lhs, rhs, label=f"transform_basis intertwiner B[{i}]")
     print("PASS: transform_basis_preserves_intertwiner_eq")
 
@@ -377,25 +375,16 @@ def test_priority_candidates_ion_count():
 
 def test_priority_candidates_basis_intertwines_concrete():
     """For each candidate, substitute θ=π/2 in L and R, then verify every
-    basis matrix B satisfies L·B = B·R (the codebase convention).
-
-    This is the strongest correctness check: it bypasses the orbit math and
-    just checks that the emitted (L_circuit, R_circuit, basis) triple is a
-    valid intertwiner rule under the codebase's actual matrix conventions."""
+    basis matrix B satisfies B·L = R·B (the runtime convention M·L = R·M)."""
     cands = semantics.priority_candidates('ion', theta_symbol_name='theta1')
-    theta1 = semantics.theta1  # use the same Symbol the gate library uses
+    theta1 = semantics.theta1
     for cand in cands:
-        # Build L and R matrices at θ=π/2.
         L = _gates_to_matrix(cand['L_gates']).subs(theta1, sympy.pi/2)
-        # R_gates has 'theta1' substituted as a string already; calculate
-        # _circuit_matrix's param conversion will sympify it.
         R = _gates_to_matrix(cand['R_gates']).subs(theta1, sympy.pi/2)
-        # Substitute θ in the basis too (basis is θ-independent for ion's
-        # X⊗X commutant, but be safe).
         for i, B in enumerate(cand['basis']):
             B_at = B.subs(theta1, sympy.pi/2)
-            lhs = L * B_at
-            rhs = B_at * R
+            lhs = B_at * L
+            rhs = R * B_at
             assert_matrices_equal(lhs, rhs,
                 label=f"priority intertwiner [{cand['name']}] basis[{i}]")
         print(f"PASS: priority_candidates_basis_intertwines_concrete [{cand['name']}]")

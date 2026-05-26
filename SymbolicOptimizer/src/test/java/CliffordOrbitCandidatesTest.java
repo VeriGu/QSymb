@@ -59,51 +59,53 @@ public class CliffordOrbitCandidatesTest {
     }
 
     @Test
-    public void ionEveryRHSIsSYMBThenFiveGates() {
-        // RHS shape: [SYMB, ...5-gate-decomp...] -- canonical "SYMB; D" form
-        // (C = ε, D = 5-gate decomposition).
+    public void ionEveryRHSIsSYMBThenNineGates() {
+        // RHS shape: [SYMB, ...9-gate compound-Clifford decomp...] -- the
+        // U pair is a 2-gate Clifford (e.g. Ry(π/2)·Rx(-π/2)), so each
+        // side of the RXX gets 2 prep and 2 unprep gates -> 4 + 1 + 4 = 9.
         List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> cands =
                 CliffordOrbitCandidates.generateForGateset("ion");
         for (SimpleEntry<EggGen.Circuit, EggGen.Circuit> p : cands) {
             EggGen.Circuit R = p.getValue();
-            assertEquals(6, R.gates.size(), "RHS must be SYMB + 5-gate decomp = 6 gates");
+            assertEquals(10, R.gates.size(),
+                    "RHS must be SYMB + 9-gate compound-Clifford decomp = 10 gates");
             assertTrue(R.gates.get(0) instanceof EggGen.SYMB,
                     "RHS[0] must be SYMB");
-            // Middle RXX is at index 3 (SYMB + 2 wrappers + RXX = position 3).
-            assertTrue(R.gates.get(3) instanceof EggGen.RXX,
-                    "RHS[3] must be RXX, got " + R.gates.get(3).getClass().getSimpleName());
-            EggGen.RXX rxx = (EggGen.RXX) R.gates.get(3);
+            // Middle RXX is at index 5 (SYMB + 4 wrappers + RXX).
+            assertTrue(R.gates.get(5) instanceof EggGen.RXX,
+                    "RHS[5] must be RXX, got " + R.gates.get(5).getClass().getSimpleName());
+            EggGen.RXX rxx = (EggGen.RXX) R.gates.get(5);
             assertEquals("q0", rxx.qubit1);
             assertEquals("q1", rxx.qubit2);
         }
     }
 
     @Test
-    public void ionFirstTwoCandidatesAreRyDecomp() {
-        // The first two pairs are the RZZ orbit (via Y-axis conjugation):
-        // wrappers are RY. The other two are RZ-wrapped (RYY orbit).
-        // After the SYMB at index 0, the decomp gates occupy indices 1..5.
+    public void ionFirstTwoCandidatesAreYWrapped() {
+        // First two pairs use Ry-Rx Clifford -- the inner wrapper on the
+        // outside is RY, the inner is RX.
         List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> cands =
                 CliffordOrbitCandidates.generateForGateset("ion");
         for (int i = 0; i < 2; i++) {
             EggGen.Circuit R = cands.get(i).getValue();
-            assertTrue(R.gates.get(1) instanceof EggGen.RY, "R[" + i + "].1 must be RY");
-            assertTrue(R.gates.get(2) instanceof EggGen.RY, "R[" + i + "].2 must be RY");
-            assertTrue(R.gates.get(4) instanceof EggGen.RY, "R[" + i + "].4 must be RY");
-            assertTrue(R.gates.get(5) instanceof EggGen.RY, "R[" + i + "].5 must be RY");
+            assertTrue(R.gates.get(1) instanceof EggGen.RY, "R[" + i + "].1 must be RY (q0 prep)");
+            assertTrue(R.gates.get(2) instanceof EggGen.RX, "R[" + i + "].2 must be RX (q0 prep)");
+            assertTrue(R.gates.get(3) instanceof EggGen.RY, "R[" + i + "].3 must be RY (q1 prep)");
+            assertTrue(R.gates.get(4) instanceof EggGen.RX, "R[" + i + "].4 must be RX (q1 prep)");
         }
     }
 
     @Test
-    public void ionLastTwoCandidatesAreRzDecomp() {
+    public void ionLastTwoCandidatesAreZWrapped() {
+        // Last two pairs use Rz-Rx Clifford.
         List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> cands =
                 CliffordOrbitCandidates.generateForGateset("ion");
         for (int i = 2; i < 4; i++) {
             EggGen.Circuit R = cands.get(i).getValue();
-            assertTrue(R.gates.get(1) instanceof EggGen.RZ, "R[" + i + "].1 must be RZ");
-            assertTrue(R.gates.get(2) instanceof EggGen.RZ, "R[" + i + "].2 must be RZ");
-            assertTrue(R.gates.get(4) instanceof EggGen.RZ, "R[" + i + "].4 must be RZ");
-            assertTrue(R.gates.get(5) instanceof EggGen.RZ, "R[" + i + "].5 must be RZ");
+            assertTrue(R.gates.get(1) instanceof EggGen.RZ, "R[" + i + "].1 must be RZ (q0 prep)");
+            assertTrue(R.gates.get(2) instanceof EggGen.RX, "R[" + i + "].2 must be RX (q0 prep)");
+            assertTrue(R.gates.get(3) instanceof EggGen.RZ, "R[" + i + "].3 must be RZ (q1 prep)");
+            assertTrue(R.gates.get(4) instanceof EggGen.RX, "R[" + i + "].4 must be RX (q1 prep)");
         }
     }
 }

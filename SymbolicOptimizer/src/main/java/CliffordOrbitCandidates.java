@@ -63,10 +63,7 @@ public final class CliffordOrbitCandidates {
         //   left  = [RXX(θ), SYMB]                  (A = RXX, B = ε)
         //   right = [SYMB, ...R_decomp_gates...]     (C = ε, D = R_decomp)
         // compute_L_R then extracts:  L_mat = A · C† = RXX(θ),
-        //                              R_mat = B† · D = R_decomp_matrix
-        // which is exactly what we want. (Without the SYMB markers, the
-        // solver's _circuit_parts raises "Circuit does not contain a 'symb'
-        // gate" and returns no basis.)
+        //                              R_mat = B† · D = R_decomp_matrix.
         EggGen.Circuit L = new EggGen.Circuit(List.of(
                 new EggGen.RXX("q0", "q1", theta1),
                 new EggGen.SYMB(2)
@@ -75,46 +72,94 @@ public final class CliffordOrbitCandidates {
         Expr piHalf = new BinOp(Expr.Op.DIV, new Symbol("pi"), new Real(2.0));
         Expr negPiHalf = new UnOp(Expr.Op.MINUS, piHalf);
 
-        // R = RZZ(θ): conjugation by (Ry(π/2) ⊗ Ry(π/2)). The dagger of Ry(π/2)
-        // is Ry(-π/2), placed BEFORE L in QASM order (left-to-right = applied
-        // first), Ry(π/2) AFTER L.
-        EggGen.Circuit R_RZZ_pos = ionRyDecomp(negPiHalf, negPiHalf, theta1, piHalf, piHalf);
-        // R = RZZ(-θ): conjugation by (Ry(π/2) ⊗ Ry(-π/2)) -- mixed-sign pair.
-        EggGen.Circuit R_RZZ_neg = ionRyDecomp(negPiHalf, piHalf,    theta1, piHalf,    negPiHalf);
-        // R = RYY(θ): conjugation by (Rz(π/2) ⊗ Rz(π/2)).
-        EggGen.Circuit R_RYY_pos = ionRzDecomp(negPiHalf, negPiHalf, theta1, piHalf, piHalf);
-        // R = RYY(-θ): conjugation by (Rz(π/2) ⊗ Rz(-π/2)).
-        EggGen.Circuit R_RYY_neg = ionRzDecomp(negPiHalf, piHalf,    theta1, piHalf,    negPiHalf);
+        // Compound-Clifford pairs (U_a, U_b) with Rx(-π/2) prep -- these match
+        // the wrapper structure produced by ion-native QASM compilers. The
+        // simple Ry/Rz-only pairs (no Rx prep) yielded 0 matches across all
+        // 10 benchmarks; the compound forms below are derived from the
+        // 4gt11_83 manual fit and are designed to catch the same gadget
+        // structure across the benchmark suite.
+        //
+        // Pair "Y anti": U_a (q0, high-order) = Ry(-π/2)·Rx(-π/2),
+        //                U_b (q1, low-order)  = Ry(π/2)·Rx(-π/2).
+        // (The qubit assignment matters: hand-built rule for 4gt11_83 had
+        //  the high-order qubit carrying the negative-Y rotation. Swapping
+        //  q0/q1 here yields a different basis that does NOT cover 4gt11_83.)
+        // Conjugating X⊗X: each U sends X to ∓Z so X⊗X → -ZZ, giving R = RZZ(-θ).
+        EggGen.Circuit R_YX_anti = paired2GateDecomp(
+                "ry", "rx", piHalf,    piHalf,      // q0 prefix: U_a† = ry(π/2); rx(π/2)
+                "ry", "rx", negPiHalf, piHalf,      // q1 prefix: U_b† = ry(-π/2); rx(π/2)
+                theta1,
+                "rx", "ry", negPiHalf, negPiHalf,   // q0 suffix: U_a = rx(-π/2); ry(-π/2)
+                "rx", "ry", negPiHalf, piHalf);     // q1 suffix: U_b = rx(-π/2); ry(π/2)
+
+        // Pair "Y same": U_a = U_b = Ry(π/2)·Rx(-π/2). Gives R = RZZ(+θ).
+        EggGen.Circuit R_YX_same = paired2GateDecomp(
+                "ry", "rx", negPiHalf, piHalf,
+                "ry", "rx", negPiHalf, piHalf,
+                theta1,
+                "rx", "ry", negPiHalf, piHalf,
+                "rx", "ry", negPiHalf, piHalf);
+
+        // Pair "Z anti": U_a = Rz(π/2)·Rx(-π/2), U_b = Rz(-π/2)·Rx(-π/2).
+        // X → Y on q_a, X → -Y on q_b, so X⊗X → Y⊗(-Y) = -YY, R = RYY(-θ).
+        // Predicted to catch Toffoli-decomposition middles in tof_3.
+        EggGen.Circuit R_ZX_anti = paired2GateDecomp(
+                "rz", "rx", negPiHalf, piHalf,
+                "rz", "rx", piHalf,    piHalf,
+                theta1,
+                "rx", "rz", negPiHalf, piHalf,
+                "rx", "rz", negPiHalf, negPiHalf);
+
+        // Pair "Z same": U_a = U_b = Rz(π/2)·Rx(-π/2). Gives R = RYY(+θ).
+        EggGen.Circuit R_ZX_same = paired2GateDecomp(
+                "rz", "rx", negPiHalf, piHalf,
+                "rz", "rx", negPiHalf, piHalf,
+                theta1,
+                "rx", "rz", negPiHalf, piHalf,
+                "rx", "rz", negPiHalf, piHalf);
 
         return new ArrayList<>(Arrays.asList(
-                new SimpleEntry<>(L, R_RZZ_pos),
-                new SimpleEntry<>(L, R_RZZ_neg),
-                new SimpleEntry<>(L, R_RYY_pos),
-                new SimpleEntry<>(L, R_RYY_neg)
+                new SimpleEntry<>(L, R_YX_anti),
+                new SimpleEntry<>(L, R_YX_same),
+                new SimpleEntry<>(L, R_ZX_anti),
+                new SimpleEntry<>(L, R_ZX_same)
         ));
     }
 
-    /** SYMB; ry(a0)q0; ry(a1)q1; rxx(core); ry(b0)q0; ry(b1)q1 */
-    private static EggGen.Circuit ionRyDecomp(Expr a0, Expr a1, Expr core, Expr b0, Expr b1) {
+    /** Build R = (U_a ⊗ U_b) · RXX(θ) · (U_a ⊗ U_b)† where each U is a
+     *  2-gate Clifford composition. The circuit layout is:
+     *    SYMB;
+     *    U_a† on q0 (2 gates);    U_b† on q1 (2 gates);
+     *    RXX(θ);
+     *    U_a  on q0 (2 gates);    U_b  on q1 (2 gates);
+     *  -- so 9 gates total after SYMB.
+     */
+    private static EggGen.Circuit paired2GateDecomp(
+            String aPre0, String aPre1, Expr aPre0Angle, Expr aPre1Angle,   // U_a† gates: gate names and angles
+            String bPre0, String bPre1, Expr bPre0Angle, Expr bPre1Angle,
+            Expr theta,
+            String aSuf0, String aSuf1, Expr aSuf0Angle, Expr aSuf1Angle,   // U_a gates
+            String bSuf0, String bSuf1, Expr bSuf0Angle, Expr bSuf1Angle) {
         return new EggGen.Circuit(List.of(
                 new EggGen.SYMB(2),
-                new EggGen.RY("q0", a0),
-                new EggGen.RY("q1", a1),
-                new EggGen.RXX("q0", "q1", core),
-                new EggGen.RY("q0", b0),
-                new EggGen.RY("q1", b1)
+                mkGate(aPre0, "q0", aPre0Angle),
+                mkGate(aPre1, "q0", aPre1Angle),
+                mkGate(bPre0, "q1", bPre0Angle),
+                mkGate(bPre1, "q1", bPre1Angle),
+                new EggGen.RXX("q0", "q1", theta),
+                mkGate(aSuf0, "q0", aSuf0Angle),
+                mkGate(aSuf1, "q0", aSuf1Angle),
+                mkGate(bSuf0, "q1", bSuf0Angle),
+                mkGate(bSuf1, "q1", bSuf1Angle)
         ));
     }
 
-    /** SYMB; rz(a0)q0; rz(a1)q1; rxx(core); rz(b0)q0; rz(b1)q1 */
-    private static EggGen.Circuit ionRzDecomp(Expr a0, Expr a1, Expr core, Expr b0, Expr b1) {
-        return new EggGen.Circuit(List.of(
-                new EggGen.SYMB(2),
-                new EggGen.RZ("q0", a0),
-                new EggGen.RZ("q1", a1),
-                new EggGen.RXX("q0", "q1", core),
-                new EggGen.RZ("q0", b0),
-                new EggGen.RZ("q1", b1)
-        ));
+    private static EggGen.Gate mkGate(String name, String qubit, Expr angle) {
+        switch (name) {
+            case "rx": return new EggGen.RX(qubit, angle);
+            case "ry": return new EggGen.RY(qubit, angle);
+            case "rz": return new EggGen.RZ(qubit, angle);
+            default: throw new IllegalArgumentException("unknown single-q gate: " + name);
+        }
     }
 }

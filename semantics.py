@@ -339,7 +339,14 @@ def intertwiner_basis(L, R):
     _stage("cancel DONE")
     basis = []
     for v in null:
-        S = sympy.Matrix(n, n, v).subs(back)
+        # K · vec_col(M) = vec_col(M·L - R·M), so null vectors v ARE column-
+        # major vec(M) for M satisfying M·L = R·M (the runtime convention).
+        # sympy's Matrix(n, n, v) reshape is row-major, which transposes a
+        # column-major vec back to M.T. Reshape via transpose to recover M.
+        # (For symmetric M this is a no-op -- which is why existing rules
+        # whose bases are symmetric commutant matrices weren't affected.
+        # Asymmetric bases, like the Clifford-orbit ones, NEED this.)
+        S = sympy.Matrix(n, n, v).T.subs(back)
         # Cheap canonicalization: rewrite to cos/sin form, then cancel common
         # factors. The previous step used `simplify(expand_trig(...))` which
         # made the matrices "pretty" but at huge cost (5000x slower on two-
@@ -577,18 +584,16 @@ def transform_basis(basis, U_a, U_b):
     """Transform a commutant basis {B_i} into the intertwiner basis for the
     orbit image R = (U_a ⊗ U_b) · L · (U_a ⊗ U_b)†.
 
-    Codebase convention (matches `intertwiner_basis`): basis matrices satisfy
-    L · S = S · R (this is what is_subspace_linear_combination accepts at
-    runtime, and what compute_L_R / intertwiner_basis emit).
+    Runtime convention (matches `intertwiner_basis` after the transpose fix
+    and what is_subspace_linear_combination accepts): basis matrices M
+    satisfy M · L = R · M.
 
-    Derivation: if B_i commutes with L, then S_i = B_i · (U_a ⊗ U_b)†
-    satisfies L · S_i = S_i · R:
-        L · S_i = L · B_i · (U_a⊗U_b)†
-                = B_i · L · (U_a⊗U_b)†
-        S_i · R = B_i · (U_a⊗U_b)† · (U_a⊗U_b) · L · (U_a⊗U_b)†
-                = B_i · L · (U_a⊗U_b)†
+    Derivation for R = U·L·U† (where U = U_a ⊗ U_b):
+        M · L = R · M = U·L·U†·M
+        => U†·M·L = L·U†·M    (multiply left by U†)
+        => Let T = U†·M, then T·L = L·T (T in commutant of L), and M = U·T.
 
-    So the transformation right-multiplies by (U_a ⊗ U_b)†.
+    So basis = {U·C : C ∈ commutant(L)} — left-multiply by (U_a ⊗ U_b).
 
     Args:
         basis (list[sympy.Matrix]): 4×4 commutant basis matrices for L.
@@ -598,8 +603,7 @@ def transform_basis(basis, U_a, U_b):
         list[sympy.Matrix]: transformed basis.
     """
     UU = sympy.kronecker_product(U_a, U_b)
-    UU_dag = UU.H
-    return [B * UU_dag for B in basis]
+    return [UU * B for B in basis]
 
 
 def have_same_eigenvalues(matrix1, matrix2):
