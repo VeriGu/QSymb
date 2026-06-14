@@ -142,7 +142,7 @@ public class Params {
      * step in optimize_SA splits the circuit into sequential chunks and
      * processes each chunk independently to avoid OOM / hangs in egglog.
      */
-    public static int EGRAPH_CHUNK_THRESHOLD = 5000;
+    public static int EGRAPH_CHUNK_THRESHOLD = 2000;
     /**
      * Number of gates per chunk when chunking is active.
      */

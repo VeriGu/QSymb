@@ -602,11 +602,13 @@ public class EnumeratorPrune {
                 Set<String> symbols2 = new HashSet<>();
                 cce1.getAllSymbols(symbols1);
                 cce2.getAllSymbols(symbols2);
-                Set<String> qubitVars = new HashSet<>();
-                Set<String> qubitVars2 = new HashSet<>();
-                cce1.getQubitVars(qubitVars);
-                cce2.getQubitVars(qubitVars2);
-                if (!(symbols1.containsAll(symbols2) && symbols2.containsAll(symbols1) && qubitVars.containsAll(qubitVars2))) {
+                // Require the two sides to use the SAME angle symbols (a symbolic
+                // rule can't introduce/drop a free angle), but do NOT require one
+                // side's qubit set to contain the other's. An intertwiner can route
+                // an operator across qubits (e.g. Z_q1 -> Z_q0), so L and R may live
+                // on disjoint single-qubit supports. The only qubit constraint is the
+                // union bound, already enforced above (allQubits.size() > MAX_QUBITS).
+                if (!(symbols1.containsAll(symbols2) && symbols2.containsAll(symbols1))) {
                   rejSymbols.incrementAndGet();
                   return;
                 }
@@ -760,14 +762,14 @@ public class EnumeratorPrune {
           for (String s : uniqueOrder) {
             egg.addConstrainedCircuit(uniqueCircuits.get(s));
           }
-          // Const-eval needs a turn so symbolic-cancellation simplifications
-          // (e.g. theta + -theta -> 0) close the loop with wire's rz(0) -> e
-          // and let the e-graph prove rz(theta);rz(-theta) ≡ e on its own --
-          // otherwise the enumerator re-discovers baseline cancellations.
-          egg.runN("const", 5);
+          // Const-eval (via runN's pre/post const pass) + the schedule order
+          // close the loop: merge folds rz(t1);rz(t2) into rz(t1+t2), const
+          // evaluates t1+t2 to Real 0.0 when applicable, then the second
+          // wire pass applies rz(0) -> e. Without the second wire pass,
+          // rz(pi/2);rz(-pi/2) -> empty is not derivable and the enumerator
+          // re-learns the baseline cancellation.
           egg.runN("wire", 5);
           egg.runN("merge", 5);
-          egg.runN("const", 5);
           egg.runN("wire", 5);
           egg.runN("opt", 5);
           for (int k = 0; k < pairKeys.size(); k++) {
@@ -1653,7 +1655,7 @@ public class EnumeratorPrune {
           String[] gates = {"x", "h", "rz", "cx"};
           Expr[] symbAngles = {
                   new Symbol("theta1"),
-                  // new Symbol("theta2")
+                  new Symbol("theta2"),
           };
           enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset, genSymb);
           break;
@@ -1707,9 +1709,8 @@ public class EnumeratorPrune {
                     String[] gates = {"cx", "rz", "x", "sx"};
                     Expr[] symbAngles = {
                             new Symbol("theta1"),
-                            //new Symbol("theta2"),
-                            //new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2")),
-                            //new BinOp(Op.DIV, new Symbol("pi"), new Real(2))
+                            new BinOp(Op.DIV, new Symbol("pi"), new Real(2)),
+                            new UnOp(Op.MINUS, new BinOp(Op.DIV, new Symbol("pi"), new Real(2)))
                     };
             enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset, genSymb);
             break;

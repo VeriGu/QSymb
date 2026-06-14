@@ -187,21 +187,24 @@ public class EggGen {
         // content.append("(rewrite (BinOp (DIV) (UnOp (MINUS) (Symbol x)) (Real y)) (BinOp (MULT) (Real (/ -1.0 y)) (Symbol x)) :ruleset const)\n");
         content.append("(rewrite (UnOp (MINUS) (Real y)) (Real (- 0.0 y)) :ruleset const)\n");
         content.append("(rewrite (UnOp (MINUS) (UnOp (MINUS) y)) y :ruleset const)\n");
+        // Any Real also has a (UnOp MINUS Real -y) representation so that
+        // rule patterns like (UnOp MINUS theta) can match plain Real angles.
+        // Without this, a rule like `rz(theta); x -> x; rz(-theta)` (line 5
+        // of rule_copy.txt) fires forward but its reverse direction's LHS
+        // `x; rz(UnOp MINUS theta)` cannot match a circuit containing
+        // `rz(Real 1.57)` -- the patterns are structurally distinct.
         // Symbolic cancellation: x + (-x) -> 0 (and reverse). With merge giving
         // rz(theta);rz(-theta) -> rz(theta + -theta) and wire's rz(0) -> e,
         // adding this closes the loop so e-saturation proves the identity,
         // making the enumerator skip it as redundant.
         content.append("(rewrite (BinOp (PLUS) x (UnOp (MINUS) x)) (Real 0.0) :ruleset const)\n");
         content.append("(rewrite (BinOp (PLUS) (UnOp (MINUS) x) x) (Real 0.0) :ruleset const)\n");
-        // Normalize Real angles modulo 4π so g(4π) ≡ g(0) etc. The Euclidean
-        // mod formula ((x % 4π) + 4π) % 4π lands in [0, 4π); rules only fire
-        // when x is outside that range so saturation terminates.
-        content.append("(rule ((= e (Real x)) (>= x 12.566370614359172))\n" +
-                       "      ((union e (Real (% (+ (% x 12.566370614359172) 12.566370614359172) 12.566370614359172))))\n" +
-                       "      :ruleset const)\n");
-        content.append("(rule ((= e (Real x)) (< x 0.0))\n" +
-                       "      ((union e (Real (% (+ (% x 12.566370614359172) 12.566370614359172) 12.566370614359172))))\n" +
-                       "      :ruleset const)\n");
+        // Normalize Real angles modulo 2π (projective equivalence; the
+        // Verifier ignores global phase). Euclidean mod ((x % 2π) + 2π) % 2π
+        // lands in [0, 2π); rules only fire when x is outside that range so
+        // saturation terminates.
+        content.append("(rule ((= e (Real x)) (>= x 6.283185307179586)) ((union e (Real (% (+ (% x 6.283185307179586) 6.283185307179586) 6.283185307179586)))) :ruleset const)\n");
+        content.append("(rule ((= e (Real x)) (< x 0.0)) ((union e (Real (% (+ (% x 6.283185307179586) 6.283185307179586) 6.283185307179586)))) :ruleset const)\n");
         //content.append("(rewrite (BinOp (PLUS) x y) (BinOp (PLUS) y x) :ruleset const)\n");
         content.append("(ruleset wire)\n");
         // content.append("(union (Symbol \"pi\") (Real 3.141592653589793238))\n");
@@ -292,6 +295,11 @@ public class EggGen {
     // multiple Optimizer JVMs run in parallel from the same cwd and would
     // otherwise race on a shared egg_run.egg.
     private final java.util.List<String> commandLog = new java.util.ArrayList<>();
+    // Set true whenever a command actually hit the per-command timeout (the
+    // killer task force-killed egglog). Lets callers like runN report whether a
+    // saturation depth was too slow, which the optimizer uses to size a dynamic
+    // slow-start max depth. Reset by the caller before the command of interest.
+    private volatile boolean timeoutOccurred = false;
 
     public String sendCommand(String command) {
         return sendCommand(command, false);
@@ -351,6 +359,7 @@ public class EggGen {
             @Override public void run() {
                 if (proc.isAlive()) {
                     logger.warn("egglog command timeout (" + ms + "ms), killing process");
+                    timeoutOccurred = true;
                     proc.destroyForcibly();
                 }
             }
@@ -593,11 +602,15 @@ public class EggGen {
     public void addRewrite(String rule){
         if(!rules.contains(rule)) {
             long startTime = System.nanoTime();
-            
-            //System.out.println("Egg: Add Rewrite Rule:" + rule);
             rules.add(rule);
             String output = sendCommand(rule);
-            //System.out.println("Egg: Add Rewrite Rule Output:" + output);
+            // Surface egglog rule-registration failures (unbound vars,
+            // syntax errors). Keep them — they're rare and high-signal —
+            // but don't log every successful add.
+            if (output != null && (output.contains("Error") || output.contains("error")
+                                    || output.contains("ERROR") || output.contains("Unbound"))) {
+                System.out.println("[EGGLOG-ERR] rule=" + rule);
+            }
             addRewriteRuleTime += System.nanoTime() - startTime;
         }
     }
@@ -691,7 +704,81 @@ public class EggGen {
         return processedRules;
     }
 
+    // Collect every variable (qubit name + angle Var) appearing in a circuit.
+    // Used by addOptRule to decide whether birewrite is safe.
+    private static Set<String> collectAllVars(Circuit c) {
+        Set<String> vars = new HashSet<>();
+        for (Gate g : c.gates) {
+            if (g instanceof X)        { vars.add(((X) g).qubit); }
+            else if (g instanceof H)   { vars.add(((H) g).qubit); }
+            else if (g instanceof SX)  { vars.add(((SX) g).qubit); }
+            else if (g instanceof RZ)  { vars.add(((RZ) g).qubit); collectExprVars(((RZ) g).angle, vars); }
+            else if (g instanceof RX)  { vars.add(((RX) g).qubit); collectExprVars(((RX) g).angle, vars); }
+            else if (g instanceof RY)  { vars.add(((RY) g).qubit); collectExprVars(((RY) g).angle, vars); }
+            else if (g instanceof U1)  { vars.add(((U1) g).qubit); collectExprVars(((U1) g).lambda, vars); }
+            else if (g instanceof U2)  { vars.add(((U2) g).qubit); collectExprVars(((U2) g).phi, vars); collectExprVars(((U2) g).lambda, vars); }
+            else if (g instanceof U3)  { vars.add(((U3) g).qubit); collectExprVars(((U3) g).theta, vars); collectExprVars(((U3) g).phi, vars); collectExprVars(((U3) g).lambda, vars); }
+            else if (g instanceof GPI) { vars.add(((GPI) g).qubit); collectExprVars(((GPI) g).phi, vars); }
+            else if (g instanceof GPI2){ vars.add(((GPI2) g).qubit); collectExprVars(((GPI2) g).phi, vars); }
+            else if (g instanceof VZ)  { vars.add(((VZ) g).qubit); collectExprVars(((VZ) g).theta, vars); }
+            else if (g instanceof CX)  { vars.add(((CX) g).control); vars.add(((CX) g).target); }
+            else if (g instanceof CZ)  { vars.add(((CZ) g).control); vars.add(((CZ) g).target); }
+            else if (g instanceof RXX) { vars.add(((RXX) g).qubit1); vars.add(((RXX) g).qubit2); collectExprVars(((RXX) g).angle, vars); }
+            else if (g instanceof MS)  { vars.add(((MS) g).qubit1); vars.add(((MS) g).qubit2); collectExprVars(((MS) g).phi1, vars); collectExprVars(((MS) g).phi2, vars); }
+        }
+        return vars;
+    }
+
+    private static void collectExprVars(ast.Expr e, Set<String> vars) {
+        if (e == null) return;
+        if (e instanceof ast.Var) { vars.add(((ast.Var) e).getId()); return; }
+        if (e instanceof ast.Symbol) {
+            // Rule files use Symbols like "theta", "theta1" for free angle
+            // variables; replaceSymbolWithVar turns them into Vars at
+            // egglog-emit time, so for groundedness purposes they must be
+            // treated as variables here. The string "pi" is a real constant,
+            // not a variable.
+            String s = ((ast.Symbol) e).getSymbol();
+            if (!s.equals("pi")) vars.add(s);
+            return;
+        }
+        if (e instanceof ast.UnOp) { collectExprVars(((ast.UnOp) e).getE(), vars); return; }
+        if (e instanceof ast.BinOp) {
+            collectExprVars(((ast.BinOp) e).getE1(), vars);
+            collectExprVars(((ast.BinOp) e).getE2(), vars);
+            return;
+        }
+        if (e instanceof ast.Fun) { collectExprVars(((ast.Fun) e).getArg(), vars); return; }
+        // Real, Bool — no vars.
+    }
+
     public void addOptRule(Rule r, String ruleset, String type) {
+        // If caller asked for birewrite, check that BOTH directions are
+        // groundable — every variable on a rule's RHS must be bound by
+        // its LHS, otherwise egglog rejects with "ungrounded variable" and
+        // the rule is silently lost. Both qubit vars and angle vars
+        // (theta, theta1, ...) must be checked. Downgrade to one-way
+        // rewrite when only one direction is groundable.
+        if ("birewrite".equals(type)) {
+            Set<String> lhsVars = collectAllVars(r.lhs);
+            Set<String> rhsVars = collectAllVars(r.rhs);
+            // Forward direction LHS→RHS is groundable iff all RHS vars
+            // are bound by LHS.
+            boolean forwardOk = lhsVars.containsAll(rhsVars);
+            // Reverse direction RHS→LHS is groundable iff all LHS vars
+            // are bound by RHS.
+            boolean reverseOk = rhsVars.containsAll(lhsVars);
+            if (forwardOk && !reverseOk) {
+                type = "rewrite";  // keep forward, drop reverse
+            } else if (!forwardOk && reverseOk) {
+                r = new Rule(r.rhs, r.lhs, r.conditions);  // swap so the OK direction is forward
+                type = "rewrite";
+            } else if (!forwardOk && !reverseOk) {
+                logger.warn("addOptRule: neither direction is groundable, dropping rule lhs={} rhs={}",
+                        r.lhs.toQASM(), r.rhs.toQASM());
+                return;
+            }
+        }
         List<Rule.Equality> equalities = r.getEqualities();
         String egg_rule = String.format("(%s %s %s %s :ruleset %s)", type, EggGen.circuitToGeneralizedOnlyRemoveQ(r.lhs, "c"), EggGen.circuitToGeneralizedOnlyRemoveQ(r.rhs, "c"), ":when (" + equalities.stream().map(e -> String.format("(%s %s %s)",  e.isEqual ? "=" : "!=", e.qubit1, e.qubit2)).collect(Collectors.joining(" ")) + ")", ruleset);
         addRewrite(egg_rule);
@@ -1256,9 +1343,16 @@ public class EggGen {
         sendCommand(String.format("(extract %s)\n", eclass), true);
     }
 
-    public void runN(String ruleset, int n) {
-        String output = sendCommand(String.format("(run-schedule (repeat %d (saturate (run const)) (run %s)))", n, ruleset));
-        //System.out.println("Run N: " + output);
+    // Returns false if the bounded saturation hit the per-command timeout (egglog
+    // was force-killed), true if it completed normally. Callers that don't care
+    // can ignore the result.
+    public boolean runN(String ruleset, int n) {
+        sendCommand("(run-schedule (run const))");
+        timeoutOccurred = false;
+        sendCommand(String.format("(run-schedule (repeat %d (run %s)))", n, ruleset));
+        boolean ok = !timeoutOccurred;
+        sendCommand("(run-schedule (run const))");
+        return ok;
     }
 
     public void runSchedule(String ruleset1, String ruleset2, String ruleset3, String ruleset4, int rounds, int n1,int n2, int n3, int n4) {
@@ -1267,8 +1361,11 @@ public class EggGen {
     }
 
     public void runBackoff(String ruleset, int n) {
-        String output = sendCommand(String.format("(run-schedule (let-scheduler bo (back-off)) (repeat %d (saturate (run const)) (run-with bo %s)))", n, ruleset));
-        //System.out.println("Run Backoff Output: " + output);
+        // Same const-handling as runN: bounded (run const 1) pre and post,
+        // no per-iteration saturate-const cascade.
+        sendCommand("(run-schedule (run const))");
+        sendCommand(String.format("(run-schedule (let-scheduler bo (back-off)) (repeat %d (run-with bo %s)))", n, ruleset));
+        sendCommand("(run-schedule (run const))");
     }
     public void runSaturation() {
         long startTime = System.nanoTime();

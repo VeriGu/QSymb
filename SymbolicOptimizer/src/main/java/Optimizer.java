@@ -2975,7 +2975,13 @@ public class Optimizer {
         }
         q.add(optimized);
         SymbolicThread symbolicThread = null;
-        int EGRAPH_MAX_DEPTH = 6;
+        // Dynamic slow-start for egraph saturation depth: start at 1 and grow one
+        // step each stage that saturates within the egglog timeout. The first
+        // stage that times out freezes the depth at the last value that fit,
+        // self-sizing the max iterations for large circuits instead of a fixed
+        // constant. (See EggGen.runN, which returns false on timeout.)
+        int egraphDepth = 1;
+        boolean egraphDepthFrozen = false;
         while(!q.isEmpty()) {
             logger.debug("Current Depth: {}", k);
             egraph.push();
@@ -3049,9 +3055,9 @@ public class Optimizer {
                     }
                 }
             }
-            if(q.size() > Params.QUEUE_SIZE+5) {
+            if(q.size() > Params.QUEUE_SIZE+1) {
                 PriorityQueue<CircuitDAG> newQ = new PriorityQueue<>(new CircuitComparator(Params.OPTIMIZATION_OBJECTIVE));
-                while(newQ.size() != Params.QUEUE_SIZE+5) {
+                while(newQ.size() != Params.QUEUE_SIZE+1) {
                     newQ.add(q.poll());
                 }
                 q = newQ;
@@ -3091,9 +3097,13 @@ public class Optimizer {
                 }
             }
 
+            logger.info("[STAGE longrule k={}] 2q {} -> {}  total {} -> {}", k,
+                    c.cost(CircuitDAG.OptObj.TWO_Q), glob_candidate.cost(CircuitDAG.OptObj.TWO_Q),
+                    c.cost(CircuitDAG.OptObj.TOTAL), glob_candidate.cost(CircuitDAG.OptObj.TOTAL));
             EggGen.Circuit parsedFull = QASMAstBuilder.parse(glob_candidate.toQASM());
             int totalGatesForEgraph = parsedFull.gates.size();
             CircuitDAG candidateDAG;
+            boolean stageEgraphOk = true;
             if (totalGatesForEgraph > Params.EGRAPH_CHUNK_THRESHOLD) {
                 logger.debug("Chunked egraph: {} gates -> chunk size {}", totalGatesForEgraph, Params.EGRAPH_CHUNK_SIZE);
                 List<EggGen.Gate> optimizedGates = new ArrayList<>();
@@ -3114,7 +3124,7 @@ public class Optimizer {
                         egraph.pop();
                         logger.debug("Rotation Merged");
                         chunkName = egraph.addCircuit(temp);
-                        egraph.runN("opt1", EGRAPH_MAX_DEPTH);
+                        if (!egraph.runN("opt1", egraphDepth)) stageEgraphOk = false;
                         EggGen.Circuit optChunk = egraph.extractCircuit(chunkName);
                         if (optChunk != null && optChunk.gates != null) {
                             optimizedGates.addAll(optChunk.gates);
@@ -3143,7 +3153,7 @@ public class Optimizer {
 
                 name = egraph.addCircuit(temp);
                 logger.debug("Rotation Merged");
-                egraph.runN("opt1", EGRAPH_MAX_DEPTH);
+                if (!egraph.runN("opt1", egraphDepth)) stageEgraphOk = false;
                 EggGen.Circuit candidate0 = egraph.extractCircuit(name);
                 CircuitDAG iterDAG0 = QASMToDAGVisitor.parse(candidate0.toQASM());
                 logger.debug("Total Size: " + iterDAG0.totalGateCount());
@@ -3153,6 +3163,21 @@ public class Optimizer {
                 candidateDAG = QASMToDAGVisitor.parse(candidate.toQASM());
                 logger.debug("ESAT Candidate Cost: " + candidateDAG.cost(Params.OPTIMIZATION_OBJECTIVE));
             }
+            if (!egraphDepthFrozen) {
+                if (!stageEgraphOk) {
+                    int timedOutDepth = egraphDepth;
+                    egraphDepth = Math.max(1, egraphDepth - 1);
+                    egraphDepthFrozen = true;
+                    logger.info("[EGRAPH-DEPTH] timeout at depth {}, freezing dynamic max at {}",
+                            timedOutDepth, egraphDepth);
+                } else {
+                    egraphDepth++;
+                    logger.debug("[EGRAPH-DEPTH] stage ok, growing dynamic max to {}", egraphDepth);
+                }
+            }
+            logger.info("[STAGE egglog k={}] 2q {} -> {}  total {} -> {}", k,
+                    glob_candidate.cost(CircuitDAG.OptObj.TWO_Q), candidateDAG.cost(CircuitDAG.OptObj.TWO_Q),
+                    glob_candidate.cost(CircuitDAG.OptObj.TOTAL), candidateDAG.cost(CircuitDAG.OptObj.TOTAL));
             q.add(candidateDAG);
             glob_candidate = candidateDAG;
             
