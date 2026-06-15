@@ -295,6 +295,15 @@ public class EggGen {
     // multiple Optimizer JVMs run in parallel from the same cwd and would
     // otherwise race on a shared egg_run.egg.
     private final java.util.List<String> commandLog = new java.util.ArrayList<>();
+    // Number of leading commandLog entries that constitute one-time SETUP
+    // (schema + ruleset declarations + const rewrites + pre-loop commutative
+    // opt1 rules). restartEgglog() replays ONLY this prefix; everything after
+    // is per-stage scratch the SA loop reconstructs itself. 0 = not marked yet
+    // (restart then falls back to full replay, e.g. enumeration-phase EggGen).
+    private volatile int setupLogEnd = 0;
+    // Snapshot the current commandLog length as the end of one-time setup. The
+    // optimizer calls this once, right before entering the SA stage loop.
+    public void markSetupEnd() { setupLogEnd = commandLog.size(); }
     // Set true whenever a command actually hit the per-command timeout (the
     // killer task force-killed egglog). Lets callers like runN report whether a
     // saturation depth was too slow, which the optimizer uses to size a dynamic
@@ -335,6 +344,10 @@ public class EggGen {
             } catch (IOException e) {
                 lastErr = e;
             }
+            // Any restart -- killer timeout, crash, or broken pipe -- means the
+            // command was too expensive / unstable; surface it for the dynamic
+            // depth slow-start (the killer path alone missed crash-restarts).
+            timeoutOccurred = true;
             try {
                 restartEgglog();
             } catch (IOException restartFail) {
@@ -372,7 +385,19 @@ public class EggGen {
     }
 
     private void restartEgglog() throws IOException {
-        logger.warn("Restarting egglog and replaying " + commandLog.size() + " commands");
+        // Replay only the SETUP prefix (schema datatypes/functions + ruleset
+        // declarations + the const rewrites + the pre-loop commutative opt1
+        // rules), never the full per-stage history. Everything after
+        // setupLogEnd (addCircuit / run-schedule / push / pop / fingerprints)
+        // is per-stage scratch inside a push/pop scope; the SA loop re-adds its
+        // own circuit and rules next stage, so replaying it is pure waste and
+        // was the thing wedging us (replaying prior heavy run-schedules with no
+        // timeout). setupLogEnd <= 0 means markSetupEnd() was never called, so
+        // fall back to the whole log (e.g. enumeration-phase EggGen instances).
+        int replayUpto = (setupLogEnd > 0) ? Math.min(setupLogEnd, commandLog.size())
+                                           : commandLog.size();
+        logger.warn("Restarting egglog and replaying " + replayUpto + " setup commands"
+                + " (skipping " + (commandLog.size() - replayUpto) + " per-stage commands)");
         if (egglogProcess != null) {
             egglogProcess.destroyForcibly();
             try { egglogProcess.waitFor(); } catch (InterruptedException ignored) {
@@ -380,15 +405,18 @@ public class EggGen {
             }
         }
         startEgglogREPL();
-        if (!commandLog.isEmpty()) {
-            for (String cmd : commandLog) {
-                processInput.write(cmd);
+        if (replayUpto > 0) {
+            for (int i = 0; i < replayUpto; i++) {
+                processInput.write(commandLog.get(i));
                 processInput.newLine();
             }
             processInput.write("(print-function done :mode csv)");
             processInput.newLine();
             processInput.flush();
-            readOutput();   // drain replay output
+            // Bound the replay drain the same way as a normal command: a fresh
+            // egglog reloading only the setup prefix is cheap, but never let it
+            // hang unbounded (the old bare readOutput() could wedge forever).
+            readOutputWithTimeout(EGGLOG_COMMAND_TIMEOUT_MS);
         }
     }
 
@@ -1343,17 +1371,20 @@ public class EggGen {
         sendCommand(String.format("(extract %s)\n", eclass), true);
     }
 
-    // Returns false if the bounded saturation hit the per-command timeout (egglog
-    // was force-killed), true if it completed normally. Callers that don't care
-    // can ignore the result.
-    public boolean runN(String ruleset, int n) {
+    public void runN(String ruleset, int n) {
         sendCommand("(run-schedule (run const))");
-        timeoutOccurred = false;
         sendCommand(String.format("(run-schedule (repeat %d (run %s)))", n, ruleset));
-        boolean ok = !timeoutOccurred;
         sendCommand("(run-schedule (run const))");
-        return ok;
     }
+
+    // Timeout/restart tracking for the dynamic egraph-depth slow-start. The
+    // caller resets the flag right before an opt1 saturation, then reads it
+    // right after: true means egglog had to be restarted for ANY reason during
+    // that window (per-command kill, crash, or broken pipe), i.e. that depth was
+    // too expensive. This is more reliable than watching only the kill path,
+    // which missed crash-restarts and let depth grow unbounded.
+    public void resetTimeoutFlag() { timeoutOccurred = false; }
+    public boolean timedOut() { return timeoutOccurred; }
 
     public void runSchedule(String ruleset1, String ruleset2, String ruleset3, String ruleset4, int rounds, int n1,int n2, int n3, int n4) {
         String output = sendCommand(String.format("(run-schedule (let-scheduler bo (back-off)) (repeat %d (repeat %d (run  %s)) (repeat %d (run %s)) (repeat %d (run %s)) (repeat %d (run %s))))", rounds, n1, ruleset1, n2, ruleset2, n3, ruleset3, n4, ruleset4));

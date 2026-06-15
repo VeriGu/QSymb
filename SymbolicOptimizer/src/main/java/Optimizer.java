@@ -2975,13 +2975,25 @@ public class Optimizer {
         }
         q.add(optimized);
         SymbolicThread symbolicThread = null;
-        // Dynamic slow-start for egraph saturation depth: start at 1 and grow one
-        // step each stage that saturates within the egglog timeout. The first
-        // stage that times out freezes the depth at the last value that fit,
-        // self-sizing the max iterations for large circuits instead of a fixed
-        // constant. (See EggGen.runN, which returns false on timeout.)
+        // Dynamic slow-start for egraph opt1 saturation depth: start at 1 and
+        // grow one step each stage whose opt1 run completes without forcing an
+        // egglog restart. The FIRST stage whose opt1 times out freezes the depth
+        // at N-1 (the last value that fit) and latches -- a one-time calibration,
+        // never recomputed. Self-sizes the iteration count per circuit instead of
+        // a fixed constant. (Timeout detected via EggGen.resetTimeoutFlag/timedOut
+        // around the opt1 call; const/merge are one-shot pre-passes, not counted.)
+        // EGRAPH_DEPTH_CEILING is a hard backstop: small/isolated circuits that
+        // never crash would otherwise climb forever, paying superlinear per-stage
+        // cost for diminishing returns. On reaching the ceiling we latch frozen
+        // (one-time, same as the timeout path) so depth stays put.
+        final int EGRAPH_DEPTH_CEILING = 12;
         int egraphDepth = 1;
         boolean egraphDepthFrozen = false;
+        // Everything sent so far (schema + ruleset decls + const rewrites +
+        // the commutative opt1 rules added just above) is one-time setup. Mark
+        // it so an egglog restart replays ONLY this prefix, never the per-stage
+        // history that follows.
+        egraph.markSetupEnd();
         while(!q.isEmpty()) {
             logger.debug("Current Depth: {}", k);
             egraph.push();
@@ -3104,6 +3116,11 @@ public class Optimizer {
             int totalGatesForEgraph = parsedFull.gates.size();
             CircuitDAG candidateDAG;
             boolean stageEgraphOk = true;
+            // Reset once for the whole stage: a too-deep opt1 doesn't always time
+            // out inside the opt1 command itself -- it bloats the e-graph so the
+            // surrounding addCircuit/merge/extract restarts instead. Watch the
+            // entire stage's egraph work so any restart at this depth is caught.
+            egraph.resetTimeoutFlag();
             if (totalGatesForEgraph > Params.EGRAPH_CHUNK_THRESHOLD) {
                 logger.debug("Chunked egraph: {} gates -> chunk size {}", totalGatesForEgraph, Params.EGRAPH_CHUNK_SIZE);
                 List<EggGen.Gate> optimizedGates = new ArrayList<>();
@@ -3124,7 +3141,7 @@ public class Optimizer {
                         egraph.pop();
                         logger.debug("Rotation Merged");
                         chunkName = egraph.addCircuit(temp);
-                        if (!egraph.runN("opt1", egraphDepth)) stageEgraphOk = false;
+                        egraph.runN("opt1", egraphDepth);
                         EggGen.Circuit optChunk = egraph.extractCircuit(chunkName);
                         if (optChunk != null && optChunk.gates != null) {
                             optimizedGates.addAll(optChunk.gates);
@@ -3143,25 +3160,37 @@ public class Optimizer {
                 logger.debug("Chunked ESAT Candidate Cost: " + candidateDAG.cost(Params.OPTIMIZATION_OBJECTIVE));
             } else {
                 // Pre-pass: collapse adjacent same-axis rotations into a single
-                // gate before main equality saturation runs.
-                egraph.push();
-                String name = egraph.addCircuit(parsedFull);
-                egraph.runN("const", 1);
-                egraph.runN("merge", 1);
-                EggGen.Circuit temp = egraph.extractCircuit(name);
-                egraph.pop();
+                // gate before main equality saturation runs. Wrapped so a mid-
+                // stage egglog restart (which resets state to the setup prefix
+                // and makes the extracts return stale/null) abandons the stage
+                // by keeping the input circuit instead of NPE-crashing the run.
+                candidateDAG = glob_candidate;
+                try {
+                    egraph.push();
+                    String name = egraph.addCircuit(parsedFull);
+                    egraph.runN("const", 1);
+                    egraph.runN("merge", 1);
+                    EggGen.Circuit temp = egraph.extractCircuit(name);
+                    egraph.pop();
 
-                name = egraph.addCircuit(temp);
-                logger.debug("Rotation Merged");
-                if (!egraph.runN("opt1", egraphDepth)) stageEgraphOk = false;
-                EggGen.Circuit candidate0 = egraph.extractCircuit(name);
-                CircuitDAG iterDAG0 = QASMToDAGVisitor.parse(candidate0.toQASM());
-                logger.debug("Total Size: " + iterDAG0.totalGateCount());
-                logger.debug("Current Candidate: " + candidate0.toQASM());
-                logger.debug("ESAT Candidate Cost: " + iterDAG0.cost(Params.OPTIMIZATION_OBJECTIVE));
-                EggGen.Circuit candidate = egraph.extractCircuit(name);
-                candidateDAG = QASMToDAGVisitor.parse(candidate.toQASM());
-                logger.debug("ESAT Candidate Cost: " + candidateDAG.cost(Params.OPTIMIZATION_OBJECTIVE));
+                    name = egraph.addCircuit(temp);
+                    logger.debug("Rotation Merged");
+                    egraph.runN("opt1", egraphDepth);
+                    EggGen.Circuit candidate = egraph.extractCircuit(name);
+                    candidateDAG = QASMToDAGVisitor.parse(candidate.toQASM());
+                    logger.debug("ESAT Candidate Cost: " + candidateDAG.cost(Params.OPTIMIZATION_OBJECTIVE));
+                } catch (Exception ex) {
+                    logger.warn("Non-chunked egraph failed: {} - keeping input circuit",
+                            ex.getClass().getSimpleName());
+                    candidateDAG = glob_candidate;
+                }
+            }
+            if (egraph.timedOut()) {
+                // egglog was restarted mid-stage: its state is the setup prefix
+                // only, so any extract above is stale. Abandon this stage's
+                // egraph result -- keep the input circuit unchanged.
+                stageEgraphOk = false;
+                candidateDAG = glob_candidate;
             }
             if (!egraphDepthFrozen) {
                 if (!stageEgraphOk) {
@@ -3170,6 +3199,9 @@ public class Optimizer {
                     egraphDepthFrozen = true;
                     logger.info("[EGRAPH-DEPTH] timeout at depth {}, freezing dynamic max at {}",
                             timedOutDepth, egraphDepth);
+                } else if (egraphDepth >= EGRAPH_DEPTH_CEILING) {
+                    egraphDepthFrozen = true;
+                    logger.info("[EGRAPH-DEPTH] hit ceiling, freezing dynamic max at {}", egraphDepth);
                 } else {
                     egraphDepth++;
                     logger.debug("[EGRAPH-DEPTH] stage ok, growing dynamic max to {}", egraphDepth);
@@ -3204,7 +3236,12 @@ public class Optimizer {
                 }
             }
 
-            egraph.pop();
+            // After a mid-stage restart egglog is back at base scope with no
+            // open push, so the matching pop would underflow -- skip it. The
+            // next stage opens its own balanced push/pop.
+            if (!egraph.timedOut()) {
+                egraph.pop();
+            }
             k++;
 
             long endTime = System.nanoTime();
