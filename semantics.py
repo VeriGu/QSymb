@@ -893,7 +893,16 @@ def check_rule_not_affect_other_qubits(circuit_json, L_json, qubits_to_check):
 
 def is_subspace_linear_combination(circuit_json, sparse_basis, qubits_to_check, symbol_map=None):
     """
-    Checks if the circuit's transformation on a subset of qubits is a linear combination of a given basis.
+    Exact lifted-basis check for the symbolic-rule constraint S |= M.
+
+    The matched window acts on the rule qubits (canonicalized by the Java side
+    to indices 0..r-1; qubit 0 = MSB) plus possibly external qubits (r..n-1).
+    The rule stays valid for a window U that couples rule and external qubits
+    iff (L (x) I_ext) U = U (R (x) I_ext); the solution space of that lifted
+    intertwiner equation is exactly span{B_i} (x) L(H_ext). Equivalently:
+    slice U into rule-space operators M_(ie,je)[ir,jr] = U[(ir,ie),(jr,je)]
+    and accept iff every slice lies in span{B_i}. Sound and complete, unlike
+    the old per-gate projection which dropped boundary-crossing CX branches.
     """
     circuit = json.loads(circuit_json)
     n_qubits = circuit["n_qubits"]
@@ -902,20 +911,50 @@ def is_subspace_linear_combination(circuit_json, sparse_basis, qubits_to_check, 
         if 'params' in op:
             print("params: " + str(op['params']))
             op['params'] = {param_symbol_map.get(k, sympy.Symbol(k)): sympy.sympify(v, locals=param_symbol_map) for k, v in op['params'].items()}
-            
-    
-    # Calculate the matrix for the subspace
-    subspace_matrices = calculate_subspace_circuit_matrix(n_qubits, circuit["gates"], qubits_to_check)
-    #print("subspace_matrix: " + str(subspace_matrix))
-    if not subspace_matrices:
-        return False
-    # The basis is already defined on the subspace, so no projection is needed.
+
+    r = len(qubits_to_check)
+    if sorted(qubits_to_check) != list(range(r)):
+        # The Java caller canonicalizes the window so rule qubits occupy 0..r-1.
+        raise ValueError(f"rule qubits must be 0..{r-1}, got {qubits_to_check}")
+
     basis_matrices = sparse_to_basis(sparse_basis, symbol_map)
     print("basis_matrices: " + str(basis_matrices))
-    print("subspace_matrices: " + str(subspace_matrices))
-    for sm in subspace_matrices:
-        is_combo, _ = is_linear_combination(sm, basis_matrices)
-        if(not is_combo):
+    if not basis_matrices:
+        return False
+
+    # The window may touch fewer qubits than the basis acts on; pad to r.
+    n_eff = max(n_qubits, r)
+    U = calculate_circuit_matrix(n_eff, circuit["gates"])
+
+    d_r = 2 ** r
+    d_e = 2 ** (n_eff - r)
+
+    slices = []
+    for i_e in range(d_e):
+        for j_e in range(d_e):
+            M = sympy.zeros(d_r, d_r)
+            for i_r in range(d_r):
+                for j_r in range(d_r):
+                    M[i_r, j_r] = U[i_r * d_e + i_e, j_r * d_e + j_e]
+            slices.append(M)
+    print("subspace_matrices: " + str(slices))
+
+    # Numeric fast path: one lstsq over all slices at once.
+    try:
+        A = numpy.column_stack([
+            numpy.array(B.evalf(), dtype=numpy.complex128).reshape(d_r * d_r)
+            for B in basis_matrices])
+        T = numpy.column_stack([
+            numpy.array(M.evalf(), dtype=numpy.complex128).reshape(d_r * d_r)
+            for M in slices])
+        X, _, _, _ = numpy.linalg.lstsq(A, T, rcond=None)
+        return bool(numpy.max(numpy.abs(A @ X - T)) < 1e-6)
+    except (TypeError, ValueError):
+        pass  # free symbols remain; fall back to the symbolic solver
+
+    for M in slices:
+        is_combo, _ = is_linear_combination(M, basis_matrices)
+        if not is_combo:
             return False
     return True
 

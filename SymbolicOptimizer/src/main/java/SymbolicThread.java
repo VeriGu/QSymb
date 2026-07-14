@@ -9,7 +9,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SymbolicThread extends Thread {
+    private static final Logger logger = LoggerFactory.getLogger(SymbolicThread.class);
     private final CircuitDAG circuit;
     private final List<MatrixConstrainedRule> symbRules;
     private final List<MononialRule> symbRulesMonomials;
@@ -49,8 +53,10 @@ public class SymbolicThread extends Thread {
 
         Set<String> circuitGates = circuitGateNames(circuit);
         CircuitDAG optimizedDAG;
+        String appliedRuleDesc;
         if (idx < symbRulesMonomials.size()) {
             MononialRule rule = symbRulesMonomials.get(idx);
+            appliedRuleDesc = "mono idx=" + idx + " " + rule.getLhs() + " -> " + rule.getRhs();
             optimizedDAG = optimizer.symbolicMatchBeforeAfterMono(
                     circuit, rule.getRhs(), rule.getLhs(), minSymb, maxSymb, rule.getConstraints(), null);
         } else {
@@ -59,11 +65,15 @@ public class SymbolicThread extends Thread {
                 return;   // picked rule's LHS gates aren't in this circuit -- skip
             }
             // [SYMB_PICK idx=...] line removed -- enable Optimizer.logger.debug if needed.
+            appliedRuleDesc = "matrix idx=" + (idx - symbRulesMonomials.size())
+                    + " " + rule.getLHS() + " -> " + rule.getRHS();
             optimizedDAG = optimizer.symbolicMatchBeforeAfter(
                     circuit, rule.getLHS(), rule.getRHS(), minSymb, maxSymb, rule.getConstraint(), null);
         }
 
         if (optimizedDAG != null) {
+            String d = appliedRuleDesc.length() > 160 ? appliedRuleDesc.substring(0, 160) + "..." : appliedRuleDesc;
+            logger.info("[SYMBRULE applied] {}", d);
             applySAaccept(optimizedDAG);
         }
         // else: result stays null; main loop treats this as a symbolic-skip.

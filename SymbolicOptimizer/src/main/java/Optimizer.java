@@ -2956,6 +2956,9 @@ public class Optimizer {
         // causes nextInt(170) vs nextInt(173) divergence which propagates to
         // long-rule selection and changes the entire concrete-rule trajectory.
         Random symbRandom = new Random(31);
+        // Separate Random for picking which chunk-window to e-saturate, so the
+        // random chunk position doesn't perturb the main-loop or symbolic streams.
+        Random chunkRandom = new Random(32);
         long startTime = System.nanoTime();
         CircuitDAG optimized = bestOptimized;
         Map<MatrixConstrainedRule, Integer> symbRulesUsed = new HashMap<>();
@@ -2977,16 +2980,19 @@ public class Optimizer {
         SymbolicThread symbolicThread = null;
         // Dynamic slow-start for egraph opt1 saturation depth: start at 1 and
         // grow one step each stage whose opt1 run completes without forcing an
-        // egglog restart. The FIRST stage whose opt1 times out freezes the depth
-        // at N-1 (the last value that fit) and latches -- a one-time calibration,
-        // never recomputed. Self-sizes the iteration count per circuit instead of
-        // a fixed constant. (Timeout detected via EggGen.resetTimeoutFlag/timedOut
-        // around the opt1 call; const/merge are one-shot pre-passes, not counted.)
-        // EGRAPH_DEPTH_CEILING is a hard backstop: small/isolated circuits that
-        // never crash would otherwise climb forever, paying superlinear per-stage
-        // cost for diminishing returns. On reaching the ceiling we latch frozen
-        // (one-time, same as the timeout path) so depth stays put.
-        final int EGRAPH_DEPTH_CEILING = 12;
+        // egglog restart, up to EGRAPH_DEPTH_CEILING. Growth stops (latches
+        // frozen) the first time a stage times out OR the ceiling is reached.
+        //
+        // Crucially the frozen depth is NOT permanent downward: a stage's egraph
+        // cost varies with the (changing) circuit size and with machine load, so
+        // a depth that fit during calibration can still time out later. Every
+        // such recurrence DROPS the depth one more step (down to a floor of 1).
+        // It never grows back. This ratchets the depth down to whatever actually
+        // completes under current conditions instead of burning the whole time
+        // budget on repeated 120s timeouts that get abandoned.
+        // (Timeout detected via EggGen.resetTimeoutFlag/timedOut over the whole
+        // stage; const/merge are one-shot pre-passes, not counted.)
+        final int EGRAPH_DEPTH_CEILING = 10;
         int egraphDepth = 1;
         boolean egraphDepthFrozen = false;
         // Everything sent so far (schema + ruleset decls + const rewrites +
@@ -3112,7 +3118,30 @@ public class Optimizer {
             logger.info("[STAGE longrule k={}] 2q {} -> {}  total {} -> {}", k,
                     c.cost(CircuitDAG.OptObj.TWO_Q), glob_candidate.cost(CircuitDAG.OptObj.TWO_Q),
                     c.cost(CircuitDAG.OptObj.TOTAL), glob_candidate.cost(CircuitDAG.OptObj.TOTAL));
-            EggGen.Circuit parsedFull = QASMAstBuilder.parse(glob_candidate.toQASM());
+            // Decide what to e-saturate this stage. If the symbolic thread (spawned
+            // on a prior stage's egraph result) has FINISHED and produced a rewrite,
+            // feed that rewrite THROUGH eqsat instead of letting it compete raw in the
+            // queue. Symbolic rules are size-preserving, so a raw symbolic candidate
+            // ties the best on 2q but loses the best-2 truncation on total (eqsat
+            // candidates are total-minimized). Running eqsat on the symbolic structure
+            // lets merge/opt1 minimize it, turning an otherwise-discarded exploration
+            // jump into a competitive, plateau-escaping candidate. If the thread is
+            // still running, e-saturate the popped circuit as before. The finished
+            // thread is consumed here and respawned on the fresh result after eqsat.
+            CircuitDAG egraphInput = glob_candidate;
+            if (useSymb && symbolicThread != null && !symbolicThread.isAlive()) {
+                CircuitDAG symbResult = symbolicThread.getResult();
+                symbolicThread = null;
+                if (symbResult != null) {
+                    logger.info("SYMB applied (pre-eqsat): 2q {} total {}",
+                            symbResult.cost(CircuitDAG.OptObj.TWO_Q),
+                            symbResult.cost(CircuitDAG.OptObj.TOTAL));
+                    egraphInput = symbResult;
+                }
+            } else if (useSymb && symbolicThread != null) {
+                logger.debug("Symbolic thread still running; e-saturating popped circuit");
+            }
+            EggGen.Circuit parsedFull = QASMAstBuilder.parse(egraphInput.toQASM());
             int totalGatesForEgraph = parsedFull.gates.size();
             CircuitDAG candidateDAG;
             boolean stageEgraphOk = true;
@@ -3122,39 +3151,44 @@ public class Optimizer {
             // entire stage's egraph work so any restart at this depth is caught.
             egraph.resetTimeoutFlag();
             if (totalGatesForEgraph > Params.EGRAPH_CHUNK_THRESHOLD) {
-                logger.debug("Chunked egraph: {} gates -> chunk size {}", totalGatesForEgraph, Params.EGRAPH_CHUNK_SIZE);
-                List<EggGen.Gate> optimizedGates = new ArrayList<>();
-                int numChunks = (totalGatesForEgraph + Params.EGRAPH_CHUNK_SIZE - 1) / Params.EGRAPH_CHUNK_SIZE;
-                int chunkIdx = 0;
-                for (int start = 0; start < totalGatesForEgraph; start += Params.EGRAPH_CHUNK_SIZE) {
-                    chunkIdx++;
-                    int end = Math.min(start + Params.EGRAPH_CHUNK_SIZE, totalGatesForEgraph);
-                    EggGen.Circuit chunk = new EggGen.Circuit(new ArrayList<>(parsedFull.gates.subList(start, end)));
+                // Pick ONE window of EGRAPH_CHUNK_SIZE gates at a random start
+                // position and e-saturate only that window this stage, splicing
+                // it back between the untouched prefix/suffix. Over many SA
+                // iterations the random position covers the whole circuit, but
+                // each stage pays for a single egglog saturation instead of
+                // re-running every chunk every iteration.
+                int window = Math.min(Params.EGRAPH_CHUNK_SIZE, totalGatesForEgraph);
+                int maxStart = totalGatesForEgraph - window;
+                int start = (maxStart > 0) ? chunkRandom.nextInt(maxStart + 1) : 0;
+                int end = start + window;
+                logger.debug("Chunked egraph: {} gates -> window [{}, {}) of size {}",
+                        totalGatesForEgraph, start, end, window);
+                EggGen.Circuit chunk = new EggGen.Circuit(new ArrayList<>(parsedFull.gates.subList(start, end)));
+                List<EggGen.Gate> optimizedGates = new ArrayList<>(parsedFull.gates.subList(0, start));
+                egraph.push();
+                try {
                     egraph.push();
-                    try {
-                        
-                        egraph.push();
-                        String chunkName = egraph.addCircuit(chunk);
-                        egraph.runN("const", 1);
-                        egraph.runN("merge", 1);
-                        EggGen.Circuit temp = egraph.extractCircuit(chunkName);
-                        egraph.pop();
-                        logger.debug("Rotation Merged");
-                        chunkName = egraph.addCircuit(temp);
-                        egraph.runN("opt1", egraphDepth);
-                        EggGen.Circuit optChunk = egraph.extractCircuit(chunkName);
-                        if (optChunk != null && optChunk.gates != null) {
-                            optimizedGates.addAll(optChunk.gates);
-                        } else {
-                            optimizedGates.addAll(chunk.gates);
-                        }
-                    } catch (Exception ex) {
-                        logger.warn("Chunk {}/{} egraph failed: {} - keeping original chunk", chunkIdx, numChunks, ex.getClass().getSimpleName());
+                    String chunkName = egraph.addCircuit(chunk);
+                    egraph.runN("const", 1);
+                    egraph.runN("merge", 1);
+                    EggGen.Circuit temp = egraph.extractCircuit(chunkName);
+                    egraph.pop();
+                    logger.debug("Rotation Merged");
+                    chunkName = egraph.addCircuit(temp);
+                    egraph.runN("opt1", egraphDepth);
+                    EggGen.Circuit optChunk = egraph.extractCircuit(chunkName);
+                    if (optChunk != null && optChunk.gates != null) {
+                        optimizedGates.addAll(optChunk.gates);
+                    } else {
                         optimizedGates.addAll(chunk.gates);
-                    } finally {
-                        egraph.pop();
                     }
+                } catch (Exception ex) {
+                    logger.warn("Chunk window [{}, {}) egraph failed: {} - keeping original window", start, end, ex.getClass().getSimpleName());
+                    optimizedGates.addAll(chunk.gates);
+                } finally {
+                    egraph.pop();
                 }
+                optimizedGates.addAll(parsedFull.gates.subList(end, totalGatesForEgraph));
                 EggGen.Circuit combined = new EggGen.Circuit(optimizedGates);
                 candidateDAG = QASMToDAGVisitor.parse(combined.toQASM());
                 logger.debug("Chunked ESAT Candidate Cost: " + candidateDAG.cost(Params.OPTIMIZATION_OBJECTIVE));
@@ -3164,7 +3198,7 @@ public class Optimizer {
                 // stage egglog restart (which resets state to the setup prefix
                 // and makes the extracts return stale/null) abandons the stage
                 // by keeping the input circuit instead of NPE-crashing the run.
-                candidateDAG = glob_candidate;
+                candidateDAG = egraphInput;
                 try {
                     egraph.push();
                     String name = egraph.addCircuit(parsedFull);
@@ -3182,7 +3216,7 @@ public class Optimizer {
                 } catch (Exception ex) {
                     logger.warn("Non-chunked egraph failed: {} - keeping input circuit",
                             ex.getClass().getSimpleName());
-                    candidateDAG = glob_candidate;
+                    candidateDAG = egraphInput;
                 }
             }
             if (egraph.timedOut()) {
@@ -3190,16 +3224,24 @@ public class Optimizer {
                 // only, so any extract above is stale. Abandon this stage's
                 // egraph result -- keep the input circuit unchanged.
                 stageEgraphOk = false;
-                candidateDAG = glob_candidate;
+                candidateDAG = egraphInput;
             }
-            if (!egraphDepthFrozen) {
-                if (!stageEgraphOk) {
-                    int timedOutDepth = egraphDepth;
-                    egraphDepth = Math.max(1, egraphDepth - 1);
-                    egraphDepthFrozen = true;
-                    logger.info("[EGRAPH-DEPTH] timeout at depth {}, freezing dynamic max at {}",
-                            timedOutDepth, egraphDepth);
-                } else if (egraphDepth >= EGRAPH_DEPTH_CEILING) {
+            if (!stageEgraphOk) {
+                // A timeout drops the depth one step and latches frozen so it
+                // never grows again. This fires whether or not we have already
+                // frozen: a recurrence at the frozen depth demotes it FURTHER
+                // (down to a floor of 1), because the same depth can time out
+                // again when the circuit grows or the machine is under load.
+                if (egraphDepth > 1) {
+                    int prev = egraphDepth;
+                    egraphDepth = egraphDepth - 1;
+                    logger.info("[EGRAPH-DEPTH] timeout at depth {}, decreasing to {}", prev, egraphDepth);
+                } else {
+                    logger.info("[EGRAPH-DEPTH] timeout at depth 1 (floor), holding");
+                }
+                egraphDepthFrozen = true;
+            } else if (!egraphDepthFrozen) {
+                if (egraphDepth >= EGRAPH_DEPTH_CEILING) {
                     egraphDepthFrozen = true;
                     logger.info("[EGRAPH-DEPTH] hit ceiling, freezing dynamic max at {}", egraphDepth);
                 } else {
@@ -3208,32 +3250,24 @@ public class Optimizer {
                 }
             }
             logger.info("[STAGE egglog k={}] 2q {} -> {}  total {} -> {}", k,
-                    glob_candidate.cost(CircuitDAG.OptObj.TWO_Q), candidateDAG.cost(CircuitDAG.OptObj.TWO_Q),
-                    glob_candidate.cost(CircuitDAG.OptObj.TOTAL), candidateDAG.cost(CircuitDAG.OptObj.TOTAL));
+                    egraphInput.cost(CircuitDAG.OptObj.TWO_Q), candidateDAG.cost(CircuitDAG.OptObj.TWO_Q),
+                    egraphInput.cost(CircuitDAG.OptObj.TOTAL), candidateDAG.cost(CircuitDAG.OptObj.TOTAL));
             q.add(candidateDAG);
             glob_candidate = candidateDAG;
             
                
-            if(useSymb) {
-                logger.debug("Using symbolic rules");
-                if(symbolicThread == null) {
-                    symbolicThread = new SymbolicThread(glob_candidate, validMatrixRules, validMonomialRules, min_symb_size, max_symb_size, symbRandom, this);
-                    symbolicThread.setDaemon(true);
-                    symbolicThread.start();
-                } else {
-                    if(!symbolicThread.isAlive()) {
-                        CircuitDAG result = symbolicThread.getResult();
-                        if(result != null) {
-                            logger.info("SYMB Candidate Cost: {}", result.cost(Params.OPTIMIZATION_OBJECTIVE));
-                            q.add(result);
-                        }
-                        symbolicThread = new SymbolicThread(glob_candidate, validMatrixRules, validMonomialRules, min_symb_size, max_symb_size, symbRandom, this);
-                        symbolicThread.setDaemon(true);
-                        symbolicThread.start();
-                    } else {
-                        logger.debug("Symbolic thread is still running, skipping symbolic optimization for this iteration");
-                    }
-                }
+            // Spawn the next symbolic thread on the FRESH eqsat result
+            // (glob_candidate was just set to candidateDAG). Only spawn if none is
+            // in flight: a thread consumed in the pre-eqsat block was nulled and is
+            // respawned here; a thread still running is left to finish, its result
+            // collected and e-saturated in a later stage's pre-eqsat block. The raw
+            // symbolic result is no longer added to the queue directly -- its
+            // eqsat-minimized form enters via candidateDAG above.
+            if(useSymb && symbolicThread == null) {
+                logger.debug("Spawning symbolic thread on eqsat result");
+                symbolicThread = new SymbolicThread(glob_candidate, validMatrixRules, validMonomialRules, min_symb_size, max_symb_size, symbRandom, this);
+                symbolicThread.setDaemon(true);
+                symbolicThread.start();
             }
 
             // After a mid-stage restart egglog is back at base scope with no
@@ -3434,32 +3468,14 @@ public class Optimizer {
             .collect(Collectors.joining(","));
         symbolMapStr = "{" + symbolMapStr + "}";
 
-        ProcessBuilder pb = new ProcessBuilder("python3", "semantics.py", "-is_subspace_linear", jsonString, jsonM, subspaceStr, symbolMapStr);
-        Process p = pb.start();
+        // Route through the persistent semantics.py --server pool instead of a
+        // fresh process spawn (which paid ~1s interpreter+sympy startup every
+        // call). The pool serializes one request per slot and memoizes results.
+        String output = solver.isSubspaceLinear(jsonString, jsonM, subspaceStr, symbolMapStr);
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        
-        String line;
-        StringBuilder output = new StringBuilder();
-        while ((line = in.readLine()) != null) {
-            output.append(line + "\n");
-        }
+        logger.debug("Output: {}", output.trim());
 
-        BufferedReader ereader = new BufferedReader(new InputStreamReader(p.getErrorStream(),java.nio.charset.StandardCharsets.UTF_8));
-        while ((line = ereader.readLine()) != null) {                                                  
-            logger.debug("{}", line);
-        }
-
-        logger.debug("Output: {}", output.toString().trim());
-
-        int exitCode = p.waitFor();
-
-        if (exitCode != 0) {
-            logger.warn("Semantic check script exited with error code: {}", exitCode);
-            return false;
-        }
-        //logger.debug("Output: {}", output.toString().trim());
-        return output.toString().trim().contains("True");
+        return output.trim().contains("True");
     }
 
 

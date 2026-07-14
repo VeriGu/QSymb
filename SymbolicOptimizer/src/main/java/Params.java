@@ -142,11 +142,11 @@ public class Params {
      * step in optimize_SA splits the circuit into sequential chunks and
      * processes each chunk independently to avoid OOM / hangs in egglog.
      */
-    public static int EGRAPH_CHUNK_THRESHOLD = 2000;
+    public static int EGRAPH_CHUNK_THRESHOLD = 500;
     /**
      * Number of gates per chunk when chunking is active.
      */
-    public static int EGRAPH_CHUNK_SIZE = 1000;
+    public static int EGRAPH_CHUNK_SIZE = 500;
 
     /**
      * Python interpreter used to run the ILP compaction wrapper. Must point

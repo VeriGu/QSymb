@@ -287,7 +287,7 @@ public class EggGen {
     // holds every command we have so far ACCEPTED) so state is restored, and
     // retry. After EGGLOG_MAX_RESTARTS failed attempts the call returns ""
     // so callers can recover gracefully instead of NPE-crashing the main thread.
-    private static final long EGGLOG_COMMAND_TIMEOUT_MS = 120_000L;
+    private static final long EGGLOG_COMMAND_TIMEOUT_MS = 60_000L;
     private static final int EGGLOG_MAX_RESTARTS = 3;
     // In-memory log of every command this EggGen instance has successfully
     // sent to egglog. Used by restartEgglog() to replay state into a fresh

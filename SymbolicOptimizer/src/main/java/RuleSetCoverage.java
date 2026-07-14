@@ -13,20 +13,52 @@ import java.util.stream.Collectors;
 
 
 public class RuleSetCoverage {
-    public static void rulesetCoverageTest(List<String> ruleset1, List<String> ruleset2, List<String> commutative) {
+    public static void rulesetCoverageTest(List<String> ruleset1, List<String> ruleset2, List<String> commutative, String gateset) {
         EggGen egraph = new EggGen();
 
+        // Merge wire rules into the opt ruleset (same approach as Optimizer:
+        // single saturation ruleset, no separate wire pass).
         for(String rule : commutative) {
-            egraph.addRewrite(rule);
+            String merged = rule.replace(":ruleset wire", ":ruleset opt")
+                                .replace(":ruleset merge", ":ruleset opt");
+            egraph.addRewrite(merged);
         }
 
+        // Add ruleset1 (rule_copy.txt) using the same RuleReverser policy the
+        // optimizer uses: pattern-detect Pauli pushthrough / CX-braid and add
+        // BOTH directions only for those; non-pattern increasing rules get
+        // their reverse only (size-decreasing direction); size-preserving
+        // becomes birewrite.
         for(String rule : ruleset1) {
-            Rule r = QASMAstBuilder.parseRule(rule);
-            List<Rule.Equality> equalities = r.getEqualities();
-            String eggrule = String.format("(%s %s %s %s :ruleset %s)", "rewrite",EggGen.circuitToGeneralizedOnlyRemoveQ(r.lhs, "c"), EggGen.circuitToGeneralizedOnlyRemoveQ(r.rhs, "c"), ":when (" + equalities.stream().map(e -> String.format("(%s %s %s)",  e.isEqual ? "=" : "!=", e.qubit1, e.qubit2)).collect(Collectors.joining(" ")) + ")", "opt");
-            String eggrule2 = String.format("(%s %s %s %s :ruleset %s)", "rewrite",EggGen.circuitToGeneralizedOnlyRemoveQ(r.rhs, "c"), EggGen.circuitToGeneralizedOnlyRemoveQ(r.lhs, "c"), ":when (" + equalities.stream().map(e -> String.format("(%s %s %s)",  e.isEqual ? "=" : "!=", e.qubit1, e.qubit2)).collect(Collectors.joining(" ")) + ")", "opt");
-            egraph.addRewrite(eggrule);
-            egraph.addRewrite(eggrule2);
+            Rule r;
+            try {
+                r = QASMAstBuilder.parseRule(rule);
+            } catch (Throwable ex) {
+                continue;
+            }
+            RuleReverser.Direction d = RuleReverser.decide(r, gateset);
+            if (d == RuleReverser.Direction.DROP) continue;
+
+            int lhsSize = r.lhs.gates.size();
+            int rhsSize = r.rhs.gates.size();
+
+            if (lhsSize == rhsSize) {
+                // Symmetric → birewrite in opt ruleset
+                egraph.addOptRule(r, "opt", "birewrite");
+                continue;
+            }
+            boolean forwardIsDec = lhsSize > rhsSize;
+            // Forward direction
+            if (d == RuleReverser.Direction.FORWARD_ONLY || d == RuleReverser.Direction.BOTH) {
+                egraph.addOptRule(r, "opt", "rewrite");
+            }
+            // Reverse direction (when fireable)
+            if (d == RuleReverser.Direction.REVERSE_ONLY || d == RuleReverser.Direction.BOTH) {
+                if (RuleReverser.reverseIsFireable(r)) {
+                    Rule reversed = new Rule(r.rhs, r.lhs, r.conditions);
+                    egraph.addOptRule(reversed, "opt", "rewrite");
+                }
+            }
         }
 
         List<String> uncovered = new ArrayList<>();
@@ -35,6 +67,10 @@ public class RuleSetCoverage {
             String[] compo = rule.split("\\|");
             String lhs = compo[0].trim();
             String rhs = compo[1].trim();
+            // Strip trailing "when q0 != q1, ..." clause from rhs — it's a
+            // rule-level condition, not part of the circuit.
+            int whenIdx = rhs.toLowerCase().indexOf(" when ");
+            if (whenIdx >= 0) rhs = rhs.substring(0, whenIdx).trim();
             //String type = compo[2];
             System.out.println("Rule: " + rule);
             egraph.push();
@@ -44,8 +80,10 @@ public class RuleSetCoverage {
             System.out.println("RHS Circuit: " + c2.toEggString());
             egraph.addCircuit(c1);
             egraph.addCircuit(c2);
-            egraph.runN("wire", 6);
-            egraph.runBackoff("opt", 15);
+            // Add BOTH sides so rules fire on each, letting them meet in the
+            // middle (e.g. LHS reduces via merge+const, RHS via mod-2π, then
+            // unify). Without adding c2, rules never run on the RHS structure.
+            egraph.runN("opt", 5);
             if(egraph.check(String.format("(= %s %s)", c1.toEggString(), c2.toEggString()))) {
                 System.out.println("Rule: " + rule + " is covered");
             } else {
@@ -102,8 +140,13 @@ public class RuleSetCoverage {
     }
 
     public static void main(String[] args) {
-        //take two files as input and read the ruleset1 and ruleset2 from the files
+        // Args: <ruleset1> <ruleset2> [gateset]
+        // ruleset1: rules used as derivation source (added to opt ruleset)
+        // ruleset2: rules to check coverage for
+        // gateset:  optional, default "ibmnew" (controls RuleReverser policy
+        //           and which rules_<g>.txt is loaded as wire rules)
         File file1 = new File(args[0]);
+        String gateset = args.length >= 3 ? args[2] : "ibmnew";
        
         // List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> ruleset = new ArrayList<>();
         // try (BufferedReader br = new BufferedReader(new FileReader(file1, StandardCharsets.UTF_8))) {
@@ -144,7 +187,7 @@ public class RuleSetCoverage {
         }
 
         List<String> commutative = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("rules_ibmnew.txt", StandardCharsets.UTF_8))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("rules_" + gateset + ".txt", StandardCharsets.UTF_8))) {
             String line;
             commutative.clear();
             while ((line = br.readLine()) != null) {
@@ -153,6 +196,6 @@ public class RuleSetCoverage {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        rulesetCoverageTest(ruleset1, ruleset2, commutative);
+        rulesetCoverageTest(ruleset1, ruleset2, commutative, gateset);
     }
 }

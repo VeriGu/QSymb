@@ -319,6 +319,18 @@ public class SymbolicSolve {
                 circuitToJson(c2.gates, nqubits));
     }
 
+    /**
+     * Runs the `-is_subspace_linear` basis check through the persistent
+     * semantics.py server pool (instead of a fresh per-call process spawn).
+     * Args are the already-serialized JSON strings the caller built. Returns
+     * the server's raw stdout for the request.
+     */
+    public String isSubspaceLinear(String circuitJson, String basisJson,
+                                   String subspaceJson, String symbolMapJson) {
+        return runSemantics("-is_subspace_linear", circuitJson, basisJson,
+                subspaceJson, symbolMapJson);
+    }
+
 
     private String evalExpr(Expr expr) {
          if (expr instanceof Symbol) {
