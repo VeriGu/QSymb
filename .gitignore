@@ -45,4 +45,4 @@ benchmarks/
 !.gitmodules
 !.github/
 !SymbolicOptimizer/
-!semantics.py
+!semantics.py.gitconfig

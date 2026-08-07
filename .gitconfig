@@ -1,5 +1,0 @@
-[user]
-	name = Wei Qiang
-	email = wq2167@columbia.edu
-[credential]
-	helper = "!f() { /root/.vscode-server/bin/4949701c880d4bdb949e3c0e6b400288da7f474b/node /tmp/vscode-remote-containers-e9163388-0473-4ccb-af9e-da8ad333462f.js git-credential-helper $*; }; f"
