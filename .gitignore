@@ -46,3 +46,4 @@ benchmarks/
 !.github/
 !SymbolicOptimizer/
 !semantics.py.gitconfig
+CLAUDE.md
