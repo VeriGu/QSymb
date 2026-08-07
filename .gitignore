@@ -47,3 +47,6 @@ benchmarks/
 !SymbolicOptimizer/
 !semantics.py.gitconfig
 CLAUDE.md
+SymbolicOptimizer-1.0-SNAPSHOT-jar-with-dependencies.jar
+SymbolicOptimizer/target/
+**/target/
