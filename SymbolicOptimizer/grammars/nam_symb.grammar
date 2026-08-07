@@ -1,0 +1,9 @@
+[gates]
+x
+h
+rz
+cx
+
+[symbAngles]
+theta1
+theta2

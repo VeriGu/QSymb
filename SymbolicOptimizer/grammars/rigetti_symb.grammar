@@ -1,0 +1,13 @@
+# Symbolic-enumeration grammar for the rigetti gateset (rx1/rx2/rx3 + rz + cz).
+# Free symbols only: the symbolic phase discovers commutation-style rules, so
+# concrete angles are omitted (they would force the slow algebraic-field path).
+
+[gates]
+rx1
+rx2
+rx3
+rz
+cz
+
+[symbAngles]
+theta1

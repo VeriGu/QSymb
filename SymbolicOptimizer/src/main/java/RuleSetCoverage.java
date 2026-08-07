@@ -16,6 +16,14 @@ public class RuleSetCoverage {
     public static void rulesetCoverageTest(List<String> ruleset1, List<String> ruleset2, List<String> commutative, String gateset) {
         EggGen egraph = new EggGen();
 
+        // Coverage-only: commutativity of symbolic addition, so a target rule
+        // differing from the derivation only in PLUS operand order (e.g.
+        // rz(theta1+theta2) vs rz(theta2+theta1)) still unifies. Runtime
+        // angles are concrete (const-eval folds the sum), so this equality is
+        // only needed here in the symbolic coverage check -- deliberately NOT
+        // added to EggGen's common setup.
+        egraph.addRewrite("(birewrite (BinOp (PLUS) x y) (BinOp (PLUS) y x) :ruleset opt)");
+
         // Merge wire rules into the opt ruleset (same approach as Optimizer:
         // single saturation ruleset, no separate wire pass).
         for(String rule : commutative) {
@@ -83,7 +91,7 @@ public class RuleSetCoverage {
             // Add BOTH sides so rules fire on each, letting them meet in the
             // middle (e.g. LHS reduces via merge+const, RHS via mod-2π, then
             // unify). Without adding c2, rules never run on the RHS structure.
-            egraph.runN("opt", 5);
+            egraph.runN("opt", Integer.getInteger("coverage.depth", 5));
             if(egraph.check(String.format("(= %s %s)", c1.toEggString(), c2.toEggString()))) {
                 System.out.println("Rule: " + rule + " is covered");
             } else {

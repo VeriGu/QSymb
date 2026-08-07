@@ -22,7 +22,11 @@ gate_semantics = {
     'sdg': sympy.Matrix([[1, 0], [0, -sympy.I]]),
     't': sympy.Matrix([[1, 0], [0, sympy.exp(sympy.I * sympy.pi / 4)]]),
     'tdg': sympy.Matrix([[1, 0], [0, sympy.exp(-sympy.I * sympy.pi / 4)]]),
-    'sx': 1/2 * sympy.Matrix([[1+sympy.I, 1-sympy.I], [1-sympy.I, 1+sympy.I]]),
+    # NOTE: Rational(1,2), not Python 1/2 -- a float 0.5 here poisons every
+    # SX-containing K matrix with float coefficients, which fails the exact
+    # DomainMatrix (QQ_I) coercion and forces the solver onto the slow
+    # algebraic-field fallback (30s+ per candidate instead of <1s).
+    'sx': sympy.Rational(1, 2) * sympy.Matrix([[1+sympy.I, 1-sympy.I], [1-sympy.I, 1+sympy.I]]),
 
     # === Standard 2-Qubit Gates ===
     'cx': sympy.Matrix([
@@ -270,6 +274,28 @@ def intertwiner_basis(L, R):
     angles = sorted(K.free_symbols, key=str)
     back = {}
     Ws = []
+    if not angles:
+        # Constant K: expand so entries like -(1/2 - I/2)**2 evaluate to plain
+        # Gaussian rationals; otherwise the QQ_I DomainMatrix coercion fails
+        # and the solve falls to a needlessly expensive path.
+        # ALSO nsimplify unevaluated trig-of-float-pi terms: gate angles that
+        # arrive as decimals (e.g. 0.75*pi from a 3pi/2 rigetti gate) leave
+        # frozen cos(0.75*pi)/sin(...) calls that sympy never auto-evaluates,
+        # so every DomainMatrix coercion (QQ_I/QQ(zeta8)/QQ(zeta16)) fails and
+        # the solve falls into the generic K.nullspace() (observed 90+ s per
+        # candidate). nsimplify turns 0.75*pi into 3*pi/4, which auto-evals
+        # to exact algebraics the ladder accepts.
+        def _norm_const(entry):
+            if not hasattr(entry, 'replace'):
+                return entry
+            e = entry.replace(
+                lambda x: isinstance(x, sympy.exp) and not x.args[0].free_symbols,
+                lambda x: sympy.nsimplify(x.rewrite(sympy.cos)))
+            e = e.replace(
+                lambda x: isinstance(x, (sympy.cos, sympy.sin)) and not x.args[0].free_symbols,
+                lambda x: sympy.nsimplify(x))
+            return e
+        K = K.applyfunc(_norm_const).applyfunc(sympy.expand)
     if angles:
         _stage(f"rewrite(exp) + expand on K  (angles={list(map(str,angles))})")
         K_exp = sympy.expand(K.rewrite(sympy.exp))
@@ -310,27 +336,38 @@ def intertwiner_basis(L, R):
     # - Q(ζ_16): covers π/4 fractions.
     # We try in order and fall back to K.nullspace() if all fail.
     null = None
+    from sympy.polys.matrices import DomainMatrix
+    from sympy import QQ_I, QQ
+    # Try in increasing-cost order: QQ_I first, then Q(ζ₈), then Q(ζ_{16}).
+    # With free angles the domain is the fraction field in the W's; with a
+    # CONSTANT K (no free angles -- e.g. Clifford/SX-only pairs) use the plain
+    # domain. Constant K previously skipped this ladder entirely and fell into
+    # the generic K.nullspace() whose per-step dotprodsimp made it the
+    # slowest class of solves (~5x the angled ones).
     if Ws:
-        from sympy.polys.matrices import DomainMatrix
-        from sympy import QQ_I, QQ
-        # Try in increasing-cost order: QQ_I first, then Q(ζ₈), then Q(ζ_{16}).
         domain_candidates = [
             ("QQ_I", lambda: QQ_I.frac_field(*Ws)),
             ("QQ(ζ_8)", lambda: QQ.algebraic_field(sympy.exp(sympy.I*sympy.pi/4)).frac_field(*Ws)),
             ("QQ(ζ_16)", lambda: QQ.algebraic_field(sympy.exp(sympy.I*sympy.pi/8)).frac_field(*Ws)),
         ]
-        for name, build in domain_candidates:
-            try:
-                _stage(f"trying DomainMatrix over {name}")
-                F = build()
-                dm = DomainMatrix.from_Matrix(K).convert_to(F)
-                null_dm = dm.nullspace()
-                null_mat = null_dm.to_Matrix()
-                null = [null_mat.row(i).T for i in range(null_mat.rows)]
-                _stage(f"DomainMatrix({name}).nullspace() DONE -> {len(null)} null vectors")
-                break
-            except Exception as e:
-                _stage(f"{name} failed ({type(e).__name__}: {str(e)[:80]})")
+    else:
+        domain_candidates = [
+            ("QQ_I const", lambda: QQ_I),
+            ("QQ(ζ_8) const", lambda: QQ.algebraic_field(sympy.exp(sympy.I*sympy.pi/4))),
+            ("QQ(ζ_16) const", lambda: QQ.algebraic_field(sympy.exp(sympy.I*sympy.pi/8))),
+        ]
+    for name, build in domain_candidates:
+        try:
+            _stage(f"trying DomainMatrix over {name}")
+            F = build()
+            dm = DomainMatrix.from_Matrix(K).convert_to(F)
+            null_dm = dm.nullspace()
+            null_mat = null_dm.to_Matrix()
+            null = [null_mat.row(i).T for i in range(null_mat.rows)]
+            _stage(f"DomainMatrix({name}).nullspace() DONE -> {len(null)} null vectors")
+            break
+        except Exception as e:
+            _stage(f"{name} failed ({type(e).__name__}: {str(e)[:80]})")
     if null is None:
         _stage("calling K.nullspace() (fallback) ...")
         null = K.nullspace()
@@ -685,6 +722,10 @@ def _circuit_parts(circuit_json):
     pre = calculate_circuit_matrix(n_qubits, gates[:symb_index])
     post = calculate_circuit_matrix(n_qubits, gates[symb_index + 1:])
     parts = (n_qubits, pre, post)
+    # Size-cap: values are sympy matrices keyed by full circuit JSON; an
+    # unbounded dict can grow to hundreds of MB over a long server lifetime.
+    if len(_circuit_parts_cache) > 1024:
+        _circuit_parts_cache.clear()
     _circuit_parts_cache[circuit_json] = parts
     return parts
 
@@ -828,28 +869,152 @@ def read_basis_file(file_path):
     return all_bases_syp
 
 def sparse_to_basis(sparse_matrices, symbol_map=None):
-    print("sparse_matrices: ", sparse_matrices)
+    # NOTE: no printing here -- str() of large matrices/JSON is expensive and
+    # this sits on the hot runtime symbolic-matching path.
     ms = json.loads(sparse_matrices)
     if symbol_map:
         symbol_map = json.loads(symbol_map)
 
     if symbol_map:
         symbol_map = {param_symbol_map[k]: param_symbol_map[v] if isinstance(v, str) else v for k, v in symbol_map.items()}
-    print(symbol_map)
     matrices = []
     for m in ms:
         num_row = m["rows"]
         num_col = m["cols"]
         entries = m["entries"]
-        
+
         M = sympy.zeros(rows=num_row, cols=num_col)
         for entry in entries:
             M[entry["row"], entry["col"]] = sympy.sympify(entry["value"], locals=param_symbol_map)
         if symbol_map:
             M = M.subs(symbol_map)
-            print("substituted matrix" + str(M))
         matrices.append(M)
     return matrices
+
+
+# ---------------------------------------------------------------------------
+#  Numeric fast path for the runtime basis check (is_subspace_linear_...).
+#
+#  At match time the Java side sends CONCRETE angle values (it evals the
+#  symbol map to doubles), so the window unitary can be built entirely in
+#  numpy instead of sympy: measured ~1 ms vs ~700 ms per 15-gate window
+#  (sympy exact arithmetic buys nothing here -- the old code evalf'd to
+#  numpy for the lstsq anyway). Falls back to the sympy path whenever any
+#  gate parameter or basis entry is non-numeric (free symbols remain).
+# ---------------------------------------------------------------------------
+
+_np_const_gate_cache = {}    # gate name -> numpy matrix (parameterless gates)
+_np_gate_lambda_cache = {}   # gate name -> (sorted symbols, lambdified fn)
+_np_embed_idx_cache = {}     # (n_qubits, targets tuple) -> permutation index array
+
+
+def _np_gate_matrix(name, params):
+    """Numpy matrix for gate `name` under concrete params {Symbol: value}.
+    Returns None if any required parameter is missing or non-numeric."""
+    gm = gate_semantics[name]
+    syms = sorted(gm.free_symbols, key=str)
+    if not syms:
+        M = _np_const_gate_cache.get(name)
+        if M is None:
+            M = numpy.array(gm.evalf(), dtype=numpy.complex128)
+            _np_const_gate_cache[name] = M
+        return M
+    cached = _np_gate_lambda_cache.get(name)
+    if cached is None:
+        fn = sympy.lambdify(syms, gm, 'numpy')
+        cached = (syms, fn)
+        _np_gate_lambda_cache[name] = cached
+    syms, fn = cached
+    vals = []
+    for s in syms:
+        v = None if params is None else params.get(s)
+        if v is None:
+            return None
+        try:
+            vals.append(complex(v))
+        except (TypeError, ValueError):
+            return None  # symbolic parameter -> sympy fallback
+    return numpy.asarray(fn(*vals), dtype=numpy.complex128)
+
+
+def _np_embed(n_qubits, gate_np, targets):
+    """Numeric embed_operator: P^T (G (x) I) P via fancy indexing."""
+    k = len(targets)
+    if k == n_qubits and list(targets) == list(range(n_qubits)):
+        return gate_np
+    key = (n_qubits, tuple(targets))
+    idx = _np_embed_idx_cache.get(key)
+    if idx is None:
+        pi = list(targets) + sorted(set(range(n_qubits)) - set(targets))
+        dim = 2 ** n_qubits
+        idx = numpy.empty(dim, dtype=numpy.int64)
+        for i in range(dim):
+            b = f'{i:0{n_qubits}b}'
+            idx[i] = int(''.join(b[pi[j]] for j in range(n_qubits)), 2)
+        _np_embed_idx_cache[key] = idx
+    if n_qubits > k:
+        core = numpy.kron(gate_np, numpy.eye(2 ** (n_qubits - k), dtype=numpy.complex128))
+    else:
+        core = gate_np
+    # (P^T C P)[a, b] = C[idx[a], idx[b]]  for P[idx[i], i] = 1
+    return core[numpy.ix_(idx, idx)]
+
+
+def _np_circuit_matrix(n_qubits, gates):
+    """Numeric window unitary, or None if any gate parameter is symbolic."""
+    U = numpy.eye(2 ** n_qubits, dtype=numpy.complex128)
+    for op in gates:
+        g = _np_gate_matrix(op['gate'], op.get('params'))
+        if g is None:
+            return None
+        U = _np_embed(n_qubits, g, op['targets']) @ U
+    return U
+
+
+# Basis caches: parse each rule's basis string ONCE (template), and when the
+# template is fully numeric (the common case: constant commutant bases),
+# cache its stacked numpy form A per basis string -- independent of the
+# per-window symbol_map, which then never causes a re-parse.
+_basis_template_cache = {}   # sparse_basis str -> list[sympy.Matrix] (no subs)
+_basis_numeric_cache = {}    # sparse_basis str -> numpy A (or False if symbolic)
+_BASIS_CACHE_MAX = 4096
+
+
+def _basis_and_A(sparse_basis, symbol_map):
+    """Returns (basis_matrices, A) where A is the numpy column-stack of the
+    basis (or None if the basis is symbolic under this symbol_map)."""
+    templates = _basis_template_cache.get(sparse_basis)
+    if templates is None:
+        if len(_basis_template_cache) > _BASIS_CACHE_MAX:
+            _basis_template_cache.clear()
+            _basis_numeric_cache.clear()
+        templates = sparse_to_basis(sparse_basis, None)
+        _basis_template_cache[sparse_basis] = templates
+    if not templates:
+        return [], None
+
+    A = _basis_numeric_cache.get(sparse_basis)
+    if A is None:
+        if any(M.free_symbols for M in templates):
+            A = False  # needs symbol_map substitution per call
+        else:
+            A = numpy.column_stack([
+                numpy.array(M.evalf(), dtype=numpy.complex128).reshape(-1)
+                for M in templates])
+        _basis_numeric_cache[sparse_basis] = A
+
+    if A is not False:
+        return templates, A
+
+    # Symbolic basis: substitute this call's symbol_map (rare path).
+    basis_matrices = sparse_to_basis(sparse_basis, symbol_map)
+    try:
+        A_sub = numpy.column_stack([
+            numpy.array(M.evalf(), dtype=numpy.complex128).reshape(-1)
+            for M in basis_matrices])
+    except (TypeError, ValueError):
+        A_sub = None  # still symbolic -> sympy fallback
+    return basis_matrices, A_sub
 
 
 
@@ -891,7 +1056,7 @@ def check_rule_not_affect_other_qubits(circuit_json, L_json, qubits_to_check):
     return True
                                            
 
-def is_subspace_linear_combination(circuit_json, sparse_basis, qubits_to_check, symbol_map=None):
+def is_subspace_linear_combination(circuit_json, sparse_basis, qubits_to_check, symbol_map=None, eps=None):
     """
     Exact lifted-basis check for the symbolic-rule constraint S |= M.
 
@@ -909,7 +1074,6 @@ def is_subspace_linear_combination(circuit_json, sparse_basis, qubits_to_check, 
     qubits_to_check = json.loads(qubits_to_check)
     for op in circuit['gates']:
         if 'params' in op:
-            print("params: " + str(op['params']))
             op['params'] = {param_symbol_map.get(k, sympy.Symbol(k)): sympy.sympify(v, locals=param_symbol_map) for k, v in op['params'].items()}
 
     r = len(qubits_to_check)
@@ -917,17 +1081,39 @@ def is_subspace_linear_combination(circuit_json, sparse_basis, qubits_to_check, 
         # The Java caller canonicalizes the window so rule qubits occupy 0..r-1.
         raise ValueError(f"rule qubits must be 0..{r-1}, got {qubits_to_check}")
 
-    basis_matrices = sparse_to_basis(sparse_basis, symbol_map)
-    print("basis_matrices: " + str(basis_matrices))
+    # NOTE: do not print the basis/slice matrices here -- str() on sympy
+    # matrices is expensive and this function is on the hot runtime path
+    # (called once per candidate window during symbolic matching).
+    basis_matrices, A = _basis_and_A(sparse_basis, symbol_map)
     if not basis_matrices:
         return False
 
     # The window may touch fewer qubits than the basis acts on; pad to r.
     n_eff = max(n_qubits, r)
-    U = calculate_circuit_matrix(n_eff, circuit["gates"])
-
     d_r = 2 ** r
     d_e = 2 ** (n_eff - r)
+    tol = eps if eps is not None else 1e-6
+
+    # FULLY NUMERIC fast path: at runtime the Java caller sends concrete
+    # angles, so the window unitary is built with numpy (measured ~1 ms vs
+    # ~700 ms for the sympy product) and sliced by a vectorized reshape.
+    # The residual is the max entrywise distance between the window and its
+    # projection onto the basis span; default 1e-6 only absorbs float noise
+    # (exact matching), an explicit eps (Java -approx) loosens it.
+    if A is not None:
+        Un = _np_circuit_matrix(n_eff, circuit["gates"])
+        if Un is not None:
+            # T columns enumerate (i_e, j_e); rows flatten (i_r, j_r) --
+            # identical layout to the sympy slicing loop below.
+            T = Un.reshape(d_r, d_e, d_r, d_e).transpose(1, 3, 0, 2) \
+                  .reshape(d_e * d_e, d_r * d_r).T
+            X, _, _, _ = numpy.linalg.lstsq(A, T, rcond=None)
+            residual = float(numpy.max(numpy.abs(A @ X - T)))
+            print("residual: %.3e (tol %.1e)" % (residual, tol))
+            return bool(residual < tol)
+
+    # SYMPY fallback (free symbols in gate params or basis).
+    U = calculate_circuit_matrix(n_eff, circuit["gates"])
 
     slices = []
     for i_e in range(d_e):
@@ -937,18 +1123,18 @@ def is_subspace_linear_combination(circuit_json, sparse_basis, qubits_to_check, 
                 for j_r in range(d_r):
                     M[i_r, j_r] = U[i_r * d_e + i_e, j_r * d_e + j_e]
             slices.append(M)
-    print("subspace_matrices: " + str(slices))
 
-    # Numeric fast path: one lstsq over all slices at once.
     try:
-        A = numpy.column_stack([
+        A2 = numpy.column_stack([
             numpy.array(B.evalf(), dtype=numpy.complex128).reshape(d_r * d_r)
             for B in basis_matrices])
         T = numpy.column_stack([
             numpy.array(M.evalf(), dtype=numpy.complex128).reshape(d_r * d_r)
             for M in slices])
-        X, _, _, _ = numpy.linalg.lstsq(A, T, rcond=None)
-        return bool(numpy.max(numpy.abs(A @ X - T)) < 1e-6)
+        X, _, _, _ = numpy.linalg.lstsq(A2, T, rcond=None)
+        residual = float(numpy.max(numpy.abs(A2 @ X - T)))
+        print("residual: %.3e (tol %.1e)" % (residual, tol))
+        return bool(residual < tol)
     except (TypeError, ValueError):
         pass  # free symbols remain; fall back to the symbolic solver
 
@@ -1187,8 +1373,12 @@ def _sorted_concrete_eigvals(mat, sub):
     numeric = mat.subs(sub)
     arr = numpy.array(numeric.tolist(), dtype=numpy.complex128)
     vals = numpy.linalg.eigvals(arr)
-    sortable = sorted(((v.real, v.imag) for v in vals), key=lambda p: (round(p[0], 8), round(p[1], 8)))
-    return [complex(round(r, 8), round(i, 8)) for r, i in sortable]
+    # `+ 0.0` normalizes IEEE signed zero: round() preserves -0.0, and a
+    # fingerprint that prints "-0.00000000" vs "0.00000000" splits circuits
+    # with identical eigenvalues into different filter buckets (dropping
+    # valid rule candidates).
+    sortable = sorted(((round(v.real, 8) + 0.0, round(v.imag, 8) + 0.0) for v in vals))
+    return [complex(r, i) for r, i in sortable]
 
 
 def solve_eigen_symbolic_check(circuit1_json, circuit2_json):
@@ -1242,6 +1432,80 @@ def single_circuit_eigen_fingerprint(circuit_json, seed=None):
     }
     vals = _sorted_concrete_eigvals(M, sub)
     return ";".join(f"{v.real:.8f}+{v.imag:.8f}i" for v in vals)
+
+
+def multi_circuit_eigen_fingerprint(circuits_json, seed=None, ntraces=1):
+    """Batched per-circuit eigenvalue fingerprints, one line per circuit.
+
+    Takes a JSON object {"circuits": [circuit, ...]} and returns each
+    circuit's fingerprint at `ntraces` seeded angle samples (samples drawn
+    once, shared by all circuits, so equal-fingerprint <=> eigen-equal at
+    every sample -- the same predicate the pairwise checkBig verified).
+    Batching turns O(N) IPC round-trips into one.
+    """
+    import json as _json
+    payload = _json.loads(circuits_json)
+    rng = numpy.random.default_rng(int(seed) if seed is not None else 0)
+    subs = []
+    for _ in range(max(1, int(ntraces))):
+        subs.append({
+            theta1: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            theta2: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            theta3: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            phi:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            lam:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            gamma:  float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        })
+    lines = []
+    for circuit in payload.get("circuits", []):
+        n_qubits = circuit.get("n_qubits", 0)
+        gates = [op for op in circuit.get("gates", []) if op.get("gate") != "symb"]
+        for op in gates:
+            if 'params' in op:
+                op['params'] = {param_symbol_map.get(k, sympy.Symbol(k)): sympy.sympify(v, locals=param_symbol_map)
+                                for k, v in op['params'].items()}
+
+        # NUMERIC fast path: per sample, resolve each gate's angle expressions
+        # to floats and build the unitary with the numpy pipeline -- avoids
+        # constructing the (symbolic) sympy matrix and the per-sample
+        # d^2-entry .subs(). Rounding / signed-zero normalization matches
+        # _sorted_concrete_eigvals exactly, so fingerprints are unchanged.
+        parts = _np_multi_fingerprint_parts(n_qubits, gates, subs)
+        if parts is None:
+            # fallback: original symbolic route (exotic gate / unresolvable param)
+            M = calculate_circuit_matrix(n_qubits, gates)
+            parts = []
+            for sub in subs:
+                vals = _sorted_concrete_eigvals(M, sub)
+                parts.append(";".join(f"{v.real:.8f}+{v.imag:.8f}i" for v in vals))
+        lines.append("|".join(parts))
+    return "\n".join(lines)
+
+
+def _np_multi_fingerprint_parts(n_qubits, gates, subs):
+    """Numeric fingerprint strings for one circuit across all samples, or
+    None if any gate parameter cannot be resolved to a number under the
+    sample substitution (then the caller falls back to sympy)."""
+    parts = []
+    for sub in subs:
+        U = numpy.eye(2 ** n_qubits, dtype=numpy.complex128)
+        for op in gates:
+            params_num = None
+            if 'params' in op:
+                params_num = {}
+                for sym, expr in op['params'].items():
+                    try:
+                        params_num[sym] = complex(expr.subs(sub)) if hasattr(expr, 'subs') else complex(expr)
+                    except (TypeError, ValueError):
+                        return None
+            g = _np_gate_matrix(op['gate'], params_num)
+            if g is None:
+                return None
+            U = _np_embed(n_qubits, g, op['targets']) @ U
+        vals = numpy.linalg.eigvals(U)
+        sortable = sorted(((round(v.real, 8) + 0.0, round(v.imag, 8) + 0.0) for v in vals))
+        parts.append(";".join(f"{r:.8f}+{i:.8f}i" for r, i in sortable))
+    return parts
 
 
 def eigenvalue_fingerprint(circuit1_json, circuit2_json, seed=None):
@@ -1343,8 +1607,10 @@ def main(argv=None):
     parser.add_argument('-distincteigen', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='Returns True iff L has all distinct eigenvalues at a random concrete sample. Use to filter out structurally simple intertwiner cases.')
     parser.add_argument('-eigenfp', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='Return a string fingerprint of L\'s eigenvalues at a random concrete sample. Use for cheap bucket-grouping before solving full intertwiner.')
     parser.add_argument('-singleeigenfp', nargs=1, metavar=('C_JSON'), help='Per-circuit eigenvalue fingerprint at a random concrete sample (SYMB treated as identity). For pre-bucket grouping inside trace buckets.')
+    parser.add_argument('-multieigenfp', nargs=1, metavar=('CS_JSON'), help='Batched eigen fingerprints: {"circuits":[...]}; one fingerprint line per circuit at -ntraces seeded samples. Replaces per-circuit trace/eigen IPC round-trips.')
     parser.add_argument('-islinear', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='check that a circuit is in linear combination of basis')
     parser.add_argument('-is_subspace_linear', nargs=4, metavar=('C1_JSON', 'C2_JSON', 'SUBSPACE_JSON', 'SYMBOL_MAP_JSON'), help='check that a circuit is in linear combination of basis')
+    parser.add_argument('-approx_eps', type=float, default=None, help='approximate-match tolerance for -is_subspace_linear (least-squares residual threshold; default: exact 1e-6)')
     parser.add_argument('-check_rule_not_affect_other', nargs=3, metavar=('CIRCUIT_JSON', 'L_JSON', 'QUBIT_TO_CHECK'), help='Check that a rule does not affect other parts of the circuit')
     args = parser.parse_args(argv)
 
@@ -1393,8 +1659,9 @@ def main(argv=None):
                     }
                     numeric = complex(sympy.N(res.subs(sub)))
                     # Round to suppress floating-point jitter so equal circuits
-                    # hash to the same string key.
-                    parts.append(f"({round(numeric.real, 10)}{'+' if numeric.imag >= 0 else '-'}{round(abs(numeric.imag), 10)}j)")
+                    # hash to the same string key. `+ 0.0` normalizes IEEE
+                    # signed zero (-0.0 would otherwise print as "-0.0").
+                    parts.append(f"({round(numeric.real, 10) + 0.0}{'+' if numeric.imag >= 0 else '-'}{round(abs(numeric.imag), 10) + 0.0}j)")
                 print(",".join(parts))
             else:
                 print(res)
@@ -1403,7 +1670,7 @@ def main(argv=None):
         return
     
     if args.is_subspace_linear:
-        res = is_subspace_linear_combination(args.is_subspace_linear[0], args.is_subspace_linear[1], args.is_subspace_linear[2], args.is_subspace_linear[3])
+        res = is_subspace_linear_combination(args.is_subspace_linear[0], args.is_subspace_linear[1], args.is_subspace_linear[2], args.is_subspace_linear[3], eps=args.approx_eps)
         print(res)
         return
 
@@ -1484,6 +1751,16 @@ def main(argv=None):
             seed = int(args.seed[0]) if args.seed is not None else 0
             res = single_circuit_eigen_fingerprint(args.singleeigenfp[0], seed)
             print(res)
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+        return
+
+    if args.multieigenfp:
+        try:
+            seed = int(args.seed[0]) if args.seed is not None else 0
+            ntraces = int(args.ntraces[0]) if args.ntraces is not None else 1
+            print(multi_circuit_eigen_fingerprint(args.multieigenfp[0], seed, ntraces))
         except Exception as e:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
@@ -2186,6 +2463,12 @@ def serve():
             except Exception as e:
                 buf.write(f"Error: {e}")
             result = buf.getvalue()
+            # Size-cap the request memo: keys are KB-sized raw request lines
+            # (full circuit + basis JSON), so an unbounded dict grows for the
+            # whole server lifetime. Dropping the cache on overflow is fine --
+            # it is a pure memo of repeated identical requests.
+            if len(cache) > 2048:
+                cache.clear()
             cache[raw] = result
         real_stdout.write(base64.b64encode(result.encode("utf-8")).decode("ascii"))
         real_stdout.write("\n")

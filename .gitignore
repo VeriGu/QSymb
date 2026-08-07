@@ -12,7 +12,6 @@
 .ssh/
 .nvm/
 .vscode-server/
-.*.*
 *.class
 *.csv
 *.log
@@ -20,6 +19,7 @@
 *.txt
 *.ibmq
 *.pdf
+*.json
 .bash_history
 .bashrc
 .profile
@@ -28,8 +28,21 @@
 optimizer_benchmarking/
 optimized_benchmarks/
 results_from_paper/
+.*.*
+.*
+.*/
+logs/
+optimizer_logs/
+plots/
+egg/
+egglog/
+egglog-experimental/
+guoq_benchmarks/
+benchmarks/
 
 !.gitignore
 !.gitattributes
 !.gitmodules
 !.github/
+!SymbolicOptimizer/
+!semantics.py

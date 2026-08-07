@@ -1,0 +1,14 @@
+# Grammar file for the nam gateset (Nam et al. rz+cnot+cliff basis).
+# [gates] and [symbAngles] are the two sections; # lines are comments.
+# Angle expressions accept: identifiers, numbers, unary -, and + - * / ( ).
+
+[gates]
+x
+h
+rz
+cx
+
+[symbAngles]
+theta1
+pi/2
+-(pi/2)

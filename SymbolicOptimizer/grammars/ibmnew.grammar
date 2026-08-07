@@ -1,0 +1,13 @@
+# Grammar file for the ibmnew gateset (cx/rz/x/sx -- IBM native basis).
+
+[gates]
+cx
+rz
+x
+sx
+
+[symbAngles]
+theta1
+-(theta1)
+pi/2
+-(pi/2)

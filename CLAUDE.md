@@ -5,7 +5,7 @@ A quantum-circuit optimizer for ion / IBM / Nam / Rigetti gate sets that combine
 ## Build & run
 
 ```bash
-bash build_queso.sh                     # rebuilds the fat jar in /root
+bash build_qsymb.sh                     # rebuilds the fat jar in /root
 # Run on a benchmark:
 java --enable-preview -Xss256m -Xmx16g \
   -cp /root/SymbolicOptimizer-1.0-SNAPSHOT-jar-with-dependencies.jar Optimizer \
@@ -14,7 +14,7 @@ java --enable-preview -Xss256m -Xmx16g \
   -m SA -t 240 -symb true -g ion -ilp true -minsymb 0 -maxsymb 30
 ```
 
-Build idiosyncrasy: `Optimizer.java` has imports `import dag.CircuitDAG;` etc that **must be removed** for Maven build (default-package classes shadow the `dag.*` subpackage names). `bash build_queso.sh` works after the imports are deleted.
+Build idiosyncrasy: `Optimizer.java` has imports `import dag.CircuitDAG;` etc that **must be removed** for Maven build (default-package classes shadow the `dag.*` subpackage names). `bash build_qsymb.sh` works after the imports are deleted.
 
 ## Rule file taxonomy (4 distinct kinds, easy to confuse)
 

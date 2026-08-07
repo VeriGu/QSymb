@@ -56,9 +56,55 @@ import org.slf4j.LoggerFactory;
 
 public class Optimizer {
     private static final Logger logger = LoggerFactory.getLogger(Optimizer.class);
+    /**
+     * Unified switch for the -lr reverser stack (-Dlongrule.reverse=true).
+     * ON:  filterValidLongRules expands each rule via RuleReverser (birewrite
+     *      for size-preserving, inverse for braids), the per-exploration
+     *      reverse-ban is active, and each draw is applied at ONE random site
+     *      (applyOnce) so an uphill rule can't mass-inflate the circuit.
+     * OFF (default): the original Queso -lr semantics — forward orientation
+     *      only (filterValidRules), no ban set, apply at every
+     *      non-overlapping site.
+     */
+    public static final boolean LONGRULE_REVERSE = Boolean.getBoolean("longrule.reverse");
     private Verifier verifier;
     private SymbolicSolve solver;
     public volatile CircuitDAG bestCircuitOverall = null;
+    /**
+     * Number of symbolic rules successfully applied during the current run.
+     * Incremented from SymbolicThread on each successful apply; read by the
+     * timeout thread when reporting quiet-mode stats.
+     */
+    public static final java.util.concurrent.atomic.AtomicInteger SYMB_APPLIED =
+            new java.util.concurrent.atomic.AtomicInteger(0);
+    /**
+     * Per-stage attribution counters for the symbolic-match pipeline, printed
+     * as one "Symb stats:" line at timeout. Answers WHY applications are rare:
+     * few attempts (slow pipeline), gate-name skips, no structural match,
+     * basis-check rejections, or qiskit-equivalence vetoes.
+     */
+    public static final java.util.concurrent.atomic.AtomicLong SYMB_ATTEMPTS = new java.util.concurrent.atomic.AtomicLong();
+    public static final java.util.concurrent.atomic.AtomicLong SYMB_SKIP_GATES = new java.util.concurrent.atomic.AtomicLong();
+    public static final java.util.concurrent.atomic.AtomicLong SYMB_NO_MATCH = new java.util.concurrent.atomic.AtomicLong();
+    public static final java.util.concurrent.atomic.AtomicLong SYMB_BASIS_CALLS = new java.util.concurrent.atomic.AtomicLong();
+    public static final java.util.concurrent.atomic.AtomicLong SYMB_BASIS_PASS = new java.util.concurrent.atomic.AtomicLong();
+    public static final java.util.concurrent.atomic.AtomicLong SYMB_BASIS_MS = new java.util.concurrent.atomic.AtomicLong();
+    public static final java.util.concurrent.atomic.AtomicLong SYMB_QISKIT_CALLS = new java.util.concurrent.atomic.AtomicLong();
+    public static final java.util.concurrent.atomic.AtomicLong SYMB_QISKIT_PASS = new java.util.concurrent.atomic.AtomicLong();
+    public static final java.util.concurrent.atomic.AtomicLong SYMB_QISKIT_MS = new java.util.concurrent.atomic.AtomicLong();
+
+    static String symbStatsLine() {
+        return "Symb stats: attempts=" + SYMB_ATTEMPTS.get()
+                + " skipGates=" + SYMB_SKIP_GATES.get()
+                + " noMatch=" + SYMB_NO_MATCH.get()
+                + " basisCalls=" + SYMB_BASIS_CALLS.get()
+                + " basisPass=" + SYMB_BASIS_PASS.get()
+                + " basisMs=" + SYMB_BASIS_MS.get()
+                + " qiskitCalls=" + SYMB_QISKIT_CALLS.get()
+                + " qiskitPass=" + SYMB_QISKIT_PASS.get()
+                + " qiskitMs=" + SYMB_QISKIT_MS.get()
+                + " applied=" + SYMB_APPLIED.get();
+    }
     public Optimizer() {
         Random rand = new Random();
         solver = new SymbolicSolve(new Random());
@@ -545,7 +591,11 @@ public class Optimizer {
 
     private String replaceAngles(String replace, Map<String, Expr> angleMap) {
         for (String angle : angleMap.keySet()) {
-            replace = replace.replace(angle, eval(angleMap.get(angle)).toString());
+            // Parenthesize the substituted value: templates like rz(-theta1)
+            // with a NEGATIVE bound angle would otherwise produce rz(--1.57),
+            // which ANTLR error-recovers by dropping the second '-' -- a
+            // silently WRONG-SIGNED rewrite. rz(-(-1.57)) parses correctly.
+            replace = replace.replace(angle, "(" + eval(angleMap.get(angle)).toString() + ")");
         }
 
         return replace;
@@ -775,8 +825,16 @@ public class Optimizer {
             try {
                 EggGen.Circuit lhsC = new EggGen.Circuit(nodesToGates(matched));
                 EggGen.Circuit rhsC = buildSymbolicRhs(matched, lhsBeforeSize, lhsAfterSize, symbrhs, rm, am);
-                boolean eq = checkEquivalenceWithQiskit(toBracketForm(lhsC.toQASM()),
-                        toBracketForm(rhsC.toQASM()), lhsC.getMaxQubits() + 1);
+                // Benchmarks may declare registers named "node"/"psi"/"reg"
+                // etc. (e.g. qaoa_10 uses qreg node[10]); getMaxQubits and
+                // toBracketForm only understand qN names. Canonicalize BOTH
+                // sides through one shared map so the qiskit check sees
+                // consistent q0..qk names regardless of source naming.
+                Map<String, String> renameMap = new HashMap<>();
+                EggGen.Circuit lhsCanon = EggGen.canonicalizeCircuit(lhsC, renameMap);
+                EggGen.Circuit rhsCanon = EggGen.canonicalizeCircuit(rhsC, renameMap);
+                boolean eq = checkEquivalenceWithQiskit(toBracketForm(lhsCanon.toQASM()),
+                        toBracketForm(rhsCanon.toQASM()), lhsCanon.getMaxQubits() + 1);
                 logger.debug(eq ? "Circuits are equivalent"
                         : "Circuits are not equivalent; growing symbolic region");
                 return eq;
@@ -1696,7 +1754,13 @@ public class Optimizer {
 
 
     private boolean sameAngle(Expr angle1, Expr angle2) {
-        return (eval(angle1) % (4 * Math.PI)) == (eval(angle2) % (4 * Math.PI));
+        double period = 4 * Math.PI;
+        double a = eval(angle1) % period;
+        double b = eval(angle2) % period;
+        if (a < 0) a += period;               // canonicalize sign: -pi/2 == +3pi/2
+        if (b < 0) b += period;
+        double d = Math.abs(a - b);
+        return d < 1e-9 || Math.abs(d - period) < 1e-9;   // wrap-around at 0/4pi
     }
 
 
@@ -2255,6 +2319,18 @@ public class Optimizer {
     }
 
     public static boolean checkEquivalenceWithQiskit(String qasm1, String qasm2, int maxQubits) throws IOException, InterruptedException {
+        long qiskitT0 = System.currentTimeMillis();
+        SYMB_QISKIT_CALLS.incrementAndGet();
+        try {
+            boolean eq = checkEquivalenceWithQiskitInner(qasm1, qasm2, maxQubits);
+            if (eq) SYMB_QISKIT_PASS.incrementAndGet();
+            return eq;
+        } finally {
+            SYMB_QISKIT_MS.addAndGet(System.currentTimeMillis() - qiskitT0);
+        }
+    }
+
+    private static boolean checkEquivalenceWithQiskitInner(String qasm1, String qasm2, int maxQubits) throws IOException, InterruptedException {
         // Create temporary files for the QASM strings
         String header = String.format("OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[%s];\n", maxQubits);
         qasm1 = header + qasm1;
@@ -2296,7 +2372,7 @@ public class Optimizer {
             logger.warn("Error output: {}", errorOutput.toString());
             return false;
         }
-        System.out.print("Output:" + output);
+        logger.debug("Qiskit checker output: {}", output);
 
         return output.toString().trim().equals("true");
     }
@@ -2434,7 +2510,11 @@ public class Optimizer {
             }
         }
 
-        if (pattern.contains("+") || pattern.contains("-")) {
+        // Reject only genuinely-underdetermined symbolic-sum patterns (theta1+theta2):
+        // matchAngle can't invert a sum against a single concrete angle. Negative
+        // concrete literals (rz(-pi/2.0)) ARE matchable — eval() handles UnOp MINUS
+        // and DIV numerically — so we no longer drop them on the bare "-" token.
+        if (pattern.contains("+")) {
             return false;
         }
 
@@ -2495,6 +2575,79 @@ public class Optimizer {
         }
 
         return validRules;
+    }
+
+    /**
+     * Long-rule (-lr) loader that runs each rule through RuleReverser like the
+     * egglog path, but in the -lr convention: the matched side is the file's
+     * RHS (splitRule[1]), so the rule is read RHS-as-LHS before deciding
+     * direction. This lets the -lr set carry BOTH directions where valid
+     * (birewrite for size-preserving, inverse for size-changing braids) so it
+     * can supply uphill perturbations, not just the single forward orientation
+     * written in the file.
+     *
+     * -lr string convention: "X | Y" means match Y, replace with X (Y -> X).
+     */
+    /**
+     * Reverse a "-lr" rule string "A | B [when C]" into "B | A [when C]", i.e.
+     * the mirror direction, formatted the same way filterValidLongRules stores
+     * it so the reversed string matches the corresponding validLongRules entry.
+     */
+    private String reverseRuleString(String rule) {
+        String when = "";
+        String body = rule;
+        int wi = rule.toLowerCase().indexOf(" when ");
+        if (wi >= 0) { body = rule.substring(0, wi); when = rule.substring(wi); }
+        String[] s = body.split(" \\| ", 2);
+        if (s.length < 2) return rule;
+        return s[1].trim() + " | " + s[0].trim() + when;
+    }
+
+    public List<String> filterValidLongRules(List<String> rules, String gateset) {
+        java.util.LinkedHashSet<String> out = new java.util.LinkedHashSet<>();
+        for (String rule : rules) {
+            String[] parts = rule.split(" \\| ", 2);
+            if (parts.length < 2) continue;
+            String a = parts[0].trim();                 // file LHS = -lr replacement
+            String brest = parts[1];
+            String b = brest, when = "";
+            int wi = brest.toLowerCase().indexOf(" when ");
+            if (wi >= 0) { b = brest.substring(0, wi); when = brest.substring(wi); }
+            b = b.trim();
+            String forward = a + " | " + b + when;      // match b -> produce a (original)
+            String reverse = b + " | " + a + when;      // match a -> produce b (inverse)
+
+            Rule parsed;
+            try { parsed = QASMAstBuilder.parseRule(rule); }
+            catch (Throwable t) { continue; }
+            // -lr reads RHS-as-LHS: the matched side (file RHS = parsed.rhs) is
+            // the pattern, so the -lr forward transform is parsed.rhs -> parsed.lhs.
+            Rule lrForward = new Rule(parsed.rhs, parsed.lhs, parsed.conditions);
+            int lsz = lrForward.lhs.gates.size();
+            int rsz = lrForward.rhs.gates.size();
+
+            boolean addFwd = false, addRev = false;
+            if (lsz == rsz) {
+                addFwd = addRev = true;                 // size-preserving -> birewrite
+            } else {
+                RuleReverser.Direction d = RuleReverser.decide(lrForward, gateset);
+                if (d == RuleReverser.Direction.FORWARD_ONLY || d == RuleReverser.Direction.BOTH) addFwd = true;
+                if ((d == RuleReverser.Direction.REVERSE_ONLY || d == RuleReverser.Direction.BOTH)
+                        && RuleReverser.reverseIsFireable(lrForward)) addRev = true;
+            }
+
+            if (addFwd) {
+                CircuitDAG pat = QASMToDAGVisitor.parse(b), rep = QASMToDAGVisitor.parse(a);
+                if (validRule(b, a, pat, rep, Params.REMOVE_SIZE_PRESERVING_RULES, Params.MAX_RULE_QUBITS))
+                    out.add(forward);
+            }
+            if (addRev) {
+                CircuitDAG pat = QASMToDAGVisitor.parse(a), rep = QASMToDAGVisitor.parse(b);
+                if (validRule(a, b, pat, rep, Params.REMOVE_SIZE_PRESERVING_RULES, Params.MAX_RULE_QUBITS))
+                    out.add(reverse);
+            }
+        }
+        return new ArrayList<>(out);
     }
 
     public List<MononialRule> filterValidMonomialRules(List<MononialRule> rules) {
@@ -2887,7 +3040,7 @@ public class Optimizer {
         List<Rule> sizeDecreasingRules = new ArrayList<>();
         List<Rule> sizePreservingRules = new ArrayList<>();
         List<Rule> sizeIncreasingRules = new ArrayList<>();
-        int k = 1; //exploration parameter
+        int k = Integer.getInteger("longrule.k", 1); //exploration parameter
         int droppedIncreasing = 0;
         int keptIncreasingPattern = 0;
         for(Rule rule: parsedRules) {
@@ -2926,8 +3079,10 @@ public class Optimizer {
         logger.debug("Size increasing rules: {}", sizeIncreasingRules.size());
         logger.debug("Size preserving rules: {}", sizePreservingRules.size());
         logger.debug("Size decreasing rules: {}", sizeDecreasingRules.size());
-        logger.debug("Filtering Valid Long Rules.txt");
-        List<String> validLongRules = filterValidRules(longrules);
+        logger.debug("Filtering Valid Long Rules.txt (reverse={})", LONGRULE_REVERSE);
+        List<String> validLongRules = LONGRULE_REVERSE
+                ? filterValidLongRules(longrules, gateset)
+                : filterValidRules(longrules);
         logger.debug("Filtering Valid Symbolic Rules");
         List<MononialRule> validMonomialRules = filterValidMonomialRules(symbMonomialRules);
         validMonomialRules.clear();
@@ -2992,7 +3147,11 @@ public class Optimizer {
         // budget on repeated 120s timeouts that get abandoned.
         // (Timeout detected via EggGen.resetTimeoutFlag/timedOut over the whole
         // stage; const/merge are one-shot pre-passes, not counted.)
-        final int EGRAPH_DEPTH_CEILING = 10;
+        // Overridable at launch with -Degraph.depth.ceiling=N (for the
+        // small-window / deep-saturation experiment): a small chunk window
+        // keeps each e-graph tiny, so exp(depth) stays cheap even at high
+        // depth ceilings.
+        final int EGRAPH_DEPTH_CEILING = Integer.getInteger("egraph.depth.ceiling", 13);
         int egraphDepth = 1;
         boolean egraphDepthFrozen = false;
         // Everything sent so far (schema + ruleset decls + const rewrites +
@@ -3005,6 +3164,7 @@ public class Optimizer {
             egraph.push();
             egraph.clearRules();
             if(circuitComparator.compare(q.peek(), bestOptimized) <= 0) {
+                int prev2q = bestOptimized.twoQGateCount();
                 bestOptimized = q.peek();
                 bestCircuitOverall = bestOptimized;
                 logger.debug("Q size: {}", q.size());
@@ -3012,6 +3172,17 @@ public class Optimizer {
                 logger.info("Best Optimized Size: {}", bestOptimized.totalGateCount());
                 logger.info("Best Optimized 2q: {}", bestOptimized.twoQGateCount());
                 logger.debug("Fidelity: {}", bestOptimized.fidelity());
+                // Progress line: fires only on STRICT 2q improvement so quiet-mode
+                // consumers get a real event stream rather than every same-2q tie.
+                // Format matches the "Original 2q:" / "Final 2q:" style so any
+                // grep-based parser can pull all three from the same log.
+                int cur2q = bestOptimized.twoQGateCount();
+                if (cur2q < prev2q) {
+                    double elapsedSec = (System.nanoTime() - startTime) / 1e9;
+                    System.out.println(String.format(
+                            "Progress 2q: %d (total %d) at %.1fs",
+                            cur2q, bestOptimized.totalGateCount(), elapsedSec));
+                }
             }
 
             CircuitDAG c = dequeue(q, Params.TEMPERATURE, Params.OPTIMIZATION_OBJECTIVE, random);
@@ -3047,18 +3218,31 @@ public class Optimizer {
             boolean randomRuleApplied = false;
             CircuitDAG glob_candidate = c;
             if (!validLongRules.isEmpty()) {
+                // Per-exploration ban set: once a size-preserving rule A->B is
+                // applied in THIS k-step exploration, its reverse B->A is banned
+                // for the rest of this exploration so the walk cannot immediately
+                // backtrack/oscillate. Reset every exploration (not global).
+                java.util.Set<String> bannedReverses = new java.util.HashSet<>();
                 for(int i = 0;i < k; i++) {
                     while(true) {
                         int index = random.nextInt(validLongRules.size());
                         String rule = validLongRules.get(index);
-                        String[] splitRule = rule.split(" \\| ");
-                        if(StringUtils.countMatches(splitRule[0], ";") > StringUtils.countMatches(splitRule[1], ";")) {
-                            if(random.nextDouble() < 0.95) {
-                                continue;
-                            }
+                        if (LONGRULE_REVERSE && bannedReverses.contains(rule)) {
+                            continue; // reverse of an already-applied size-preserving rule
                         }
-                        CircuitDAG candidate = applyRule(glob_candidate, QASMToDAGVisitor.parse(splitRule[1]), splitRule[0], false, random);
+                        String[] splitRule = rule.split(" \\| ");
+                        // Reverser ON: apply this draw at ONE uniformly-random
+                        // matchable site (find() shuffles the anchor order) so a
+                        // single uphill braid draw can't inflate a big circuit by
+                        // hundreds of 2q. Reverser OFF: original Queso semantics,
+                        // apply at every non-overlapping site.
+                        CircuitDAG candidate = applyRule(glob_candidate, QASMToDAGVisitor.parse(splitRule[1]), splitRule[0], LONGRULE_REVERSE, random);
                         if(candidate != glob_candidate) {
+                            // Size-preserving move: ban its reverse for this exploration.
+                            if (LONGRULE_REVERSE && StringUtils.countMatches(splitRule[0], ";")
+                                    == StringUtils.countMatches(splitRule[1], ";")) {
+                                bannedReverses.add(reverseRuleString(rule));
+                            }
                             String shortRule = rule.length() > 100 ? rule.substring(0, 100) + "..." : rule;
                             logger.info("[LONGRULE idx={}] {}", index, shortRule);
                             List<String> rulesApplied = new ArrayList<>(c.getRulesApplied());
@@ -3276,6 +3460,10 @@ public class Optimizer {
             if (!egraph.timedOut()) {
                 egraph.pop();
             }
+            // Stage boundary: RSS-cap restart disabled per user request until
+            // EggGen.maybeRestartForRss() is implemented; the setup-prefix
+            // replay path is exercised via markSetupEnd + on-timeout restart.
+            // egraph.maybeRestartForRss();
             k++;
 
             long endTime = System.nanoTime();
@@ -3471,11 +3659,18 @@ public class Optimizer {
         // Route through the persistent semantics.py --server pool instead of a
         // fresh process spawn (which paid ~1s interpreter+sympy startup every
         // call). The pool serializes one request per slot and memoizes results.
-        String output = solver.isSubspaceLinear(jsonString, jsonM, subspaceStr, symbolMapStr);
+        long basisT0 = System.currentTimeMillis();
+        String output = (Params.SYMB_APPROX_EPS != null)
+                ? solver.isSubspaceLinear(jsonString, jsonM, subspaceStr, symbolMapStr, Params.SYMB_APPROX_EPS)
+                : solver.isSubspaceLinear(jsonString, jsonM, subspaceStr, symbolMapStr);
+        SYMB_BASIS_CALLS.incrementAndGet();
+        SYMB_BASIS_MS.addAndGet(System.currentTimeMillis() - basisT0);
 
         logger.debug("Output: {}", output.trim());
 
-        return output.trim().contains("True");
+        boolean pass = output.trim().contains("True");
+        if (pass) SYMB_BASIS_PASS.incrementAndGet();
+        return pass;
     }
 
 
@@ -3508,6 +3703,27 @@ public class Optimizer {
         }
 
         return constraints;
+    }
+
+    /**
+     * Write the best-so-far circuit as QASM to
+     * {@code <outputDir>/<benchmarkBasename>_optimized.qasm}. No-op when
+     * {@code outputDir} is null/empty. Failures are printed to stderr so a
+     * disk problem doesn't lose the console final-stats output.
+     */
+    static void writeOptimizedQasm(CircuitDAG best, String benchmarkFile, String outputDir) {
+        if (outputDir == null || outputDir.isEmpty() || best == null) return;
+        try {
+            java.nio.file.Path dir = java.nio.file.Paths.get(outputDir);
+            java.nio.file.Files.createDirectories(dir);
+            String stem = new java.io.File(benchmarkFile).getName();
+            int dot = stem.lastIndexOf('.');
+            if (dot > 0) stem = stem.substring(0, dot);
+            java.nio.file.Path out = dir.resolve(stem + "_optimized.qasm");
+            java.nio.file.Files.writeString(out, best.toQASM());
+        } catch (Exception e) {
+            System.err.println("writeOptimizedQasm failed: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args) throws IOException {
@@ -3563,6 +3779,25 @@ public class Optimizer {
         longrulesO.setRequired(false);
         options.addOption(longrulesO);
 
+        // -q silences all logging and prints ONLY "Final Gate Size:" and
+        // "Final 2q:" (to stdout, matching the existing log format so any
+        // scripts that grep those lines keep working). -o writes the final
+        // optimized circuit to <output-dir>/<benchmark_basename>_optimized.qasm.
+        Option quietO = new Option("q", "quiet", false, "quiet: only final 2q + total gates + qasm save");
+        quietO.setRequired(false);
+        options.addOption(quietO);
+
+        Option outdirO = new Option("o", "out", true, "output directory for the optimized qasm");
+        outdirO.setRequired(false);
+        options.addOption(outdirO);
+
+        // Approximate symbolic matching: accept a window when its least-squares
+        // residual against the rule basis is < eps (see Params.SYMB_APPROX_EPS).
+        Option approxO = new Option("approx", "approxEps", true,
+                "approximate symbolic-match tolerance (e.g. 1e-3); omit for exact matching");
+        approxO.setRequired(false);
+        options.addOption(approxO);
+
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -3575,6 +3810,22 @@ public class Optimizer {
             formatter.printHelp("Optimizer", options);
             System.exit(1);
             return;
+        }
+
+        // Quiet mode: silence the whole Logback root before anything logs the
+        // benchmark name. Final results are still emitted via System.out from
+        // the printFinal helper below.
+        boolean quiet = cmd.hasOption("quiet");
+        if (quiet) {
+            ch.qos.logback.classic.Logger root =
+                    (ch.qos.logback.classic.Logger)
+                            org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+            root.setLevel(ch.qos.logback.classic.Level.OFF);
+        }
+        String outputDir = cmd.getOptionValue("out");
+        if (cmd.getOptionValue("approxEps") != null) {
+            Params.SYMB_APPROX_EPS = Double.valueOf(cmd.getOptionValue("approxEps"));
+            logger.info("Approximate symbolic matching ON, eps = {}", Params.SYMB_APPROX_EPS);
         }
 
         List<String> commutative = new ArrayList<>();
@@ -3680,6 +3931,11 @@ public class Optimizer {
         EggGen.Circuit circuit = QASMAstBuilder.parse(circuitString);
         //System.out.println(circuit.toEggString());
 
+        // Capture original stats now so the timeout thread can report them
+        // even when the run has already replaced its own state.
+        final int originalTotal = circuit.gates.size();
+        final int originalTwoQ  = circuit.getTwoQubitsCount();
+
         // Use timeoutint to limit the time to run optimize; when time is up, terminate the program
 
         // Assume timeoutint is defined somewhere above as the time limit in seconds
@@ -3689,12 +3945,29 @@ public class Optimizer {
             try {
                 Thread.sleep(timeoutint * 1000);
                 if (optimizer.bestCircuitOverall != null) {
-                    logger.info("Timeout reached, printing best circuit so far:");
-                    logger.info("Final Gate Size: {}", optimizer.bestCircuitOverall.totalGateCount());
-                    logger.info("Final 2q: {}", optimizer.bestCircuitOverall.twoQGateCount());
-                    logger.debug("Final Cost: {}", optimizer.bestCircuitOverall.cost(Params.OPTIMIZATION_OBJECTIVE));
-                    logger.debug("Final Fidelity: {}", optimizer.bestCircuitOverall.fidelity());
-                    logger.debug("Final Circuit: {}", optimizer.bestCircuitOverall.toQASM());
+                    if (!quiet) {
+                        logger.info("Timeout reached, printing best circuit so far:");
+                        logger.info("Original Gate Size: {}", originalTotal);
+                        logger.info("Original 2q: {}", originalTwoQ);
+                        logger.info("Final Gate Size: {}", optimizer.bestCircuitOverall.totalGateCount());
+                        logger.info("Final 2q: {}", optimizer.bestCircuitOverall.twoQGateCount());
+                        logger.info("Symbolic rules applied: {}", SYMB_APPLIED.get());
+                        logger.info(symbStatsLine());
+                        logger.debug("Final Cost: {}", optimizer.bestCircuitOverall.cost(Params.OPTIMIZATION_OBJECTIVE));
+                        logger.debug("Final Fidelity: {}", optimizer.bestCircuitOverall.fidelity());
+                        logger.debug("Final Circuit: {}", optimizer.bestCircuitOverall.toQASM());
+                    } else {
+                        // Quiet: only the five required lines to stdout (plus the
+                        // one-line stage-attribution stats). Format matches
+                        // logger.info output so log-parsing scripts work.
+                        System.out.println("Original Gate Size: " + originalTotal);
+                        System.out.println("Original 2q: " + originalTwoQ);
+                        System.out.println("Final Gate Size: " + optimizer.bestCircuitOverall.totalGateCount());
+                        System.out.println("Final 2q: " + optimizer.bestCircuitOverall.twoQGateCount());
+                        System.out.println("Symbolic rules applied: " + SYMB_APPLIED.get());
+                        System.out.println(symbStatsLine());
+                    }
+                    writeOptimizedQasm(optimizer.bestCircuitOverall, benchmarkFile, outputDir);
                 }
                 System.exit(0);
             } catch (InterruptedException ignored) {}

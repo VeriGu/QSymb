@@ -330,9 +330,15 @@ public class EggGen {
                 String out = readOutputWithTimeout(EGGLOG_COMMAND_TIMEOUT_MS);
                 boolean gotDone = out != null && out.contains("done");
                 if (gotDone) {
-                    // Persist to BOTH the in-memory log (for state-restoring
-                    // replay on restart) and the file log (debug visibility).
-                    commandLog.add(command);
+                    // Persist to the in-memory log only until markSetupEnd():
+                    // restartEgglog() replays just the setup prefix, so
+                    // per-stage commands after the mark would never be read --
+                    // retaining them only grows the log unboundedly over a
+                    // long run. The file log keeps everything (debug
+                    // visibility).
+                    if (setupLogEnd == 0) {
+                        commandLog.add(command);
+                    }
                     printWriter.println(command);
                     printWriter.flush();
                     return out;
@@ -348,6 +354,16 @@ public class EggGen {
             // command was too expensive / unstable; surface it for the dynamic
             // depth slow-start (the killer path alone missed crash-restarts).
             timeoutOccurred = true;
+            // Diagnostic: log which command tripped the retry, truncated so a
+            // giant (run ...) doesn't spam the log.
+            {
+                String preview = command == null ? "<null>" : command;
+                if (preview.length() > 240) preview = preview.substring(0, 240) + "...";
+                preview = preview.replace('\n', ' ');
+                logger.warn("egglog timeout/failure on command (attempt "
+                        + (attempt + 1) + "/" + (EGGLOG_MAX_RESTARTS + 1)
+                        + ", cmdlog=" + commandLog.size() + "): " + preview);
+            }
             try {
                 restartEgglog();
             } catch (IOException restartFail) {
@@ -406,17 +422,54 @@ public class EggGen {
         }
         startEgglogREPL();
         if (replayUpto > 0) {
-            for (int i = 0; i < replayUpto; i++) {
-                processInput.write(commandLog.get(i));
+            // Concurrent reader thread drains egglog stdout while we flood its
+            // stdin. Without this, egglog blocks writing its per-command output
+            // once its stdout pipe fills (Linux default 64 KiB), which stops
+            // it from reading further stdin, which fills our own stdin pipe
+            // and blocks our write() indefinitely -- the classic
+            // producer-consumer pipe deadlock. The pre-fix loop only started
+            // reading AFTER the whole write batch, which was fine for tiny
+            // replays (~few hundred cmds) but wedged for larger ones.
+            final BufferedReader out = processOutput;
+            final java.util.concurrent.atomic.AtomicBoolean sawDone =
+                new java.util.concurrent.atomic.AtomicBoolean(false);
+            Thread drain = new Thread(() -> {
+                try {
+                    String line;
+                    while ((line = out.readLine()) != null) {
+                        if (line.contains("done")) {
+                            sawDone.set(true);
+                            return;
+                        }
+                    }
+                } catch (IOException ignored) { /* stream closed */ }
+            }, "egglog-replay-drain");
+            drain.setDaemon(true);
+            drain.start();
+
+            try {
+                for (int i = 0; i < replayUpto; i++) {
+                    processInput.write(commandLog.get(i));
+                    processInput.newLine();
+                }
+                processInput.write("(print-function done :mode csv)");
                 processInput.newLine();
+                processInput.flush();
+            } catch (IOException e) {
+                logger.warn("egglog replay write aborted: " + e.getMessage());
             }
-            processInput.write("(print-function done :mode csv)");
-            processInput.newLine();
-            processInput.flush();
-            // Bound the replay drain the same way as a normal command: a fresh
-            // egglog reloading only the setup prefix is cheap, but never let it
-            // hang unbounded (the old bare readOutput() could wedge forever).
-            readOutputWithTimeout(EGGLOG_COMMAND_TIMEOUT_MS);
+
+            // Bound the wait: fresh egglog reloading only the setup prefix
+            // is cheap; if it takes > timeout something is wrong.
+            try {
+                drain.join(EGGLOG_COMMAND_TIMEOUT_MS);
+            } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+            }
+            if (!sawDone.get()) {
+                logger.warn("egglog replay drain timed out or ended without 'done'");
+                if (egglogProcess != null) egglogProcess.destroyForcibly();
+            }
         }
     }
 

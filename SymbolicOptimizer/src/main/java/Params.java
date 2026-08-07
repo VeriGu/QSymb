@@ -79,9 +79,34 @@ public class Params {
      */
     public static double EPSILON = 1e-8;
     /**
+     * Approximate symbolic-rule matching tolerance. When null (default) the
+     * basis-membership check in semantics.py uses its exact threshold (1e-6,
+     * float-noise only). When set (e.g. 1e-3 via -approx), a matched window
+     * is accepted if its least-squares residual against the rule's basis
+     * span is below this value -- the rewrite is then an approximation, not
+     * an identity, so per-application error can accumulate.
+     */
+    public static Double SYMB_APPROX_EPS = null;
+    /**
      * seed
      */
     public static int SEED = new Random().nextInt();
+    /**
+     * Seed for the rule enumerator's Random (fingerprint angles + symbolic
+     * trace seed) -- separate from the optimizer's SEED. Fixed default so
+     * repeated EnumeratorPrune runs generate the same rule sets; change it
+     * deliberately to explore a different enumeration trajectory.
+     */
+    public static int ENUMERATOR_SEED = 42;
+    /**
+     * Per-candidate budget (seconds) for the symbolic intertwiner solve in
+     * infer_symb. Gate sets whose angles force sympy's algebraic-field path
+     * (e.g. rigetti's rx1/rx2/rx3) can take effectively unbounded time on a
+     * single candidate; exceeding the budget skips that candidate with a log
+     * line instead of stalling the whole synthesis phase. NOTE: a timeout
+     * that fires makes the resulting rule set machine-speed dependent.
+     */
+    public static int SYMB_SOLVE_TIMEOUT_SEC = 600;
     /**
      * temperature for simulated annealing or beta for mcmc. for beam search, temperature is for softmax. If 0 then polls priority queue.
      */
@@ -141,18 +166,20 @@ public class Params {
      * If circuit size (gate count) is greater than this threshold, the egraph
      * step in optimize_SA splits the circuit into sequential chunks and
      * processes each chunk independently to avoid OOM / hangs in egglog.
+     * Override at launch with -Degraph.chunk.threshold=N (for the window sweep).
      */
-    public static int EGRAPH_CHUNK_THRESHOLD = 500;
+    public static int EGRAPH_CHUNK_THRESHOLD = Integer.getInteger("egraph.chunk.threshold", 500);
     /**
-     * Number of gates per chunk when chunking is active.
+     * Number of gates per chunk (the eqsat "window") when chunking is active.
+     * Override at launch with -Degraph.chunk.size=N.
      */
-    public static int EGRAPH_CHUNK_SIZE = 500;
+    public static int EGRAPH_CHUNK_SIZE = Integer.getInteger("egraph.chunk.size", 500);
 
     /**
-     * Python interpreter used to run the ILP compaction wrapper. Must point
-     * at an environment with qiskit + pulp available (e.g. Quasar's venv).
+     * Python interpreter used to run the ILP compaction wrapper. Must have
+     * qiskit + pulp + networkx available (system python3 by default).
      */
-    public static String ILP_PYTHON = "/root/Quasar/.venv/bin/python3";
+    public static String ILP_PYTHON = "python3";
     /**
      * Path to the ILP compaction wrapper script (reuses Quasar's
      * dag.linearized_circuit_from_dag).

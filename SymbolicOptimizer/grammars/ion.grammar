@@ -1,0 +1,20 @@
+# Grammar file for the ion gateset (rx/ry/rz + rxx).
+#
+# The Clifford angles (pi, pi/2, -pi/2) are needed so the QAOA gadget
+# Identity B can be discovered by the enumerator:
+#   LHS: RXX(pi/2); RX(-pi/2); RZ(gamma); RXX(pi/2)
+#   RHS: RX(pi/2); RZ(pi/2); RXX(gamma); RY(pi/2); RX(pi)
+
+[gates]
+rx
+ry
+rz
+rxx
+
+[symbAngles]
+theta1
+theta2
+theta1+theta2
+pi
+pi/2
+-(pi/2)

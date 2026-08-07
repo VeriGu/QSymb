@@ -1,0 +1,14 @@
+# Grammar file for the ibm gateset (u1/u2/u3 + cnot).
+
+[gates]
+u1
+u2
+u3
+cx
+
+[symbAngles]
+theta1
+theta2
+theta3
+theta1+theta2
+theta1+(theta2+theta3)

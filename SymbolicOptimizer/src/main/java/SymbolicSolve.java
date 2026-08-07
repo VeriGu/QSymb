@@ -18,7 +18,12 @@ import ast.Real;
 import ast.Symbol;
 import ast.UnOp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SymbolicSolve {
+
+    private static final Logger logger = LoggerFactory.getLogger(SymbolicSolve.class);
 
     /**
      * Represents a complex number with real and imaginary parts.
@@ -257,7 +262,7 @@ public class SymbolicSolve {
     private static void initPool() throws IOException {
         synchronized (poolInitLock) {
             if (poolInitialized) return;
-            System.err.println("[SEMSERVER] initializing pool of " + POOL_SIZE + " python servers");
+            logger.info("[SEMSERVER] initializing pool of {} python servers", POOL_SIZE);
             for (int i = 0; i < POOL_SIZE; i++) {
                 pool.offer(new ServerSlot(i));
             }
@@ -279,10 +284,10 @@ public class SymbolicSolve {
             slot = pool.take();
             // Restart if dead or quota reached.
             if (slot.proc == null || !slot.proc.isAlive()) {
-                System.err.println("[SEMSERVER #" + slot.id + "] starting fresh (was null/dead)");
+                logger.info("[SEMSERVER #{}] starting fresh (was null/dead)", slot.id);
                 slot.start();
             } else if (slot.requestCount >= SERVER_RESTART_INTERVAL) {
-                System.err.println("[SEMSERVER #" + slot.id + "] restarting after " + slot.requestCount + " requests");
+                logger.info("[SEMSERVER #{}] restarting after {} requests", slot.id, slot.requestCount);
                 slot.stop();
                 slot.start();
             }
@@ -329,6 +334,18 @@ public class SymbolicSolve {
                                    String subspaceJson, String symbolMapJson) {
         return runSemantics("-is_subspace_linear", circuitJson, basisJson,
                 subspaceJson, symbolMapJson);
+    }
+
+    /**
+     * Approximate variant: forwards -approx_eps so semantics.py accepts the
+     * window when its least-squares residual against the basis span is below
+     * eps (instead of the exact 1e-6 float-noise threshold).
+     */
+    public String isSubspaceLinear(String circuitJson, String basisJson,
+                                   String subspaceJson, String symbolMapJson,
+                                   double approxEps) {
+        return runSemantics("-is_subspace_linear", circuitJson, basisJson,
+                subspaceJson, symbolMapJson, "-approx_eps", String.valueOf(approxEps));
     }
 
 
@@ -447,6 +464,41 @@ public class SymbolicSolve {
                         "-ntraces", Integer.toString(Math.max(1, ntraces)))
                 : runSemantics("-bigcheck", j1, j2);
         return content.contains("True");
+    }
+
+    /**
+     * Exact symbolic eigenvalue-multiset check (characteristic-polynomial
+     * equality of L and R under sympy simplification). No sampling: the
+     * sound post-hoc validity test for the direct-solve ablation, where the
+     * seeded pre-filters are disabled.
+     */
+    public boolean checkEigenSymbolic(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
+        String j1 = circuitToJson(c1.gates, nqubits);
+        String j2 = circuitToJson(c2.gates, nqubits);
+        return runSemantics("-symbeigencheck", j1, j2).contains("True");
+    }
+
+    /**
+     * Batched per-circuit eigen fingerprints at {@code ntraces} seeded angle
+     * samples -- ONE server round-trip for all circuits. Equal strings mean
+     * eigen-equal at every sample (same predicate the per-pair checkBig
+     * verified), so grouping by this key subsumes both the trace bucket and
+     * the pairwise eigen check. Returned in input order.
+     */
+    public List<String> batchEigenFingerprints(List<List<EggGen.Gate>> circuits, int nqubits,
+                                               long seed, int ntraces) {
+        String json = "{\"circuits\":[" + circuits.stream()
+                .map(g -> circuitToJson(g, nqubits))
+                .collect(Collectors.joining(",")) + "]}";
+        String out = runSemantics("-multieigenfp", json,
+                "-seed", Long.toString(seed),
+                "-ntraces", Integer.toString(Math.max(1, ntraces)));
+        List<String> fps = new ArrayList<>();
+        for (String line : out.split("\n")) {
+            String t = line.trim();
+            if (!t.isEmpty()) fps.add(t);
+        }
+        return fps;
     }
 
 

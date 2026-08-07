@@ -179,12 +179,18 @@ public class QASMAstBuilder extends QASMBaseVisitor<Object> {
 
     @Override
     public Expr visitExpression(QASMParser.ExpressionContext ctx) {
+        // Walk children left-to-right so mixed operators (e.g. a - b + c) keep
+        // their correct positional operator. Indexing PLUS/MINUS separately
+        // (ctx.PLUS(i-1)) is WRONG: ANTLR numbers each token type independently,
+        // so the k-th operand's operator is not the (k-1)-th of a single type.
         Expr result = (Expr) visit(ctx.multExpr(0));
-        for (int i = 1; i < ctx.multExpr().size(); i++) {
-            if (ctx.PLUS(i - 1) != null) {
-                result = new BinOp(Expr.Op.PLUS, result, (Expr) visit(ctx.multExpr(i)));
-            } else if (ctx.MINUS(i - 1) != null) {
-                result = new BinOp(Expr.Op.SUBTRACT, result, (Expr) visit(ctx.multExpr(i)));
+        int operand = 1;
+        for (int ci = 1; ci < ctx.getChildCount() && operand < ctx.multExpr().size(); ci++) {
+            String op = ctx.getChild(ci).getText();
+            if (op.equals("+")) {
+                result = new BinOp(Expr.Op.PLUS, result, (Expr) visit(ctx.multExpr(operand++)));
+            } else if (op.equals("-")) {
+                result = new BinOp(Expr.Op.SUBTRACT, result, (Expr) visit(ctx.multExpr(operand++)));
             }
         }
         return result;
@@ -192,12 +198,18 @@ public class QASMAstBuilder extends QASMBaseVisitor<Object> {
 
     @Override
     public Expr visitMultExpr(QASMParser.MultExprContext ctx) {
+        // Same positional-operator fix as visitExpression: e.g. 3*pi/2 must be
+        // ((3*pi)/2). The old ctx.MULT(i-1)/ctx.DIV(i-1) indexing dropped the
+        // second operator whenever MULT and DIV were mixed, turning 3*pi/2 into
+        // 3*pi (dropping the /2) and producing non-equivalent circuits.
         Expr result = (Expr) visit(ctx.atomExpr(0));
-        for (int i = 1; i < ctx.atomExpr().size(); i++) {
-            if (ctx.MULT(i - 1) != null) {
-                result = new BinOp(Expr.Op.MULT, result, (Expr) visit(ctx.atomExpr(i)));
-            } else if (ctx.DIV(i - 1) != null) {
-                result = new BinOp(Expr.Op.DIV, result, (Expr) visit(ctx.atomExpr(i)));
+        int operand = 1;
+        for (int ci = 1; ci < ctx.getChildCount() && operand < ctx.atomExpr().size(); ci++) {
+            String op = ctx.getChild(ci).getText();
+            if (op.equals("*")) {
+                result = new BinOp(Expr.Op.MULT, result, (Expr) visit(ctx.atomExpr(operand++)));
+            } else if (op.equals("/")) {
+                result = new BinOp(Expr.Op.DIV, result, (Expr) visit(ctx.atomExpr(operand++)));
             }
         }
         return result;

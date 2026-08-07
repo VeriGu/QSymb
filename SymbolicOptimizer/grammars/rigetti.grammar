@@ -1,0 +1,15 @@
+# Grammar file for the rigetti gateset (rx1/rx2/rx3 + rz + cz).
+
+[gates]
+rx1
+rx2
+rx3
+rz
+cz
+
+[symbAngles]
+theta1
+theta2
+pi/2
+4*pi-theta1
+theta1 + theta2

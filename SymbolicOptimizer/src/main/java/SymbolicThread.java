@@ -39,44 +39,60 @@ public class SymbolicThread extends Thread {
         return result;
     }
 
+// Fraction of the rule pool to sample (distinct rules) per SA iteration,
+    // expressed as a RATIO of pool size (not a fixed count) so every ruleset
+    // gets the same per-attempt coverage regardless of pool size:
+    //   un-anchored(101) -> ~20,  anchored(436) -> ~87.
+    // -Dsymb.coverage=0.20 (default); -Dsymb.tries=K (>0) overrides absolutely.
+    private static final double SYMB_COVERAGE = Double.parseDouble(System.getProperty("symb.coverage", "0.20"));
+    private static final int SYMB_TRIES_OVERRIDE = Integer.getInteger("symb.tries", 0);
+
     @Override
     public void run() {
-        // Draw ONE random rule from the combined pool per spawn -- the SA loop
-        // exploration relies on rule-level diversity across many spawns, not
-        // on each spawn exhausting the rule list. A cheap LHS-gate-set
-        // prefilter still applies: if the picked rule wants a gate that isn't
-        // even in the circuit, we skip it (no work) instead of paying for the
-        // matcher + checkLinearCombination on a guaranteed miss.
         int total = symbRules.size() + symbRulesMonomials.size();
         if (total == 0) return;
-        int idx = rand.nextInt(total);
-
         Set<String> circuitGates = circuitGateNames(circuit);
-        CircuitDAG optimizedDAG;
-        String appliedRuleDesc;
-        if (idx < symbRulesMonomials.size()) {
-            MononialRule rule = symbRulesMonomials.get(idx);
-            appliedRuleDesc = "mono idx=" + idx + " " + rule.getLhs() + " -> " + rule.getRhs();
-            optimizedDAG = optimizer.symbolicMatchBeforeAfterMono(
-                    circuit, rule.getRhs(), rule.getLhs(), minSymb, maxSymb, rule.getConstraints(), null);
-        } else {
-            MatrixConstrainedRule rule = symbRules.get(idx - symbRulesMonomials.size());
-            if (!circuitGates.containsAll(ruleLhsGateNames(rule.getLHS()))) {
-                return;   // picked rule's LHS gates aren't in this circuit -- skip
-            }
-            // [SYMB_PICK idx=...] line removed -- enable Optimizer.logger.debug if needed.
-            appliedRuleDesc = "matrix idx=" + (idx - symbRulesMonomials.size())
-                    + " " + rule.getLHS() + " -> " + rule.getRHS();
-            optimizedDAG = optimizer.symbolicMatchBeforeAfter(
-                    circuit, rule.getLHS(), rule.getRHS(), minSymb, maxSymb, rule.getConstraint(), null);
-        }
 
-        if (optimizedDAG != null) {
-            String d = appliedRuleDesc.length() > 160 ? appliedRuleDesc.substring(0, 160) + "..." : appliedRuleDesc;
-            logger.info("[SYMBRULE applied] {}", d);
-            applySAaccept(optimizedDAG);
+        int budget = (SYMB_TRIES_OVERRIDE > 0)
+                ? Math.min(SYMB_TRIES_OVERRIDE, total)
+                : Math.max(1, Math.min(total, (int) Math.round(SYMB_COVERAGE * total)));
+        java.util.HashSet<Integer> tried = new java.util.HashSet<>();
+
+        while (tried.size() < budget) {
+            int idx = rand.nextInt(total);
+            if (!tried.add(idx)) continue;   // distinct rules only
+
+            Optimizer.SYMB_ATTEMPTS.incrementAndGet();
+            CircuitDAG optimizedDAG;
+            String appliedRuleDesc;
+            if (idx < symbRulesMonomials.size()) {
+                MononialRule rule = symbRulesMonomials.get(idx);
+                appliedRuleDesc = "mono idx=" + idx + " " + rule.getLhs() + " -> " + rule.getRhs();
+                optimizedDAG = optimizer.symbolicMatchBeforeAfterMono(
+                        circuit, rule.getRhs(), rule.getLhs(), minSymb, maxSymb, rule.getConstraints(), null);
+            } else {
+                MatrixConstrainedRule rule = symbRules.get(idx - symbRulesMonomials.size());
+                if (!circuitGates.containsAll(ruleLhsGateNames(rule.getLHS()))) {
+                    Optimizer.SYMB_SKIP_GATES.incrementAndGet();
+                    continue;   // picked rule's LHS gates aren't in this circuit -- try next
+                }
+                appliedRuleDesc = "matrix idx=" + (idx - symbRulesMonomials.size())
+                        + " " + rule.getLHS() + " -> " + rule.getRHS();
+                optimizedDAG = optimizer.symbolicMatchBeforeAfter(
+                        circuit, rule.getLHS(), rule.getRHS(), minSymb, maxSymb, rule.getConstraint(), null);
+            }
+
+            if (optimizedDAG != null) {
+                String d = appliedRuleDesc.length() > 160 ? appliedRuleDesc.substring(0, 160) + "..." : appliedRuleDesc;
+                logger.info("[SYMBRULE applied] {}", d);
+                System.out.println("[SYMBRULE applied] " + d);
+                Optimizer.SYMB_APPLIED.incrementAndGet();
+                applySAaccept(optimizedDAG);
+                return;   // first successful application wins
+            } else {
+                Optimizer.SYMB_NO_MATCH.incrementAndGet();
+            }
         }
-        // else: result stays null; main loop treats this as a symbolic-skip.
     }
 
     /**

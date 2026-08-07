@@ -34,6 +34,18 @@ public class QASMToDAGVisitor extends QASMBaseVisitor<Object> {
 
 
     public static CircuitDAG parse(String circuit) {
+        // Rule strings arrive as "gates... when q0 != q1": the -lr path splits
+        // "A | B when C" on '|' and hands this side (with the trailing when-
+        // clause) straight here. This entry parses the plain-circuit `program`
+        // production, which has no 'when' -- ANTLR error-recovers by skipping
+        // the tokens but prints "extraneous input 'when'" per parse (observed
+        // multi-GB logs). Strip the clause up front: it is redundant for the
+        // DAG matcher anyway, whose qubitMap/reverseMap binding is injective,
+        // so distinct pattern qubits always bind distinct circuit qubits.
+        int whenIdx = circuit.indexOf(" when ");
+        if (whenIdx >= 0) {
+            circuit = circuit.substring(0, whenIdx);
+        }
         QASMLexer lexer = new QASMLexer(CharStreams.fromString(circuit));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         QASMParser parser = new QASMParser(tokens);
