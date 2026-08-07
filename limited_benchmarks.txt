@@ -1,7 +1,0 @@
-tof_10
-tof_3
-tof_4
-tof_5
-qaoa_n8_p4
-qaoa_n14_p4
-qaoa_n20_p4
