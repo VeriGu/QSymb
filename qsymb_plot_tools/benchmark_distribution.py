@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 from qiskit import QuantumCircuit
 
-IBMNEW_DIR = "/Users/weiqiang/Downloads/guoq_benchmarks/ibmnew"
+IBMNEW_DIR = "/Users/weiqiang/Downloads/qsymb_benchmarks/ibmnew"
 BENCHMARK_FILE = "/Users/weiqiang/Downloads/qsymb_benchmark.txt"
 
 # Load benchmark names

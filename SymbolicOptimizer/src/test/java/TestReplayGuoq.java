@@ -8,7 +8,7 @@ import java.util.Random;
 // rule-applying / matcher problem vs a search-throughput problem.
 public class TestReplayGuoq {
     public static void main(String[] args) throws Exception {
-        String benchmark = "guoq_benchmarks/nam_rz/adr4_197.qasm";
+        String benchmark = "qsymb_benchmarks/nam_rz/adr4_197.qasm";
         String seqFile = "guoq_adr4_rule_seq.txt";
 
         String circuitString = new String(Files.readAllBytes(Paths.get(benchmark)));

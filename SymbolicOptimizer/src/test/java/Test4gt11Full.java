@@ -39,7 +39,7 @@ public class Test4gt11Full {
     }
 
     public static void main(String[] args) throws Exception {
-        String qasm = new String(Files.readAllBytes(Paths.get("/root/guoq_benchmarks/ion/4gt11_83.qasm")));
+        String qasm = new String(Files.readAllBytes(Paths.get("/root/qsymb_benchmarks/ion/4gt11_83.qasm")));
         CircuitDAG circuit = QASMToDAGVisitor.parse(qasm);
         List<MatrixConstrainedRule> rules = loadRules("/tmp/rule_4gt11.txt");
         MatrixConstrainedRule r = rules.get(0);

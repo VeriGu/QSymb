@@ -78,7 +78,7 @@ def main():
     args = ap.parse_args()
 
     bench_dir = args.bench_dir or os.path.join(
-        '/root/guoq_benchmarks', 'nam_rz' if args.gateset == 'nam' else args.gateset)
+        '/root/qsymb_benchmarks', 'nam_rz' if args.gateset == 'nam' else args.gateset)
     with open(args.benchmarks) as f:
         benchmarks = [l.strip() for l in f if l.strip()]
 

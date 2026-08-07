@@ -50,12 +50,12 @@ public class TestBenchSmall {
         System.out.println("Total anchored: " + all.size() + ", gadget-shape: " + gadget.size());
 
         String[] benchmarks = {
-            "/root/guoq_benchmarks/ion/4gt11_83.qasm",
-            "/root/guoq_benchmarks/ion/mod5d1_63.qasm",
-            "/root/guoq_benchmarks/ion/4mod5-v1_22.qasm",
-            "/root/guoq_benchmarks/ion/ham3_102.qasm",
-            "/root/guoq_benchmarks/ion/ex1_226.qasm",
-            "/root/guoq_benchmarks/ion/qaoa_5.qasm",
+            "/root/qsymb_benchmarks/ion/4gt11_83.qasm",
+            "/root/qsymb_benchmarks/ion/mod5d1_63.qasm",
+            "/root/qsymb_benchmarks/ion/4mod5-v1_22.qasm",
+            "/root/qsymb_benchmarks/ion/ham3_102.qasm",
+            "/root/qsymb_benchmarks/ion/ex1_226.qasm",
+            "/root/qsymb_benchmarks/ion/qaoa_5.qasm",
         };
 
         Optimizer opt = new Optimizer();

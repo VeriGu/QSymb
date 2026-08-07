@@ -255,7 +255,7 @@ canonical), `fig14_*` → **Fig. 14** (concrete vs. random).
   optimize.sh                    # EXPERIMENT 2: optimization, Figs. 11-12 (§7.2)
   ablation.sh                    # EXPERIMENT 3: ablations, Figs. 13-14   (§7.3)
   benchmark.txt                 # the paper's 135-circuit suite (names)
-  guoq_benchmarks/<gs>/          # benchmark QASM per gate set (nam_rz/ ibmnew/ ion/ rigetti/)
+  qsymb_benchmarks/<gs>/          # benchmark QASM per gate set (nam_rz/ ibmnew/ ion/ rigetti/)
   SymbolicOptimizer/             # Java sources (Optimizer, EnumeratorPrune, Anchor)
     grammars/<gs>.grammar        #   enumeration grammar (concrete phase)
     grammars/<gs>_symb.grammar   #   enumeration grammar (symbolic phase)

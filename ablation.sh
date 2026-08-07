@@ -56,8 +56,8 @@ JAR=/root/SymbolicOptimizer-1.0-SNAPSHOT-jar-with-dependencies.jar
 [ -z "$PARENT_OUT" ] && PARENT_OUT="/root/ablation_${GATESET}"
 [ -z "$FULL_SUMMARY" ] && FULL_SUMMARY="/root/final_${GATESET}/summary.csv"
 
-declare -A BENCH_DIR=( [nam]=guoq_benchmarks/nam_rz [ion]=guoq_benchmarks/ion [ibmnew]=guoq_benchmarks/ibmnew [rigetti]=guoq_benchmarks/rigetti )
-BDIR="${BENCH_DIR[$GATESET]:-guoq_benchmarks/$GATESET}"
+declare -A BENCH_DIR=( [nam]=qsymb_benchmarks/nam_rz [ion]=qsymb_benchmarks/ion [ibmnew]=qsymb_benchmarks/ibmnew [rigetti]=qsymb_benchmarks/rigetti )
+BDIR="${BENCH_DIR[$GATESET]:-qsymb_benchmarks/$GATESET}"
 
 # Per-gateset rule files (must exist from kick_start.sh).
 declare -A R_CONCRETE=( [nam]=rules_nam_q3_5.txt [ibmnew]=rules_ibmnew_q3_5.txt [ion]=rules_ion_q3_3.txt [rigetti]=rules_rigetti_q3_5.txt )

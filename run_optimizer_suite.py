@@ -50,9 +50,9 @@ def rule_files_for(gateset):
     return cfg
 
 SMALL_BENCHMARK_FILES = [
-    "guoq_benchmarks/ibmnew/4gt11_84.qasm",
-    "guoq_benchmarks/ibmnew/4gt11_83.qasm",
-    "guoq_benchmarks/ibmnew/rd32-v0_66.qasm",
+    "qsymb_benchmarks/ibmnew/4gt11_84.qasm",
+    "qsymb_benchmarks/ibmnew/4gt11_83.qasm",
+    "qsymb_benchmarks/ibmnew/rd32-v0_66.qasm",
 ]
 
 # The directory where the optimizer jar is located
@@ -64,20 +64,20 @@ OPTIMIZER_JAR_PATH = "SymbolicOptimizer-1.0-SNAPSHOT-jar-with-dependencies.jar"
 LOG_DIR = "/root/optimizer_logs"
 
 # Each gateset reads its benchmarks from a different directory under
-# guoq_benchmarks/. Gatesets not listed here fall back to a directory of
-# the same name (e.g. "ibm" -> guoq_benchmarks/ibm/).
+# qsymb_benchmarks/. Gatesets not listed here fall back to a directory of
+# the same name (e.g. "ibm" -> qsymb_benchmarks/ibm/).
 GATESET_BENCHMARK_DIRS = {
-    "nam": "guoq_benchmarks/nam_rz/",
-    "ibm": "guoq_benchmarks/ibm/",
-    "ibmnew": "guoq_benchmarks/ibmnew/",
-    "ion": "guoq_benchmarks/ion/",
+    "nam": "qsymb_benchmarks/nam_rz/",
+    "ibm": "qsymb_benchmarks/ibm/",
+    "ibmnew": "qsymb_benchmarks/ibmnew/",
+    "ion": "qsymb_benchmarks/ion/",
 }
 
 
 def benchmark_dir_for(gateset):
     """Return the benchmark directory for a gateset, defaulting to a
-    same-named directory under guoq_benchmarks/ when not explicitly mapped."""
-    return GATESET_BENCHMARK_DIRS.get(gateset, f"guoq_benchmarks/{gateset}/")
+    same-named directory under qsymb_benchmarks/ when not explicitly mapped."""
+    return GATESET_BENCHMARK_DIRS.get(gateset, f"qsymb_benchmarks/{gateset}/")
 
 def run_optimizer(benchmark_file, rule_file, symbolic_rule_file, log_file, mode, timeout, usesymb, symbolic_gate_size=None, gateset=None, monomial_rule_file=None, longrules_file=None, ilp=False):
     """Runs the optimizer with the given parameters and logs the output."""
@@ -142,7 +142,7 @@ def main():
         os.makedirs(LOG_DIR)
 
     # Read the list of benchmarks. The directory is chosen by gateset, so
-    # e.g. -g nam reads from guoq_benchmarks/nam_rz/.
+    # e.g. -g nam reads from qsymb_benchmarks/nam_rz/.
     if args.benchmark:
         bench_dir = benchmark_dir_for(args.gateset)
         with open(args.benchmark, "r") as f:

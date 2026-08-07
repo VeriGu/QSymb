@@ -84,10 +84,10 @@ fi
 
 # Per-gateset benchmark directory (matches run_optimizer_suite.py).
 declare -A BENCH_DIR=(
-  [nam]=guoq_benchmarks/nam_rz
-  [ion]=guoq_benchmarks/ion
-  [ibmnew]=guoq_benchmarks/ibmnew
-  [rigetti]=guoq_benchmarks/rigetti
+  [nam]=qsymb_benchmarks/nam_rz
+  [ion]=qsymb_benchmarks/ion
+  [ibmnew]=qsymb_benchmarks/ibmnew
+  [rigetti]=qsymb_benchmarks/rigetti
 )
 
 # Per-gateset rule files. An empty -lr entry means: don't pass that flag.
@@ -100,7 +100,7 @@ if [ -z "${RULE_R[$GATESET]:-}" ]; then
   exit 1
 fi
 
-BDIR="${BENCH_DIR[$GATESET]:-guoq_benchmarks/$GATESET}"
+BDIR="${BENCH_DIR[$GATESET]:-qsymb_benchmarks/$GATESET}"
 if [ ! -d "$BDIR" ]; then
   echo "FATAL: benchmark dir $BDIR not found" >&2
   exit 1

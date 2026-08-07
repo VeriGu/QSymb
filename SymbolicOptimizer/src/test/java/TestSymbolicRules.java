@@ -96,7 +96,7 @@ public class TestSymbolicRules {
         testCircuit(opt, "/tmp/test_conjugation.qasm", rules, 2, 25, "RXX(-π/2);[12 RX];RXX(π/2)");
 
         // ORIGINAL qaoa_5 circuit, no egglog preprocessing
-        testCircuit(opt, "/root/guoq_benchmarks/ion/qaoa_5.qasm", rules, 0, 30, "qaoa_5 original (no egglog)");
+        testCircuit(opt, "/root/qsymb_benchmarks/ion/qaoa_5.qasm", rules, 0, 30, "qaoa_5 original (no egglog)");
 
         System.out.println("\nDone.");
     }

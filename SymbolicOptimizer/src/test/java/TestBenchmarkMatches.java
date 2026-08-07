@@ -50,7 +50,7 @@ public class TestBenchmarkMatches {
         List<MatrixConstrainedRule> rules = loadRules("/root/anchored_ion_q3_only.txt");
         System.out.println("Loaded " + rules.size() + " anchored symbolic rules");
 
-        File dir = new File("/root/guoq_benchmarks/ion");
+        File dir = new File("/root/qsymb_benchmarks/ion");
         File[] files = dir.listFiles((f, n) -> n.endsWith(".qasm"));
         if (files == null) { System.err.println("no benchmarks"); return; }
         Arrays.sort(files, Comparator.comparing(File::getName));

@@ -50,3 +50,11 @@ CLAUDE.md
 SymbolicOptimizer-1.0-SNAPSHOT-jar-with-dependencies.jar
 SymbolicOptimizer/target/
 **/target/
+
+# --- QSymb benchmark set (override *.txt / *.qasm ignores) ---
+!benchmark.txt
+!qsymb_benchmarks/
+!qsymb_benchmarks/ibmnew/
+!qsymb_benchmarks/ibmnew/*.qasm
+__pycache__/
+*.pyc

@@ -83,7 +83,7 @@ public class TestNewSymbRules {
         Optimizer opt = new Optimizer();
 
         String[][] circuits = {
-                {"/root/guoq_benchmarks/ion/qaoa_5.qasm", "qaoa_5"},
+                {"/root/qsymb_benchmarks/ion/qaoa_5.qasm", "qaoa_5"},
                 {"/tmp/qaoa_gadget.qasm", "qaoa_gadget"},
                 {"/tmp/pattern_A.qasm", "Pattern A"},
                 {"/tmp/pattern_B.qasm", "Pattern B"},
