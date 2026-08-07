@@ -54,7 +54,7 @@ SymbolicOptimizer/target/
 # --- QSymb benchmark set (override *.txt / *.qasm ignores) ---
 !benchmark.txt
 !qsymb_benchmarks/
-!qsymb_benchmarks/ibmnew/
-!qsymb_benchmarks/ibmnew/*.qasm
+!qsymb_benchmarks/**/
+!qsymb_benchmarks/**/*.qasm
 __pycache__/
 *.pyc
