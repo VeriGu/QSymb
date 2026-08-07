@@ -58,3 +58,13 @@ SymbolicOptimizer/target/
 !qsymb_benchmarks/**/*.qasm
 __pycache__/
 *.pyc
+
+# --- precomputed results + long rules (override *.csv/*.txt/*.png/*.pdf) ---
+!paper_results/
+!paper_results/**/
+!paper_results/**/*.csv
+!paper_results/**/*.png
+!paper_results/**/*.pdf
+paper_results/*_fresh*
+!rules_q3_s6_ibmnew.txt
+!rules_q3_s6_nam.txt
