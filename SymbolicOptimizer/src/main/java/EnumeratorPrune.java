@@ -163,6 +163,10 @@ public class EnumeratorPrune {
   // baseline for measuring the speedup of the grouping techniques (paper
   // RQ2): grouping replaces O(N^2) pairwise checks with O(N) fingerprints.
   public static boolean disableSymbFilters = false;
+  // Experiment: group by TRACE only (skip the numeric eigen fingerprint
+  // sub-grouping) and filter pairs with the exact SYMBOLIC eigenvalue check
+  // (checkEigenSymbolic / charpoly equality) before the intertwiner solve.
+  public static final boolean GROUP_SYMB_EIGEN = Boolean.getBoolean("group.symbeigen");
 
   public EnumeratorPrune(String[] gates, int maxQubits, Random rand, Expr[] symbAngles, boolean genSymb) {
     this.verifier = new Verifier(rand, maxQubits);
@@ -505,6 +509,7 @@ public class EnumeratorPrune {
     // first generate an C X C set
     // group by L;S and R;S
     long symbtime = 0;
+    long symbtimeMs = 0;
     long eligibleSymbCircuits = 0;   // # of representatives that fed into traceMap
     long withinBucketPairs = 0;      // # of (i,j) j>=i pairs inside same trace bucket
     long totalSymbPairs = 0;         // N*(N+1)/2 over all eligible circuits
@@ -525,7 +530,7 @@ public class EnumeratorPrune {
       // the cost of one extra matrix evaluation per circuit per trace.
       // Mask the sign bit: numpy.random.default_rng() rejects negative seeds.
       long traceSeed = rand.nextLong() & Long.MAX_VALUE;
-      int traceCount = 5;
+      int traceCount = 10;
       logger.info("Symbolic-trace seed: " + traceSeed + ", ntraces: " + traceCount);
       Map<String, List<ConstrainedCircuit>> traceMap = new java.util.concurrent.ConcurrentHashMap<>();
       long time = System.nanoTime();
@@ -559,7 +564,7 @@ public class EnumeratorPrune {
         for (ConstrainedCircuit repre : traceCandidates) {
           gateLists.add(repre.getCircuit().getGates());
         }
-        List<String> fps = solver.batchEigenFingerprints(gateLists, MAX_QUBITS_SYMB, traceSeed, traceCount);
+        List<String> fps = solver.batchTraceFingerprints(gateLists, MAX_QUBITS_SYMB, traceSeed, traceCount);
         if (fps.size() != traceCandidates.size()) {
           // Batch failed; fall back to per-circuit fingerprints (slow path).
           logger.warn("batch fingerprint returned {} lines for {} circuits; falling back to per-circuit calls",
@@ -609,9 +614,28 @@ public class EnumeratorPrune {
         // The bucket key IS the multi-sample eigen fingerprint now, so no
         // further sub-grouping (or per-pair checkBig) is needed: pairs within
         // a bucket are eigen-equal at every sample by construction.
+        // Stage 2: within this trace bucket, sub-group by the (stronger) eigen
+        // fingerprint. Trace equality is necessary but weaker than eigenvalue
+        // equality, so trace buckets are refined here; only circuits that share
+        // a trace ever pay for the eigendecomposition. Singletons / -nofilter
+        // skip straight through.
         java.util.Map<String, List<ConstrainedCircuit>> eigenGroups =
             new java.util.concurrent.ConcurrentHashMap<>();
-        eigenGroups.put("all", java.util.Collections.synchronizedList(new ArrayList<>(bucket)));
+        if (GROUP_SYMB_EIGEN || disableSymbFilters || bucket.size() <= 1) {
+          eigenGroups.put("all", java.util.Collections.synchronizedList(new ArrayList<>(bucket)));
+        } else {
+          List<List<EggGen.Gate>> bgl = new ArrayList<>(bucket.size());
+          for (ConstrainedCircuit cc : bucket) bgl.add(cc.getCircuit().getGates());
+          List<String> efps = solver.batchEigenFingerprints(bgl, MAX_QUBITS_SYMB, traceSeed, traceCount);
+          if (efps.size() != bucket.size()) {
+            eigenGroups.put("all", java.util.Collections.synchronizedList(new ArrayList<>(bucket)));
+          } else {
+            for (int bi = 0; bi < bucket.size(); bi++) {
+              eigenGroups.computeIfAbsent(efps.get(bi),
+                  k -> java.util.Collections.synchronizedList(new ArrayList<>())).add(bucket.get(bi));
+            }
+          }
+        }
 
         // Now iterate pairs only WITHIN each eigen-group.
         java.util.List<java.util.concurrent.Future<?>> futures = new java.util.ArrayList<>();
@@ -728,6 +752,7 @@ public class EnumeratorPrune {
 
       long time2 = System.nanoTime();
       symbtime = (time2 - time) / 1000000000;
+      symbtimeMs = (time2 - time) / 1000000;
     }
 
     if (pw_symb_nm != null) pw_symb_nm.close();
@@ -737,6 +762,7 @@ public class EnumeratorPrune {
     logger.info("Concrete Rule sizes: " + rules.size());
     logger.info("Symbolic Rule sizes: " + learned_matrix_constrained.size());
     logger.info("Symbolic Rule generation time (s): " + symbtime);
+    logger.info("Symbolic Rule generation time (ms): " + symbtimeMs);
     logger.info("Symbolic candidate totals: eligible circuits = " + eligibleSymbCircuits
         + ", total pairs considered = " + totalSymbPairs
         + ", rejected by trace bucketing = " + rejectedByTrace
@@ -953,7 +979,7 @@ public class EnumeratorPrune {
       // intertwiner exists. Decide validity with the EXACT symbolic
       // eigenvalue check (charpoly equality); reject unitary-infeasible
       // solution spaces here.
-      if (disableSymbFilters) {
+      if (disableSymbFilters || GROUP_SYMB_EIGEN) {
         SimpleEntry<EggGen.Circuit, EggGen.Circuit> entry = unique.get(idx);
         if (!solver.checkEigenSymbolic(entry.getKey(), entry.getValue(), maxQubits)) {
           symbolicEigenRejects++;

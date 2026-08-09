@@ -501,6 +501,23 @@ public class SymbolicSolve {
         return fps;
     }
 
+    // First-stage cheap grouping: batched per-circuit TRACE fingerprints.
+    public List<String> batchTraceFingerprints(List<List<EggGen.Gate>> circuits, int nqubits,
+                                               long seed, int ntraces) {
+        String json = "{\"circuits\":[" + circuits.stream()
+                .map(g -> circuitToJson(g, nqubits))
+                .collect(Collectors.joining(",")) + "]}";
+        String out = runSemantics("-multitracefp", json,
+                "-seed", Long.toString(seed),
+                "-ntraces", Integer.toString(Math.max(1, ntraces)));
+        List<String> fps = new ArrayList<>();
+        for (String line : out.split("\n")) {
+            String t = line.trim();
+            if (!t.isEmpty()) fps.add(t);
+        }
+        return fps;
+    }
+
 
     public String getTrace(List<EggGen.Gate> gates, int nqubits) {
         return getTrace(gates, nqubits, null, 1);

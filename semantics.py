@@ -240,6 +240,51 @@ def calculate_circuit_matrix(n_qubits, circuit):
     return circuit_matrix
 
 
+def _realify_const_nullspace(K):
+    # Constant complex K over Q(sqrt2, i): split K = A + iB (A,B over Q(sqrt2)),
+    # solve the 2n x 2n REAL system [[A,-B],[B,A]] over Q(sqrt2) (degree 2, far
+    # cheaper than the generic degree-4 Q(zeta8)), then reconstruct a minimal
+    # complex null basis. Returns list of column null-vectors, or None if the
+    # re/im split is not clean over Q(sqrt2) (caller falls back to Q(zeta8)).
+    import sympy
+    from sympy.polys.matrices import DomainMatrix
+    from sympy import QQ, I, sqrt
+    n2 = K.shape[0]
+    try:
+        A = K.applyfunc(sympy.re)
+        B = K.applyfunc(sympy.im)
+        Mre = sympy.Matrix(sympy.BlockMatrix([[A, -B], [B, A]]))
+        Fs2 = QQ.algebraic_field(sqrt(2))
+        Nre = DomainMatrix.from_Matrix(Mre).convert_to(Fs2).nullspace().to_Matrix()
+        cols = []
+        for r in range(Nre.rows):
+            vec = Nre.row(r).T
+            cols.append(vec[0:n2, 0] + I * vec[n2:2 * n2, 0])
+        if not cols:
+            return []
+        C = sympy.Matrix.hstack(*cols)         # n x 2d (complex)
+        d = C.cols // 2                        # complex null dim = half the real dim
+        if d == 0:
+            return []
+        # Pick d independent columns NUMERICALLY (avoids a slow exact
+        # columnspace over Q(zeta8)); return the selected exact sympy columns.
+        import numpy as _np
+        Cf = _np.array([[complex(sympy.N(C[i, j])) for j in range(C.cols)]
+                        for i in range(C.rows)])
+        sel = []
+        cur = None
+        for j in range(C.cols):
+            cand = Cf[:, j:j + 1] if cur is None else _np.column_stack([cur, Cf[:, j]])
+            if _np.linalg.matrix_rank(cand, tol=1e-9) > (0 if cur is None else cur.shape[1]):
+                cur = cand
+                sel.append(j)
+                if len(sel) == d:
+                    break
+        return [C.col(j) for j in sel]
+    except Exception:
+        return None
+
+
 def intertwiner_basis(L, R):
     """
     Return basis matrices {S_k} spanning the (parametric) intertwiner space
@@ -347,23 +392,31 @@ def intertwiner_basis(L, R):
     if Ws:
         domain_candidates = [
             ("QQ_I", lambda: QQ_I.frac_field(*Ws)),
+            ("QQ(sqrt2)", lambda: QQ.algebraic_field(sympy.sqrt(2)).frac_field(*Ws)),
             ("QQ(ζ_8)", lambda: QQ.algebraic_field(sympy.exp(sympy.I*sympy.pi/4)).frac_field(*Ws)),
             ("QQ(ζ_16)", lambda: QQ.algebraic_field(sympy.exp(sympy.I*sympy.pi/8)).frac_field(*Ws)),
         ]
     else:
         domain_candidates = [
             ("QQ_I const", lambda: QQ_I),
+            ("QQ(sqrt2) const", lambda: QQ.algebraic_field(sympy.sqrt(2))),
+            ("realify const", None),
             ("QQ(ζ_8) const", lambda: QQ.algebraic_field(sympy.exp(sympy.I*sympy.pi/4))),
             ("QQ(ζ_16) const", lambda: QQ.algebraic_field(sympy.exp(sympy.I*sympy.pi/8))),
         ]
     for name, build in domain_candidates:
         try:
             _stage(f"trying DomainMatrix over {name}")
-            F = build()
-            dm = DomainMatrix.from_Matrix(K).convert_to(F)
-            null_dm = dm.nullspace()
-            null_mat = null_dm.to_Matrix()
-            null = [null_mat.row(i).T for i in range(null_mat.rows)]
+            if build is None:
+                null = _realify_const_nullspace(K)
+                if null is None:
+                    raise ValueError("realify not applicable")
+            else:
+                F = build()
+                dm = DomainMatrix.from_Matrix(K).convert_to(F)
+                null_dm = dm.nullspace()
+                null_mat = null_dm.to_Matrix()
+                null = [null_mat.row(i).T for i in range(null_mat.rows)]
             _stage(f"DomainMatrix({name}).nullspace() DONE -> {len(null)} null vectors")
             break
         except Exception as e:
@@ -1508,6 +1561,68 @@ def _np_multi_fingerprint_parts(n_qubits, gates, subs):
     return parts
 
 
+def _np_multi_trace_parts(n_qubits, gates, subs):
+    # Numeric trace strings for one circuit across all samples, or None if a
+    # gate parameter cannot be resolved (caller falls back to sympy). Cheaper
+    # than the eigen parts: no eigendecomposition, just tr(U).
+    parts = []
+    for sub in subs:
+        U = numpy.eye(2 ** n_qubits, dtype=numpy.complex128)
+        for op in gates:
+            params_num = None
+            if 'params' in op:
+                params_num = {}
+                for sym, expr in op['params'].items():
+                    try:
+                        params_num[sym] = complex(expr.subs(sub)) if hasattr(expr, 'subs') else complex(expr)
+                    except (TypeError, ValueError):
+                        return None
+            g = _np_gate_matrix(op['gate'], params_num)
+            if g is None:
+                return None
+            U = _np_embed(n_qubits, g, op['targets']) @ U
+        tr = numpy.trace(U)
+        parts.append(f"{round(float(tr.real), 8) + 0.0:.8f}+{round(float(tr.imag), 8) + 0.0:.8f}i")
+    return parts
+
+
+def multi_circuit_trace_fingerprint(circuits_json, seed=None, ntraces=1):
+    # Batched per-circuit TRACE fingerprints (cheap first-stage grouping).
+    # Uses the SAME seeded samples as multi_circuit_eigen_fingerprint, so an
+    # equal trace fingerprint is a (weaker) necessary condition subsumed by an
+    # equal eigen fingerprint -- the two-stage cascade trace-then-eigen.
+    import json as _json
+    payload = _json.loads(circuits_json)
+    rng = numpy.random.default_rng(int(seed) if seed is not None else 0)
+    subs = []
+    for _ in range(max(1, int(ntraces))):
+        subs.append({
+            theta1: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            theta2: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            theta3: float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            phi:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            lam:    float(rng.uniform(0.0, 2.0 * numpy.pi)),
+            gamma:  float(rng.uniform(0.0, 2.0 * numpy.pi)),
+        })
+    lines = []
+    for circuit in payload.get("circuits", []):
+        n_qubits = circuit.get("n_qubits", 0)
+        gates = [op for op in circuit.get("gates", []) if op.get("gate") != "symb"]
+        for op in gates:
+            if 'params' in op:
+                op['params'] = {param_symbol_map.get(k, sympy.Symbol(k)): sympy.sympify(v, locals=param_symbol_map)
+                                for k, v in op['params'].items()}
+        parts = _np_multi_trace_parts(n_qubits, gates, subs)
+        if parts is None:
+            M = calculate_circuit_matrix(n_qubits, gates)
+            parts = []
+            for sub in subs:
+                tr = complex((M.subs(sub)).trace())
+                parts.append(f"{round(tr.real, 8) + 0.0:.8f}+{round(tr.imag, 8) + 0.0:.8f}i")
+        lines.append("|".join(parts))
+    return "\n".join(lines)
+
+
 def eigenvalue_fingerprint(circuit1_json, circuit2_json, seed=None):
     """Return the L-matrix eigenvalues (sorted, rounded) at a concrete random
     sample of the symbolic angles -- intended as a bucket key for the
@@ -1608,6 +1723,7 @@ def main(argv=None):
     parser.add_argument('-eigenfp', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='Return a string fingerprint of L\'s eigenvalues at a random concrete sample. Use for cheap bucket-grouping before solving full intertwiner.')
     parser.add_argument('-singleeigenfp', nargs=1, metavar=('C_JSON'), help='Per-circuit eigenvalue fingerprint at a random concrete sample (SYMB treated as identity). For pre-bucket grouping inside trace buckets.')
     parser.add_argument('-multieigenfp', nargs=1, metavar=('CS_JSON'), help='Batched eigen fingerprints: {"circuits":[...]}; one fingerprint line per circuit at -ntraces seeded samples. Replaces per-circuit trace/eigen IPC round-trips.')
+    parser.add_argument('-multitracefp', nargs=1, metavar=('CS_JSON'), help='Batched TRACE fingerprints (cheap first-stage grouping before the eigen fingerprint).')
     parser.add_argument('-islinear', nargs=2, metavar=('C1_JSON', 'C2_JSON'), help='check that a circuit is in linear combination of basis')
     parser.add_argument('-is_subspace_linear', nargs=4, metavar=('C1_JSON', 'C2_JSON', 'SUBSPACE_JSON', 'SYMBOL_MAP_JSON'), help='check that a circuit is in linear combination of basis')
     parser.add_argument('-approx_eps', type=float, default=None, help='approximate-match tolerance for -is_subspace_linear (least-squares residual threshold; default: exact 1e-6)')
@@ -1761,6 +1877,16 @@ def main(argv=None):
             seed = int(args.seed[0]) if args.seed is not None else 0
             ntraces = int(args.ntraces[0]) if args.ntraces is not None else 1
             print(multi_circuit_eigen_fingerprint(args.multieigenfp[0], seed, ntraces))
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+        return
+
+    if args.multitracefp:
+        try:
+            seed = int(args.seed[0]) if args.seed is not None else 0
+            ntraces = int(args.ntraces[0]) if args.ntraces is not None else 1
+            print(multi_circuit_trace_fingerprint(args.multitracefp[0], seed, ntraces))
         except Exception as e:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)

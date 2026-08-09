@@ -93,7 +93,7 @@ declare -A BENCH_DIR=(
 # Per-gateset rule files. An empty -lr entry means: don't pass that flag.
 declare -A RULE_R=(   [nam]=rules_nam_q3_5.txt      [ibmnew]=rules_ibmnew_q3_5.txt      [ion]=rules_ion_q3_3.txt     [rigetti]=rules_rigetti_q3_5.txt )
 declare -A RULE_SR=(  [nam]=anchored_nam_q3.txt     [ibmnew]=anchored_ibmnew_q3.txt     [ion]=anchored_ion_q3_only.txt [rigetti]=anchored_rigetti_q3.txt )
-declare -A RULE_LR=(  [nam]=rules_q3_s6_nam.txt     [ibmnew]=rules_q3_s6_ibmnew.txt     [ion]=rules_q3_s3_ion.txt    [rigetti]="" )
+declare -A RULE_LR=(  [nam]=rules_nam_q3_5_reversed.txt  [ibmnew]=rules_ibmnew_q3_5_reversed.txt  [ion]=rules_q3_s3_ion.txt    [rigetti]="" )
 
 if [ -z "${RULE_R[$GATESET]:-}" ]; then
   echo "FATAL: no rule config for gateset '$GATESET'" >&2
@@ -112,6 +112,32 @@ if [ -z "$PARENT_OUT" ]; then
 fi
 mkdir -p "$PARENT_OUT"
 echo "[$(date +%H:%M:%S)] parent output dir: $PARENT_OUT"
+
+# --- Long-rule (-lr) for nam/ibmnew: reversed generated concrete ruleset -----
+# The -lr loader reads "X | Y" as Y->X, so swapping each concrete rule's
+# LHS|RHS makes -lr apply that rule in its size-reducing direction. Passing
+# -Dlongrule.reverse=true then expands each via RuleReverser (birewrite for
+# size-preserving, inverse for braids) with the runtime reverse-ban active.
+LONGRULE_REVERSE_FLAG=""
+case "$GATESET" in
+  nam|ibmnew)
+    _src="${RULE_R[$GATESET]}"
+    _dst="${RULE_LR[$GATESET]}"
+    if [ -f "$_src" ]; then
+      while IFS= read -r _line; do
+        [ -z "$_line" ] && continue
+        _cond=""; _body="$_line"
+        case "$_line" in *" when "*) _cond=" when ${_line#* when }"; _body="${_line% when *}" ;; esac
+        _lhs="${_body% | *}"; _rhs="${_body#* | }"
+        printf '%s | %s%s\n' "$_rhs" "$_lhs" "$_cond"
+      done < "$_src" > "$_dst"
+      echo "[$(date +%H:%M:%S)] reversed -lr: $_src -> $_dst ($(wc -l < "$_dst") rules)"
+    else
+      echo "[$(date +%H:%M:%S)] WARN: $_src not found; -lr reversal skipped" >&2
+    fi
+    LONGRULE_REVERSE_FLAG="-Dlongrule.reverse=true"
+    ;;
+esac
 
 # Read the benchmark list (one basename per line, no .qasm extension).
 mapfile -t BENCHES < <(grep -v '^$' "$BENCHMARK_FILE")
@@ -132,7 +158,7 @@ launch_bench() {
     return
   fi
 
-  local cmd=(java --enable-preview -Xss256m -Xmx8g -Dsemantics.pool.size=2 -cp "$JAR" Optimizer
+  local cmd=(java --enable-preview -Xss256m -Xmx8g -Dsemantics.pool.size=2 ${LONGRULE_REVERSE_FLAG:+$LONGRULE_REVERSE_FLAG} -cp "$JAR" Optimizer
     -b "$qasm"
     -r "${RULE_R[$GATESET]}"
     -m SA -t "$TIMEOUT_S" -symb true -g "$GATESET" -ilp true
