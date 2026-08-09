@@ -11,15 +11,15 @@ public class MononialRule {
         this.rhs = rhs;
         this.constraints = constraints;
     }
-    
+
     public String getLhs() {
         return lhs;
     }
-    
+
     public String getRhs() {
         return rhs;
     }
-    
+
     public List<Map<boolean[], boolean[]>> getConstraints() {
         return constraints;
     }

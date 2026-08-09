@@ -1,7 +1,5 @@
 import org.junit.jupiter.api.Test;
 
-
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 public class QASMToDAGVisitorTest {
 
-    
     @Test
     public void testParse2() {
         File file = new File("eggtest.txt");
@@ -34,9 +31,8 @@ public class QASMToDAGVisitorTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-    }
 
+    }
 
     @Test
     public void testParse() {
@@ -122,7 +118,7 @@ public class QASMToDAGVisitorTest {
                       "h q[2];\n" +
                       "cx q[1],q[2];";
         CircuitDAG dag = QASMToDAGVisitor.parse(qasm);
-        String expectedQasm = 
+        String expectedQasm =
                 "rz(1.5707963267948966) q[2];\n" +
                 "h q[2];\n" +
                 "rz(3.141592653589793) q[2];\n" +

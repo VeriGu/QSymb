@@ -20,7 +20,6 @@ public class SymbolicThread extends Thread {
     private final int minSymb;
     private final int maxSymb;
 
-
     private final Random rand;
     private final Optimizer optimizer;
     private CircuitDAG result;
@@ -39,11 +38,6 @@ public class SymbolicThread extends Thread {
         return result;
     }
 
-// Fraction of the rule pool to sample (distinct rules) per SA iteration,
-    // expressed as a RATIO of pool size (not a fixed count) so every ruleset
-    // gets the same per-attempt coverage regardless of pool size:
-    //   un-anchored(101) -> ~20,  anchored(436) -> ~87.
-    // -Dsymb.coverage=0.20 (default); -Dsymb.tries=K (>0) overrides absolutely.
     private static final double SYMB_COVERAGE = Double.parseDouble(System.getProperty("symb.coverage", "0.20"));
     private static final int SYMB_TRIES_OVERRIDE = Integer.getInteger("symb.tries", 0);
 
@@ -60,7 +54,7 @@ public class SymbolicThread extends Thread {
 
         while (tried.size() < budget) {
             int idx = rand.nextInt(total);
-            if (!tried.add(idx)) continue;   // distinct rules only
+            if (!tried.add(idx)) continue;
 
             Optimizer.SYMB_ATTEMPTS.incrementAndGet();
             CircuitDAG optimizedDAG;
@@ -74,7 +68,7 @@ public class SymbolicThread extends Thread {
                 MatrixConstrainedRule rule = symbRules.get(idx - symbRulesMonomials.size());
                 if (!circuitGates.containsAll(ruleLhsGateNames(rule.getLHS()))) {
                     Optimizer.SYMB_SKIP_GATES.incrementAndGet();
-                    continue;   // picked rule's LHS gates aren't in this circuit -- try next
+                    continue;
                 }
                 appliedRuleDesc = "matrix idx=" + (idx - symbRulesMonomials.size())
                         + " " + rule.getLHS() + " -> " + rule.getRHS();
@@ -88,18 +82,13 @@ public class SymbolicThread extends Thread {
                 System.out.println("[SYMBRULE applied] " + d);
                 Optimizer.SYMB_APPLIED.incrementAndGet();
                 applySAaccept(optimizedDAG);
-                return;   // first successful application wins
+                return;
             } else {
                 Optimizer.SYMB_NO_MATCH.incrementAndGet();
             }
         }
     }
 
-    /**
-     * Pattern that finds gate-like tokens in a rule LHS: an upper-case head
-     * right after an opening paren. Skips structural / non-gate tokens
-     * (Cons, Nil, SYMB, BinOp, UnOp, Real, Symbol, Q, ...).
-     */
     private static final Pattern RULE_GATE = Pattern.compile("\\(([A-Z][A-Za-z0-9]*)\\b");
     private static final Set<String> NOT_GATES = new HashSet<>(java.util.Arrays.asList(
             "Cons", "Nil", "SYMB", "BinOp", "UnOp", "Real", "Symbol", "Q",
@@ -123,7 +112,6 @@ public class SymbolicThread extends Thread {
         return names;
     }
 
-    /** Apply the SA accept/reject decision and store the resulting DAG. */
     private void applySAaccept(CircuitDAG optimizedDAG) {
         List<String> rulesApplied = new ArrayList<>(circuit.getRulesApplied());
         optimizedDAG.setRulesApplied(rulesApplied);

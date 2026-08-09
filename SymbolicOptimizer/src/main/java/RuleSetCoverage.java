@@ -10,33 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-
 public class RuleSetCoverage {
     public static void rulesetCoverageTest(List<String> ruleset1, List<String> ruleset2, List<String> commutative, String gateset) {
         EggGen egraph = new EggGen();
 
-        // Coverage-only: commutativity of symbolic addition, so a target rule
-        // differing from the derivation only in PLUS operand order (e.g.
-        // rz(theta1+theta2) vs rz(theta2+theta1)) still unifies. Runtime
-        // angles are concrete (const-eval folds the sum), so this equality is
-        // only needed here in the symbolic coverage check -- deliberately NOT
-        // added to EggGen's common setup.
         egraph.addRewrite("(birewrite (BinOp (PLUS) x y) (BinOp (PLUS) y x) :ruleset opt)");
 
-        // Merge wire rules into the opt ruleset (same approach as Optimizer:
-        // single saturation ruleset, no separate wire pass).
         for(String rule : commutative) {
             String merged = rule.replace(":ruleset wire", ":ruleset opt")
                                 .replace(":ruleset merge", ":ruleset opt");
             egraph.addRewrite(merged);
         }
 
-        // Add ruleset1 (rule_copy.txt) using the same RuleReverser policy the
-        // optimizer uses: pattern-detect Pauli pushthrough / CX-braid and add
-        // BOTH directions only for those; non-pattern increasing rules get
-        // their reverse only (size-decreasing direction); size-preserving
-        // becomes birewrite.
         for(String rule : ruleset1) {
             Rule r;
             try {
@@ -51,16 +36,13 @@ public class RuleSetCoverage {
             int rhsSize = r.rhs.gates.size();
 
             if (lhsSize == rhsSize) {
-                // Symmetric → birewrite in opt ruleset
                 egraph.addOptRule(r, "opt", "birewrite");
                 continue;
             }
             boolean forwardIsDec = lhsSize > rhsSize;
-            // Forward direction
             if (d == RuleReverser.Direction.FORWARD_ONLY || d == RuleReverser.Direction.BOTH) {
                 egraph.addOptRule(r, "opt", "rewrite");
             }
-            // Reverse direction (when fireable)
             if (d == RuleReverser.Direction.REVERSE_ONLY || d == RuleReverser.Direction.BOTH) {
                 if (RuleReverser.reverseIsFireable(r)) {
                     Rule reversed = new Rule(r.rhs, r.lhs, r.conditions);
@@ -70,16 +52,13 @@ public class RuleSetCoverage {
         }
 
         List<String> uncovered = new ArrayList<>();
-     
+
         for(String rule : ruleset2) {
             String[] compo = rule.split("\\|");
             String lhs = compo[0].trim();
             String rhs = compo[1].trim();
-            // Strip trailing "when q0 != q1, ..." clause from rhs — it's a
-            // rule-level condition, not part of the circuit.
             int whenIdx = rhs.toLowerCase().indexOf(" when ");
             if (whenIdx >= 0) rhs = rhs.substring(0, whenIdx).trim();
-            //String type = compo[2];
             System.out.println("Rule: " + rule);
             egraph.push();
             EggGen.Circuit c1 = QASMAstBuilder.parse(lhs);
@@ -88,25 +67,20 @@ public class RuleSetCoverage {
             System.out.println("RHS Circuit: " + c2.toEggString());
             egraph.addCircuit(c1);
             egraph.addCircuit(c2);
-            // Add BOTH sides so rules fire on each, letting them meet in the
-            // middle (e.g. LHS reduces via merge+const, RHS via mod-2π, then
-            // unify). Without adding c2, rules never run on the RHS structure.
             egraph.runN("opt", Integer.getInteger("coverage.depth", 5));
             if(egraph.check(String.format("(= %s %s)", c1.toEggString(), c2.toEggString()))) {
                 System.out.println("Rule: " + rule + " is covered");
             } else {
                 uncovered.add(rule);
-                System.out.println("Rule: " + rule + " is not covered");    
+                System.out.println("Rule: " + rule + " is not covered");
             }
             egraph.pop();
         }
-
 
         for(String rule : uncovered) {
             System.out.println("Uncovered Rule: " + rule);
         }
     }
-
 
     public static void filterRules(List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> entries) {
         EggGen egraph = new EggGen();
@@ -148,31 +122,9 @@ public class RuleSetCoverage {
     }
 
     public static void main(String[] args) {
-        // Args: <ruleset1> <ruleset2> [gateset]
-        // ruleset1: rules used as derivation source (added to opt ruleset)
-        // ruleset2: rules to check coverage for
-        // gateset:  optional, default "ibmnew" (controls RuleReverser policy
-        //           and which rules_<g>.txt is loaded as wire rules)
         File file1 = new File(args[0]);
         String gateset = args.length >= 3 ? args[2] : "ibmnew";
-       
-        // List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> ruleset = new ArrayList<>();
-        // try (BufferedReader br = new BufferedReader(new FileReader(file1, StandardCharsets.UTF_8))) {
-        //     String line;
-        //     while ((line = br.readLine()) != null) {
-        //         String[] compo = line.split("\\|");
-        //         String lhs = compo[0];
-        //         String rhs = compo[1];
-        //         EggGen.Circuit c1 = QASMAstBuilder.parse(lhs);
-        //         EggGen.Circuit c2 = QASMAstBuilder.parse(rhs);
-        //         SimpleEntry<EggGen.Circuit, EggGen.Circuit> entry = new SimpleEntry<>(c1, c2);
-        //         ruleset.add(entry);
-        //     }
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
 
-        // filterRules(ruleset);
         File file2 = new File(args[1]);
         List<String> ruleset1 = new ArrayList<>();
         List<String> ruleset2 = new ArrayList<>();

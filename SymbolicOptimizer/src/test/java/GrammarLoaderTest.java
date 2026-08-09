@@ -16,16 +16,7 @@ import ast.UnOp;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * Verifies that each shipped grammar file parses to the exact same
- * (gates, symbAngles) tuple as the hardcoded switch in EnumeratorPrune.main.
- * Also spot-checks the expression parser on unary minus, parens, and precedence.
- */
 public class GrammarLoaderTest {
-
-    // -------------------------------------------------------------------
-    //  Reference expected values -- must match EnumeratorPrune.main switch
-    // -------------------------------------------------------------------
 
     private static Expr piOverTwo() {
         return new BinOp(Op.DIV, new Symbol("pi"), new Real(2));
@@ -34,10 +25,6 @@ public class GrammarLoaderTest {
         return new UnOp(Op.MINUS, piOverTwo());
     }
     private static Expr plus(Expr a, Expr b) { return new BinOp(Op.PLUS, a, b); }
-
-    // -------------------------------------------------------------------
-    //  Per-gateset expectations
-    // -------------------------------------------------------------------
 
     @Test void namGrammar() throws IOException {
         EnumeratorPrune.Grammar gr = EnumeratorPrune.loadGrammar("SymbolicOptimizer/grammars/nam.grammar");
@@ -84,16 +71,10 @@ public class GrammarLoaderTest {
         }, gr.symbAngles);
     }
 
-    // -------------------------------------------------------------------
-    //  Parser edge cases
-    // -------------------------------------------------------------------
-
     @Test void parsesPrecedenceAndParens() {
-        // a + b*c   ->  a + (b*c)
         Expr e = EnumeratorPrune.parseAngleExpr("a + b*c", "<test>");
         assertEqualExpr(plus(new Symbol("a"),
                 new BinOp(Op.MULT, new Symbol("b"), new Symbol("c"))), e);
-        // (a+b)*c   parens force left grouping
         Expr f = EnumeratorPrune.parseAngleExpr("(a+b)*c", "<test>");
         assertEqualExpr(new BinOp(Op.MULT,
                 plus(new Symbol("a"), new Symbol("b")), new Symbol("c")), f);
@@ -128,11 +109,6 @@ public class GrammarLoaderTest {
         Files.deleteIfExists(p);
     }
 
-    // -------------------------------------------------------------------
-    //  Helpers
-    // -------------------------------------------------------------------
-
-    /** Structural equality using EnumeratorPrune's own canonical key. */
     private static void assertEqualExpr(Expr expected, Expr actual) {
         assertNotNull(actual);
         assertEquals(canonKey(expected), canonKey(actual));
@@ -145,7 +121,6 @@ public class GrammarLoaderTest {
                     "mismatch at index " + i);
         }
     }
-    /** Mirrors EnumeratorPrune.canonicalKey (which is package-private). */
     private static String canonKey(Expr e) {
         if (e instanceof Symbol) return "S:" + ((Symbol) e).getSymbol();
         if (e instanceof Real)   return "R:" + ((Real) e).getNumber();

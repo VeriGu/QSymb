@@ -46,7 +46,6 @@ import ast.Symbol;
 import ast.UnOp;
 import ast.Var;
 
-
 public class EnumeratorPrune {
   public long egraphTime = 0;
   public long translateTime = 0;
@@ -55,24 +54,11 @@ public class EnumeratorPrune {
   public long filtertime = 0;
   private static final Logger logger = LoggerFactory.getLogger(EnumeratorPrune.class);
   private static final String[] ANGLES = {"theta1", "theta2", "theta3"};
-//  private static final Expr[] symbAngles = {
-//    new Symbol("theta1"), // nam, rigetti
-//    new Symbol("theta2"), // nam, rigetti
-////          new BinOp(Op.SUBTRACT, new BinOp(Op.MULT, new Real(4), new Symbol("pi")), new Symbol("theta1")),
-////          new BinOp(Op.SUBTRACT, new BinOp(Op.MULT, new Real(4), new Symbol("pi")), new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2"))),
-////    new Symbol("theta3"), // ibm,
-//    new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2")), // nam, rigetti, ibm
-////          new Symbol("pi"),
-////          new BinOp(Op.DIV, new Symbol("pi"), new Real(2)),
-////          new BinOp(Op.MULT, new Real(7), new BinOp(Op.DIV, new Symbol("pi"), new Real(2))),
-////          new BinOp(Op.MULT, new Real(3), new Symbol("pi")),
-////          new BinOp(Op.PLUS, new Symbol("theta1"), new BinOp(Op.PLUS, new Symbol("theta2"), new Symbol("theta3"))), // ibm
-//  };
   public static final int MAX_QUBITS_SYMB = 2;
 
   private Verifier verifier;
   private String[] gates;
-  
+
   private Expr[] symbAngles;
   private int maxQubits;
   private Random rand;
@@ -87,8 +73,6 @@ public class EnumeratorPrune {
   private List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> learned_symbolic_rules;
   private LinkedHashSet<MatrixConstrainedRule> learned_matrix_constrained;
 
-  /** Read-only view of the canonical symbolic rules learned by the most recent
-   *  enumerateEqsat or infer_symb call. Used by tests; do not mutate. */
   public java.util.Set<MatrixConstrainedRule> getLearnedMatrixConstrained() {
     return java.util.Collections.unmodifiableSet(learned_matrix_constrained);
   }
@@ -101,7 +85,6 @@ public class EnumeratorPrune {
   private List<Circuit> symbccs;
   private Set<String> badrules;
   private Set<String> goodRules;
-  
 
   private class RuleWithPriority implements Comparable<RuleWithPriority> {
     SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule;
@@ -115,7 +98,6 @@ public class EnumeratorPrune {
         Circuit lhs = rule.getKey().getCircuit();
         Circuit rhs = rule.getValue().getCircuit();
         this.sizeDiff = Math.abs(lhs.getSize() - rhs.getSize());
-        //this.twoqubitDiff = Math.abs(lhs.getTwoQubitsCount() - rhs.getTwoQubitGates().size());
         this.totalSize = lhs.getSize() + rhs.getSize();
         this.isSymbolic = lhs.hasSymb() || rhs.hasSymb();
         Set<String> symbols = new HashSet<>();
@@ -127,15 +109,10 @@ public class EnumeratorPrune {
 
     @Override
     public int compareTo(RuleWithPriority other) {
-        // 1. total size
         if(this.totalSize != other.totalSize) {
           return this.totalSize - other.totalSize;
         }
-        // if(other.twoqubitDiff != this.twoqubitDiff) {
-        //   return other.twoqubitDiff - this.twoqubitDiff;
-        // }
 
-        // 2. smaller size difference first
         if(this.sizeDiff != other.sizeDiff) {
           return this.sizeDiff - other.sizeDiff;
         }
@@ -144,7 +121,6 @@ public class EnumeratorPrune {
     }
   }
 
-
   private FileWriter fw;
   private FileWriter fw_symb;
   private FileWriter fw_symb_nm;
@@ -152,20 +128,8 @@ public class EnumeratorPrune {
   private PrintWriter pw_symb;
   private PrintWriter pw_symb_nm;
   private boolean genSymb;
-  // When true: in the symbolic-candidate filter phase, also skip pairs whose L
-  // has all distinct eigenvalues -- those produce dim=n (small/diagonal)
-  // intertwiner bases. Enables faster runs that focus on richer rules.
   public static boolean skipDistinctEigen = false;
-  // When true (-nofilter): disable the trace-grouping and eigen-fingerprint
-  // pre-grouping so EVERY candidate pair is considered; each pair still goes
-  // through the per-pair eigenvalue validity check (checkBig) before the
-  // solver, so both modes produce the SAME rule set. This is the ablation
-  // baseline for measuring the speedup of the grouping techniques (paper
-  // RQ2): grouping replaces O(N^2) pairwise checks with O(N) fingerprints.
   public static boolean disableSymbFilters = false;
-  // Experiment: group by TRACE only (skip the numeric eigen fingerprint
-  // sub-grouping) and filter pairs with the exact SYMBOLIC eigenvalue check
-  // (checkEigenSymbolic / charpoly equality) before the intertwiner solve.
   public static final boolean GROUP_SYMB_EIGEN = Boolean.getBoolean("group.symbeigen");
 
   public EnumeratorPrune(String[] gates, int maxQubits, Random rand, Expr[] symbAngles, boolean genSymb) {
@@ -214,7 +178,6 @@ public class EnumeratorPrune {
     this.genSymb = genSymb;
     this.goodRules = new HashSet<>();
   }
-
 
   private List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> canonicalizeSymbEntries(List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> entries) {
     List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> canonicalEntries = new ArrayList<>(entries.size());
@@ -295,9 +258,6 @@ public class EnumeratorPrune {
   }
 
   public void enumerateEqsat(int numQubits, int size, int Symbsize, List<String> commutative) throws IOException {
-    // Wall-clock start for the concrete-rule pass. The symbolic pass has its
-    // own timer inside the if(genSymb) block; logging both separately lets
-    // kick_start.sh report them as distinct columns.
     long concretePassStart = System.currentTimeMillis();
     this.filename = String.format("rules_%s_q%s_%s.txt", gatesetName, maxQubits, size);
     this.fileSymname = String.format("rules_%s_q%s_%s_symb.txt", gatesetName, maxQubits, size);
@@ -306,19 +266,9 @@ public class EnumeratorPrune {
         egraph.addRewrite(rule);
     }
     egraph.push();
-    // Enumeration is about to begin: everything sent from now on
-    // (addCircuit, run-schedule, print/pop cycles) is per-stage scratch we
-    // do NOT want to replay on egglog restart. Prior to this mark the
-    // schema / ruleset / commutative rewrites were sent; those must be
-    // replayed so a fresh egglog understands subsequent commands. Without
-    // this call restartEgglog() falls back to full-log replay, dragging
-    // every prior (run-schedule (repeat 5 (run opt))) back in and
-    // re-hitting the same > 60 s saturation that triggered the restart.
     egraph.markSetupEnd();
     fw = new FileWriter(filename, StandardCharsets.UTF_8, false);
     pw = new PrintWriter(fw);
-    // Only the symbolic pass produces *_symb.txt / *_symb_nm.txt; a concrete
-    // run (-symb false) must not leave empty symb files behind.
     if (genSymb) {
       fw_symb = new FileWriter(fileSymname, StandardCharsets.UTF_8, false);
       pw_symb = new PrintWriter(fw_symb);
@@ -326,7 +276,6 @@ public class EnumeratorPrune {
       pw_symb_nm = new PrintWriter(fw_symb_nm);
     }
     Map<String, Double> symbolMap = getSymbolMap();
-    // initialize map and reps with empty circuit
     Circuit emptyCircuit = getStart();
     List<SimpleEntry<Integer, List<Integer>>> emptyCircuitHash = verifier.hashCode(emptyCircuit, symbolMap);
     assert emptyCircuitHash.size() == 1;
@@ -339,8 +288,6 @@ public class EnumeratorPrune {
     EggGen.ConstrainedCircuit eggcc = CircuitTranslator.translate(emptyCCircuit);
     equiv.add(emptyCCircuit);
     map.put(emptyCircuitHashEntry.getKey(), equiv);
-    //egraph.setFingerprint(eggcc, emptyCircuitHashEntry.getKey());
-    //egraph.addConstrainedCircuit(eggcc);
 
     previousReps.put(emptyCircuit.getQasmString(), new ConstrainedCircuit(emptyCircuit, new ArrayList<>()));
     for (int i = 1; i <= Symbsize; i++) {
@@ -365,32 +312,15 @@ public class EnumeratorPrune {
         for (ConstrainedCircuit c : previousReps.values()) {
           logger.debug(String.format("Enumerating circuit: %d/%d", j, previousReps.size()));
           j++;
-          // apply symb
-          // if (!c.getCircuit().hasQubitGreaterThan(MAX_QUBITS_SYMB)) {
-          //   List<Circuit> circuitsAfterApplySymb = applyGate(c.getCircuit(), "symb", 0, MAX_QUBITS_SYMB);
-          //   for (Circuit cSymb : circuitsAfterApplySymb) {
-          //     //if (previousReps.containsKey(cSymb.getQasmStringDropFirst())) { // TODO
-          //       long tmap = System.currentTimeMillis();
-          //       //updateMapEqsat(cSymb, symbolMap);
-          //       updateMapSymbEqsat(cSymb, symbolMap);
-          //       long tmapafter = System.currentTimeMillis();
-          //       updateMapTime += tmapafter - tmap;
-          //     //}
-          //   }
-          // }
 
-          // apply other gates
           for (String gate : this.gates) {
-            //if ((gate.equals("cx") || gate.equals("cz")) && c.getCircuit().hasSymb()) { continue; }
             for (int q = 0; q <= Math.min(c.getCircuit().getQubits().size(), numQubits - 1); q++) {
               if (c.getCircuit().hasSymb() && q >= MAX_QUBITS_SYMB) { continue; }
               List<Circuit> circuitsAfterApply = applyGate(c.getCircuit(), gate, q, Math.min(c.getCircuit().getQubits().size() + 1, numQubits));
               for (Circuit caa : circuitsAfterApply) {
-                //logger.debug("Candidate:" + caa.getQasmString());
-                if (previousReps.containsKey(caa.getQasmStringDropFirst())) { // TODO
+                if (previousReps.containsKey(caa.getQasmStringDropFirst())) {
                   long tmap = System.currentTimeMillis();
                   if(caa.hasSymb()) {
-                    //updateMapSymbEqsat(caa, symbolMap);
                   } else {
                     if(i <= size) {
                       updateMapEqsat(caa, symbolMap, true);
@@ -415,23 +345,15 @@ public class EnumeratorPrune {
       ecs.clear();
       symbecs.clear();
 
-    
       for (Integer hashcode : map.keySet()) {
-        // pick smallest
         ConstrainedCircuit smallest = pickSmallest(map.get(hashcode));
-        //logger.debug("Equivalence Class Representative of size " + i + ": " + smallest.getCircuit().getQasmString());
-        //logger.debug("  Hashcode: " + hashcode);
         ecs.add(new EquivalenceClass(map.get(hashcode), smallest));
         if (smallest.getCircuit().getSize() == i) {
           previousReps.putIfAbsent(smallest.getCircuit().getQasmString(), smallest);
         }
       }
 
-    
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> filtered2 = retriveEqfingers(egraph, i);
-        // if(filtered2.isEmpty()) {
-        //   break;
-        // }
         List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> centries = new ArrayList<>();
         for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : filtered2) {
           centries.add(new SimpleEntry(CircuitTranslator.translateBack(entry.getKey(), maxQubits), CircuitTranslator.translateBack(entry.getValue(), maxQubits)));
@@ -452,9 +374,7 @@ public class EnumeratorPrune {
               + " | " + rule.getValue().getCircuit().getQasmString());
           egraph.addRewriteRule(new SimpleEntry<>(c1, c2), true);
         }
-      
-    
-      //add symb as first op so it can be added onto in future iteration but we don't want this in the hash table
+
       if (i == 1) {
         Circuit start = getStart();
         List<Circuit> circuitsAfterApplySymb = applyGate(start, "symb", 0, MAX_QUBITS_SYMB);
@@ -463,8 +383,6 @@ public class EnumeratorPrune {
       }
     }
 
-    //gathering rules for symbolic rules, each class are ccs that are same for some permutation matrix
-    //should we also collect mononial rules, or we just collect it altogether
     HashMap<String, List<List<Integer>>> constraintMap = new HashMap<>();
     for(EquivalenceClass ec : symbecs) {
       for (ConstrainedCircuit cc : ec.getCircuits()) {
@@ -475,7 +393,7 @@ public class EnumeratorPrune {
         if (!r.getQasmString().equals(other.getQasmString())) {
           if (!hasCommonSubcircuit(r, other)) {
             if (r.hasSymb() && other.hasSymb()) {
-              if (cc.getConstraint().equals(ec.getRepresentative().getConstraint())) { // same constraint
+              if (cc.getConstraint().equals(ec.getRepresentative().getConstraint())) {
                 if (verifier.verify(r, other, cc.getConstraint())) {
                   logger.debug("rule accepted:" + rule);
                   logger.debug("constraint:" + Arrays.toString(cc.getConstraint().toArray()));
@@ -505,38 +423,25 @@ public class EnumeratorPrune {
     }
     pw.close();
 
-    // gathering non-monomial rules.
-    // first generate an C X C set
-    // group by L;S and R;S
     long symbtime = 0;
     long symbtimeMs = 0;
-    long eligibleSymbCircuits = 0;   // # of representatives that fed into traceMap
-    long withinBucketPairs = 0;      // # of (i,j) j>=i pairs inside same trace bucket
-    long totalSymbPairs = 0;         // N*(N+1)/2 over all eligible circuits
-    long rejectedByTrace = 0;        // total - withinBucket (cross-bucket pairs)
+    long eligibleSymbCircuits = 0;
+    long withinBucketPairs = 0;
+    long totalSymbPairs = 0;
+    long rejectedByTrace = 0;
     long rejectedByQubitCount = 0;
     long rejectedByDistinctSymbols = 0;
-    long rejectedByEigen = 0;        // pairs that reached checkBig and failed
+    long rejectedByEigen = 0;
     long rejectedBySymbolicEigen = 0;
     int finalSymbCandidates = 0;
     long concreteWallSec = (System.currentTimeMillis() - concretePassStart) / 1000;
     logger.info("Concrete Rule generation time (s): " + concreteWallSec);
     if(genSymb) {
-      // One seed for the whole symbolic-candidate phase so every getTrace call
-      // substitutes the same concrete values for theta1/theta2/.../gamma. That
-      // way two circuits with the same matrix bucket into the same trace key.
-      // ntraces > 1 turns the bucket key into a vector of independent random
-      // traces; larger N makes accidental collisions vanishingly unlikely at
-      // the cost of one extra matrix evaluation per circuit per trace.
-      // Mask the sign bit: numpy.random.default_rng() rejects negative seeds.
       long traceSeed = rand.nextLong() & Long.MAX_VALUE;
       int traceCount = 10;
       logger.info("Symbolic-trace seed: " + traceSeed + ", ntraces: " + traceCount);
       Map<String, List<ConstrainedCircuit>> traceMap = new java.util.concurrent.ConcurrentHashMap<>();
       long time = System.nanoTime();
-      // Parallel trace computation: each representative's trace is independent;
-      // dispatch them across the SymbolicSolve pool. Filter out big-qubit /
-      // size==0 cases up front so workers don't waste a slot on them.
       java.util.concurrent.atomic.AtomicLong eligibleSymbCirc = new java.util.concurrent.atomic.AtomicLong();
       List<ConstrainedCircuit> traceCandidates = new ArrayList<>();
       for (EquivalenceClass ec : ecs) {
@@ -546,27 +451,17 @@ public class EnumeratorPrune {
           traceCandidates.add(repre);
         }
       }
-      // Sort candidates first: deterministic fingerprint→bucket assignment
-      // AND deterministic pair orientation downstream.
       traceCandidates.sort(java.util.Comparator.comparing(cc -> cc.getCircuit().getQasmString()));
       eligibleSymbCirc.set(traceCandidates.size());
       if (disableSymbFilters) {
-        // Direct-solve ablation: one bucket holding every eligible circuit, so
-        // pair enumeration below considers ALL pairs (no grouping at all).
         traceMap.put("all", java.util.Collections.synchronizedList(new ArrayList<>(traceCandidates)));
       } else {
-        // ONE batched server call computes every circuit's eigenvalue
-        // fingerprint at traceCount seeded samples. Equal fingerprints <=>
-        // eigen-equal at every sample, the exact predicate the old
-        // trace-bucket + per-pair checkBig pipeline established with ~2N+P
-        // IPC round-trips; this needs one.
         List<List<EggGen.Gate>> gateLists = new ArrayList<>(traceCandidates.size());
         for (ConstrainedCircuit repre : traceCandidates) {
           gateLists.add(repre.getCircuit().getGates());
         }
         List<String> fps = solver.batchTraceFingerprints(gateLists, MAX_QUBITS_SYMB, traceSeed, traceCount);
         if (fps.size() != traceCandidates.size()) {
-          // Batch failed; fall back to per-circuit fingerprints (slow path).
           logger.warn("batch fingerprint returned {} lines for {} circuits; falling back to per-circuit calls",
               fps.size(), traceCandidates.size());
           fps = new ArrayList<>(traceCandidates.size());
@@ -582,16 +477,9 @@ public class EnumeratorPrune {
           traceMap.computeIfAbsent(fp, k -> java.util.Collections.synchronizedList(new ArrayList<>())).add(repre);
         }
       }
-      // Buckets are built from the sorted candidate list, so they are already
-      // in deterministic order.
       eligibleSymbCircuits += eligibleSymbCirc.get();
 
       logger.debug("Filtering Symbolic Candidates:" );
-      // Parallel filter: each trace bucket's pair loop is fanned out across
-      // the SymbolicSolve pool. The expensive per-pair work is the eigen-equal
-      // check (solver.checkBig + optional hasAllDistinctEigen), both of which
-      // are independent across pairs. We use AtomicInteger / synchronized
-      // collections to keep counters and symbenties race-safe.
       List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> symbenties =
           java.util.Collections.synchronizedList(new ArrayList<>());
       java.util.concurrent.atomic.AtomicInteger rejQubit = new java.util.concurrent.atomic.AtomicInteger();
@@ -607,18 +495,6 @@ public class EnumeratorPrune {
         traceMapindex++;
         List<ConstrainedCircuit> bucket = entry.getValue();
 
-        // Pre-bucket by per-circuit eigenvalue fingerprint (computed in
-        // parallel). Two circuits in different eigen-buckets can never have
-        // a unitary intertwiner (eigenvalue multisets differ -> Sylvester
-        // dim=0), so we skip O(N^2) checkBig calls between buckets entirely.
-        // The bucket key IS the multi-sample eigen fingerprint now, so no
-        // further sub-grouping (or per-pair checkBig) is needed: pairs within
-        // a bucket are eigen-equal at every sample by construction.
-        // Stage 2: within this trace bucket, sub-group by the (stronger) eigen
-        // fingerprint. Trace equality is necessary but weaker than eigenvalue
-        // equality, so trace buckets are refined here; only circuits that share
-        // a trace ever pay for the eigendecomposition. Singletons / -nofilter
-        // skip straight through.
         java.util.Map<String, List<ConstrainedCircuit>> eigenGroups =
             new java.util.concurrent.ConcurrentHashMap<>();
         if (GROUP_SYMB_EIGEN || disableSymbFilters || bucket.size() <= 1) {
@@ -637,7 +513,6 @@ public class EnumeratorPrune {
           }
         }
 
-        // Now iterate pairs only WITHIN each eigen-group.
         java.util.List<java.util.concurrent.Future<?>> futures = new java.util.ArrayList<>();
         for (List<ConstrainedCircuit> eigenBucket : eigenGroups.values()) {
           for (int i = 0; i < eigenBucket.size(); i++) {
@@ -670,25 +545,11 @@ public class EnumeratorPrune {
                 Set<String> symbols2 = new HashSet<>();
                 cce1.getAllSymbols(symbols1);
                 cce2.getAllSymbols(symbols2);
-                // Require the two sides to use the SAME angle symbols (a symbolic
-                // rule can't introduce/drop a free angle), but do NOT require one
-                // side's qubit set to contain the other's. An intertwiner can route
-                // an operator across qubits (e.g. Z_q1 -> Z_q0), so L and R may live
-                // on disjoint single-qubit supports. The only qubit constraint is the
-                // union bound, already enforced above (allQubits.size() > MAX_QUBITS).
-                // In the direct-solve ablation (-nofilter) even this check is
-                // disabled: EVERY pair is solved, and mismatched-symbol pairs
-                // are eliminated post-solve (empty basis or exact-eigen fail).
                 if (!disableSymbFilters
                     && !(symbols1.containsAll(symbols2) && symbols2.containsAll(symbols1))) {
                   rejSymbols.incrementAndGet();
                   return;
                 }
-                // No per-pair sampled eigen check: with filters ON the bucket
-                // key already certifies eigen-equality at traceCount samples
-                // (grouping subsumes the old checkBig); with -nofilter the
-                // EXACT symbolic eigenvalue check inside infer_symb decides
-                // validity post-solve.
                 if (skipDistinctEigen && solver.hasAllDistinctEigen(cce1, cce2, MAX_QUBITS_SYMB)) {
                   return;
                 }
@@ -707,29 +568,14 @@ public class EnumeratorPrune {
       rejectedByEigen += rejEigen.get();
       rejectedByDistinctSymbols += rejSymbols.get();
       logger.debug("Symb Candidates Size (completeness pass):" + symbenties.size());
-      // symbenties accumulates in thread-completion order; sort so infer_symb
-      // sees candidates in a stable order (first-wins dedup below then picks
-      // the same representative every run).
       synchronized (symbenties) {
         symbenties.sort(java.util.Comparator.comparing(
             e -> e.getKey().toEggString() + "|" + e.getValue().toEggString()));
       }
       finalSymbCandidates = symbenties.size();
-      // Pairs are (i, j) with j >= i over all eligible representatives, so the
-      // count is N*(N+1)/2. Pairs not in the same trace bucket are implicitly
-      // rejected by the upstream trace grouping and never reach the inner
-      // filter; that's the rejectedByTrace bucket.
       totalSymbPairs = eligibleSymbCircuits * (eligibleSymbCircuits + 1) / 2;
       rejectedByTrace = totalSymbPairs - withinBucketPairs;
 
-      // Priority pass: append Clifford-orbit candidates. For each native 2q
-      // gate L, R = (U_a ⊗ U_b) · L · (U_a ⊗ U_b)† for a small fixed set of
-      // Clifford pairs. R is decomposed into the native gateset. The
-      // intertwiner equation L·S = S·R has guaranteed non-trivial solutions
-      // (Sylvester) -- the existing infer_symb pipeline re-derives the basis
-      // when it processes these pairs. This costs O(|orbit_set|) extra solver
-      // calls and reaches R-circuits whose native size would otherwise
-      // require maxSize >= 5 to enumerate.
       List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> orbitCandidates =
           CliffordOrbitCandidates.generateForGateset(gatesetName);
       if (!orbitCandidates.isEmpty()) {
@@ -771,7 +617,6 @@ public class EnumeratorPrune {
         + ", rejected by concrete eigen test = " + rejectedByEigen
         + ", rejected by symbolic eigen test = " + rejectedBySymbolicEigen
         + ", final accepted candidates = " + finalSymbCandidates);
-    //logger.debug("Symbolic Rule sizes: " + added.size());
     logger.info("E-graph time (ms): " + this.egraphTime);
     logger.info("Translation time (ms): " + this.translateTime);
     logger.info("Choose rules time (ms): " + this.chooseTime);
@@ -785,7 +630,6 @@ public class EnumeratorPrune {
     logger.info("add Rewrit Rule Time (ms):" + data.get("addRewriteRuleTime") / 1000000);
     logger.info("Check equality time (ms): " + data.get("checkEqualityTime") / 1000000);
   }
-
 
   public List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> retriveEqfingers(EggGen egg, int size) {
         egg.push();
@@ -802,12 +646,6 @@ public class EnumeratorPrune {
         }
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> entries = new ArrayList<>();
 
-        // Per-eclass batched check: for each e-class, collect every (repr,
-        // candidate) pair that survives the good/bad-rule + lhs!=rhs filter,
-        // then run one push/saturate/check/pop. This keeps the egraph bounded
-        // by the largest single e-class instead of the union of all classes,
-        // while still amortizing saturation cost over the candidates within
-        // a class.
         for (EquivalenceClass ec : ecs) {
           ConstrainedCircuit repre = ec.getRepresentative();
           EggGen.ConstrainedCircuit repreegg = CircuitTranslator.translate(repre);
@@ -843,12 +681,6 @@ public class EnumeratorPrune {
           for (String s : uniqueOrder) {
             egg.addConstrainedCircuit(uniqueCircuits.get(s));
           }
-          // Const-eval (via runN's pre/post const pass) + the schedule order
-          // close the loop: merge folds rz(t1);rz(t2) into rz(t1+t2), const
-          // evaluates t1+t2 to Real 0.0 when applicable, then the second
-          // wire pass applies rz(0) -> e. Without the second wire pass,
-          // rz(pi/2);rz(-pi/2) -> empty is not derivable and the enumerator
-          // re-learns the baseline cancellation.
           egg.runN("wire", 5);
           egg.runN("merge", 5);
           egg.runN("wire", 5);
@@ -865,7 +697,6 @@ public class EnumeratorPrune {
         }
         egg.pop();
 
-        //eliminate symmetric duplicates
         TreeSet<String> seen = new TreeSet<>();
         List<SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit>> filtered2 = new ArrayList<>();
         for(SimpleEntry<EggGen.ConstrainedCircuit, EggGen.ConstrainedCircuit> entry : entries) {
@@ -884,19 +715,7 @@ public class EnumeratorPrune {
         return filtered2;
   }
 
-
-
-
   public void infer_symb (List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> entries, int maxQubits) {
-    // Deterministic three-step pipeline (fixes the run-to-run rule wobble):
-    //  1) Sequential pre-dedup: canonicalize every candidate (cheap, pure
-    //     Java) and keep only the FIRST candidate per canonical (lhs, rhs),
-    //     in entry order. No thread race decides which duplicate survives.
-    //  2) Parallel solve: run the expensive solver.solveSymb once per unique
-    //     rule across the semantics.py pool.
-    //  3) In-order accept: collect futures in submission order and add rules
-    //     sequentially, so the learned set AND each rule's basis are
-    //     independent of thread scheduling.
     final int N = entries.size();
 
     List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> unique = new ArrayList<>();
@@ -959,9 +778,6 @@ public class EnumeratorPrune {
       try {
         ms = futures.get(idx).get(Params.SYMB_SOLVE_TIMEOUT_SEC, java.util.concurrent.TimeUnit.SECONDS);
       } catch (java.util.concurrent.TimeoutException te) {
-        // One pathological candidate (e.g. an algebraic-field-path solve)
-        // must not stall the whole phase; skip it and move on. The worker
-        // is interrupted; its python server slot is reclaimed on restart.
         futures.get(idx).cancel(true);
         logger.warn("[SYMB " + idx + "/" + M + "] solver timeout (>"
             + Params.SYMB_SOLVE_TIMEOUT_SEC + "s) -> skip");
@@ -974,11 +790,6 @@ public class EnumeratorPrune {
         logger.info("[SYMB " + idx + "/" + M + "] empty basis -> skip");
         continue;
       }
-      // Direct-solve ablation: no sampled eigen pre-filter ran, so a
-      // non-empty LINEAR solution space does not yet imply a unitary
-      // intertwiner exists. Decide validity with the EXACT symbolic
-      // eigenvalue check (charpoly equality); reject unitary-infeasible
-      // solution spaces here.
       if (disableSymbFilters || GROUP_SYMB_EIGEN) {
         SimpleEntry<EggGen.Circuit, EggGen.Circuit> entry = unique.get(idx);
         if (!solver.checkEigenSymbolic(entry.getKey(), entry.getValue(), maxQubits)) {
@@ -995,20 +806,17 @@ public class EnumeratorPrune {
     exec.shutdown();
   }
 
-  /** Rules rejected by the exact symbolic eigen check in the last infer_symb
-   *  call (direct-solve ablation only). Read by enumerateEqsat's stats line. */
   private int symbolicEigenRejects = 0;
 
-  
   public List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> choose_eqs_n (List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> entries, int n, boolean symb, List<String> commutative) throws FileNotFoundException, IOException {
     PriorityQueue<RuleWithPriority> pq = new PriorityQueue<>();
     HashMap<String, List<List<Integer>>> constraintMap = new HashMap<>();
     Map<String, Double> symbolMap = getSymbolMap();
-    
+
     int step_size = 10;
     List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> entries_copy = new ArrayList<>(entries);
     List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> learned = new ArrayList<>();
-    
+
     while(!entries_copy.isEmpty()) {
       logger.debug("Entry Size:" + entries_copy.size());
       if(entries_copy.size() < step_size) {
@@ -1036,15 +844,10 @@ public class EnumeratorPrune {
                   learned.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
                 }
                 logger.debug("rule accepted:" + rule);
-                //pw.println(rule);
               } else {
                 logger.debug("rule rejected, verified failed:" + rule);
                 badrules.add(CircuitTranslator.translate(r).toEggString() + "|" + CircuitTranslator.translate(other).toEggString());
                 badrules.add(CircuitTranslator.translate(other).toEggString() + "|" + CircuitTranslator.translate(r).toEggString());
-                // egraph.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
-                // egraph.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
-                // egraphSymb.insertBad(CircuitTranslator.translate(entry.getKey()), CircuitTranslator.translate(entry.getValue()));
-                // egraphSymb.insertBad(CircuitTranslator.translate(entry.getValue()), CircuitTranslator.translate(entry.getKey()));
               }
             }
           } else {
@@ -1057,24 +860,11 @@ public class EnumeratorPrune {
         }
       }
 
-      // for (String rule : constraintMap.keySet()) {
-      //   pw_symb.println(rule + " | " + constraintStrings(constraintMap.get(rule)));
-      // }
-
-      //shrink the entries.
       EggGen egg = new EggGen();
       for(String rule : commutative) {
         egg.addRewrite(rule);
       }
-      // Set<String> canonicals = new HashSet<>();
-      // for(SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> entry: entries_copy) {
-      //   egg.addConstrainedCircuit(CircuitTranslator.translate(entry.getKey()));
-      //   logger.debug("Add Term" + CircuitTranslator.translate(entry.getKey()).toEggString());
-        
-      //   egg.addConstrainedCircuit(CircuitTranslator.translate(entry.getValue()));
-      //   logger.debug("Add Term" + CircuitTranslator.translate(entry.getValue()).toEggString());
-      // }
-      //logger.debug("Added Terms in C");
+
       if(!symb) {
         for (SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule : learned_rules) {
           egg.addRewriteRule(new SimpleEntry<>(CircuitTranslator.translate(rule.getKey()), CircuitTranslator.translate(rule.getValue())), true);
@@ -1084,14 +874,9 @@ public class EnumeratorPrune {
           egg.addOptRule(r, "opt", "birewrite");
         }
       }
-      
+
       List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> new_entries_copy = new ArrayList<>();
 
-      // Batched check (same rationale as retriveEqfingers): pre-filter against
-      // goodRules, dedupe circuits, then run a single saturation followed by
-      // one check per surviving pair. Entries that hit goodRules are dropped,
-      // matching the original behavior where they neither entered the egraph
-      // nor flowed into new_entries_copy.
       List<SimpleEntry<ConstrainedCircuit, ConstrainedCircuit>> pairEntries = new ArrayList<>();
       List<EggGen.Circuit> pairLhsCircuits = new ArrayList<>();
       List<EggGen.Circuit> pairRhsCircuits = new ArrayList<>();
@@ -1115,9 +900,6 @@ public class EnumeratorPrune {
         pairKeys.add(key);
         pairKeysRev.add(keyRev);
       }
-      // Chunked check: process the surviving pairs in fixed-size windows so
-      // the egraph never holds more than CHUNK_SIZE pairs at once. This caps
-      // memory and keeps runBackoff's iteration budget effective per chunk.
       final int CHUNK_SIZE = 128;
       logger.debug("Verifying remaining entries (chunked): " + pairEntries.size() + "/" + entries_copy.size()
           + " in chunks of " + CHUNK_SIZE);
@@ -1150,7 +932,7 @@ public class EnumeratorPrune {
         }
         egg.pop();
       }
-      
+
       logger.debug("new entries computed, size: " + new_entries_copy.size());
       egg.stopEgglogREPL();
       entries_copy = new_entries_copy;
@@ -1162,7 +944,6 @@ public class EnumeratorPrune {
   public void enumerate(int numQubits, int size) {
     Map<String, Double> symbolMap = getSymbolMap();
 
-    // initialize map and reps with empty circuit
     Circuit emptyCircuit = getStart();
     List<SimpleEntry<Integer, List<Integer>>> emptyCircuitHash = verifier.hashCode(emptyCircuit, symbolMap);
     assert emptyCircuitHash.size() == 1;
@@ -1176,7 +957,6 @@ public class EnumeratorPrune {
     previousReps.put(emptyCircuit.getQasmString(), new ConstrainedCircuit(emptyCircuit, new ArrayList<>()));
 
     for (int i = 1; i <= size; i++) {
-      // enumerate circuit size i
       if (i == 1) {
         Circuit start = getStart();
         for (String gate : this.gates) {
@@ -1189,23 +969,21 @@ public class EnumeratorPrune {
         }
       } else {
         for (ConstrainedCircuit c : previousReps.values()) {
-          // apply symb
           if (!c.getCircuit().hasQubitGreaterThan(MAX_QUBITS_SYMB) && !c.getCircuit().hasCXH()) {
             List<Circuit> circuitsAfterApplySymb = applyGate(c.getCircuit(), "symb", 0, MAX_QUBITS_SYMB);
             for (Circuit cSymb : circuitsAfterApplySymb) {
-              if (previousReps.containsKey(cSymb.getQasmStringDropFirst())) { // TODO
+              if (previousReps.containsKey(cSymb.getQasmStringDropFirst())) {
                 updateMap(cSymb, symbolMap);
               }
             }
           }
-          // apply other gates
           for (String gate : this.gates) {
             if ((gate.equals("cx") || gate.equals("cz")) && c.getCircuit().hasSymb()) { continue; }
             for (int q = 0; q <= Math.min(c.getCircuit().getQubits().size(), numQubits - 1); q++) {
               if (c.getCircuit().hasSymb() && q >= MAX_QUBITS_SYMB) { continue; }
               List<Circuit> circuitsAfterApply = applyGate(c.getCircuit(), gate, q, Math.min(c.getCircuit().getQubits().size() + 1, numQubits));
               for (Circuit caa : circuitsAfterApply) {
-                if (previousReps.containsKey(caa.getQasmStringDropFirst())) { // TODO
+                if (previousReps.containsKey(caa.getQasmStringDropFirst())) {
                   updateMap(caa, symbolMap);
                 }
               }
@@ -1214,12 +992,9 @@ public class EnumeratorPrune {
         }
       }
 
-      // recompute ecs
-      // simplified version compared to quartz
       ecs.clear();
       previousReps.clear();
       for (List<ConstrainedCircuit> possibleEC : map.values()) {
-        // pick smallest
         ConstrainedCircuit smallest = pickSmallest(possibleEC);
         ecs.add(new EquivalenceClass(possibleEC, smallest));
 
@@ -1228,7 +1003,6 @@ public class EnumeratorPrune {
         }
       }
 
-      // add symb as first op so it can be added onto in future iteration but we don't want this in the hash table
       if (i == 1) {
         Circuit start = getStart();
         List<Circuit> circuitsAfterApplySymb = applyGate(start, "symb", 0, MAX_QUBITS_SYMB);
@@ -1254,7 +1028,7 @@ public class EnumeratorPrune {
   public void gatherRules(String filename) throws FileNotFoundException, UnsupportedEncodingException {
     PrintWriter writer = new PrintWriter(String.format("%s.txt", filename), "UTF-8");
     PrintWriter writerSymb = new PrintWriter(String.format("%s_symb.txt", filename), "UTF-8");
-    
+
     int makeCircuitSmaller = 0;
     int haveSymb = 0;
     int total = 0;
@@ -1268,7 +1042,7 @@ public class EnumeratorPrune {
         if (!r.getQasmString().equals(other.getQasmString())) {
           if (!hasCommonSubcircuit(r, other)) {
             if (r.hasSymb() && other.hasSymb()) {
-              if (cc.getConstraint().equals(ec.getRepresentative().getConstraint())) { // same constraint
+              if (cc.getConstraint().equals(ec.getRepresentative().getConstraint())) {
                 if (verifier.verify(r, other, cc.getConstraint())) {
                   if (constraintMap.containsKey(rule)) {
                     constraintMap.get(rule).add(cc.getConstraint());
@@ -1303,10 +1077,7 @@ public class EnumeratorPrune {
     writer.close();
     writerSymb.close();
 
-//    logger.debug(String.format("total: %s, make circuit smaller: %s, have symb: %s", total, makeCircuitSmaller, haveSymb));
   }
-
-  
 
   private void updateMapEqsat(Circuit c, Map<String, Double> symbolMap, boolean addEgraph) {
     long t1 = System.currentTimeMillis();
@@ -1317,8 +1088,6 @@ public class EnumeratorPrune {
       ConstrainedCircuit cc = new ConstrainedCircuit(c, entry.getValue());
       EggGen.ConstrainedCircuit eggcc = CircuitTranslator.translate(cc);
       if(addEgraph) {
-        //egraph.addConstrainedCircuit(eggcc);
-        //egraph.setFingerprint(eggcc, entry.getKey());
       }
       if (map.containsKey(entry.getKey())) {
         map.get(entry.getKey()).add(cc);
@@ -1330,7 +1099,6 @@ public class EnumeratorPrune {
     this.egraphTime += (t3 - t2);
   }
 
-
   private void updateMapSymbEqsat(Circuit c, Map<String, Double> symbolMap) {
     long t1 = System.currentTimeMillis();
     List<SimpleEntry<Integer, List<Integer>>> hash = verifier.hashCode(c, symbolMap);
@@ -1338,10 +1106,6 @@ public class EnumeratorPrune {
     this.enumerationTime += (t2 - t1);
     for (SimpleEntry<Integer, List<Integer>> entry : hash) {
       ConstrainedCircuit cc = new ConstrainedCircuit(c, entry.getValue());
-      // EggGen.ConstrainedCircuit eggcc = CircuitTranslator.translate(cc);
-      // logger.debug("Adding to egraph: " + eggcc.toEggString() + " with fingerprint " + entry.getKey());
-      // egraphSymb.addConstrainedCircuit(eggcc);
-      // egraphSymb.setFingerprint(eggcc, entry.getKey());
       if (map.containsKey(entry.getKey())) {
         symbmap.get(entry.getKey()).add(cc);
       } else {
@@ -1350,23 +1114,13 @@ public class EnumeratorPrune {
     }
     symbccs.add(c);
     logger.debug("Added Symb Circuit: " + c.getQasmString());
-    // long t3 = System.currentTimeMillis();
-    // this.egraphTime += (t3 - t2);
-    //calculate L or R.
 
-    // String eigens = solver.getEigenvalues(solver.circuitToJson(c.getGates(), c.getQubits().size()));
-    // if(eigenmap.containsKey(eigens)){
-    //   eigenmap.get(eigens).add(c);
-    // } else {
-    //   eigenmap.put(eigens, new ArrayList<>(Arrays.asList(c)));
-    // }
   }
 
   private void updateMap(Circuit c, Map<String, Double> symbolMap) {
     List<SimpleEntry<Integer, List<Integer>>> hash = verifier.hashCode(c, symbolMap);
     for (SimpleEntry<Integer, List<Integer>> entry : hash) {
       ConstrainedCircuit cc = new ConstrainedCircuit(c, entry.getValue());
-      //logger.debug("Adding to eclass: " + cc.getCircuit().getQasmString() + " with fingerprint " + entry.getKey());
       if (map.containsKey(entry.getKey())) {
         map.get(entry.getKey()).add(cc);
       } else {
@@ -1538,13 +1292,6 @@ public class EnumeratorPrune {
               continue;
             }
           }
-//          if (gate.equals("rx") || gate.equals("ry")) {
-//            if (!angle.toString().contains("theta")) {
-//              if (c.getUsedQubits().size() > 1) {
-//                continue;
-//              }
-//            }
-//          }
           Circuit deepCopy = copy(c);
           map.get(gate).runOneQubitOneParam(deepCopy, name, angle);
           circuitsAfterApply.add(deepCopy);
@@ -1559,7 +1306,6 @@ public class EnumeratorPrune {
       }
       case "rx2": {
         Circuit deepCopy = copy(c);
-//        map.get("rx").runOneQubitOneParam(deepCopy, name, new UnOp(Op.MINUS, new BinOp(Op.DIV, new Symbol("pi"), new Real(2))));
         map.get("rx").runOneQubitOneParam(deepCopy, name, new BinOp(Op.DIV, new BinOp(Op.MULT, new Real(3), new Symbol("pi")), new Real(2)));
         circuitsAfterApply.add(deepCopy);
         return circuitsAfterApply;
@@ -1635,11 +1381,6 @@ public class EnumeratorPrune {
               if (containsAngle(c, angle)) {
                 continue;
               }
-//              if (!angle.toString().contains("theta")) {
-//                if (c.getUsedQubits().size() > 1) {
-//                  continue;
-//                }
-//              }
               Circuit deepCopy = copy(c);
               map.get(gate).runTwoQubitOneParam(deepCopy, name, targetName, angle);
               circuitsAfterApply.add(deepCopy);
@@ -1722,27 +1463,6 @@ public class EnumeratorPrune {
     return count;
   }
 
-  // ---------------------------------------------------------------------------
-  //  Grammar-file loader
-  // ---------------------------------------------------------------------------
-  // Grammar files replace the hardcoded per-gateset switch in main() with a
-  // plain-text file:
-  //
-  //   [gates]
-  //   x
-  //   h
-  //   rz
-  //   cx
-  //
-  //   [symbAngles]
-  //   theta1
-  //   theta2
-  //
-  // Blank lines and '#'-prefixed lines are ignored. Each symbAngle line is a
-  // small arithmetic expression over identifiers (Symbol), numeric literals
-  // (Real), the binary operators '+ - * /', unary '-', and parentheses.
-  // Shipped grammar files live in SymbolicOptimizer/grammars/.
-
   static final class Grammar {
     final String[] gates;
     final Expr[] symbAngles;
@@ -1782,7 +1502,6 @@ public class EnumeratorPrune {
     if (gateLines.isEmpty())  throw new IOException(path + ": [gates] section is empty or missing");
     if (angleLines.isEmpty()) throw new IOException(path + ": [symbAngles] section is empty or missing");
 
-    // Dedupe gates preserving order; each gate is a bare identifier.
     LinkedHashSet<String> gateSet = new LinkedHashSet<>();
     for (String g : gateLines) {
       if (!g.matches("[A-Za-z_][A-Za-z0-9_]*"))
@@ -1790,8 +1509,6 @@ public class EnumeratorPrune {
       gateSet.add(g);
     }
 
-    // Dedupe symbAngles by canonical serialization so accidental duplicates
-    // (e.g. 'theta1' listed twice) don't inflate the enumeration.
     LinkedHashMap<String, Expr> angleMap = new LinkedHashMap<>();
     for (String s : angleLines) {
       Expr e = parseAngleExpr(s, path);
@@ -1802,7 +1519,6 @@ public class EnumeratorPrune {
                        angleMap.values().toArray(new Expr[0]));
   }
 
-  /** Stable canonical key for dedup. Same tree -> same key. */
   private static String canonicalKey(Expr e) {
     if (e instanceof Symbol) return "S:" + ((Symbol) e).getSymbol();
     if (e instanceof Real)   return "R:" + ((Real) e).getNumber();
@@ -1811,14 +1527,6 @@ public class EnumeratorPrune {
                                        + "," + canonicalKey(((BinOp) e).getE2()) + ")";
     return e.toString();
   }
-
-  // ---------------------------------------------------------------------------
-  //  Angle-expression parser (recursive descent)
-  // ---------------------------------------------------------------------------
-  //   expr   := term (('+'|'-') term)*
-  //   term   := factor (('*'|'/') factor)*
-  //   factor := '-' factor | atom
-  //   atom   := NUMBER | IDENT | '(' expr ')'
 
   static Expr parseAngleExpr(String src, String path) {
     AngleParser p = new AngleParser(src, path);
@@ -1900,14 +1608,8 @@ public class EnumeratorPrune {
   }
 
   public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException, IOException {
-//    String[] gates = {"x", "h", "rz", "cx"};
-//    String[] gates = {"u1", "u2", "u3", "cx"};
-//    String[] gates = {"rx1", "rx2", "rx3", "rz", "cz"};
-//    String[] gates = {"gpi", "gpi2", "vz", "ms"};
-//    String[] gates = {"rx", "ry", "rz", "rxx"};
-//    String[] gates = {"cx", "rz", "x", "sx"};
     Options options = new Options();
-    
+
     Option gatesetO = new Option("g", "gateSet", true, "gate set (options: nam, ibm, rigetti, ion)");
     gatesetO.setRequired(true);
     options.addOption(gatesetO);
@@ -1933,15 +1635,11 @@ public class EnumeratorPrune {
     skipDistinctEigenO.setRequired(false);
     options.addOption(skipDistinctEigenO);
 
-    // Optional grammar file. When supplied, overrides the hardcoded per-gateset
-    // gates + symbAngles switch below. See SymbolicOptimizer/grammars/*.grammar.
     Option grammarO = new Option("gr", "grammar", true,
         "path to a .grammar file defining [gates] and [symbAngles]; overrides the built-in defaults");
     grammarO.setRequired(false);
     options.addOption(grammarO);
 
-    // Ablation switch (paper RQ2): disable the trace/eigen pre-grouping; every
-    // pair is checked pairwise (eigenvalue test) and solved if valid.
     Option noFilterO = new Option("nofilter", "noSymbFilter", false,
         "disable trace/eigen pre-grouping; run the pairwise eigenvalue check + solve on all candidate pairs");
     noFilterO.setRequired(false);
@@ -1964,18 +1662,11 @@ public class EnumeratorPrune {
       if (skipDistinctEigen) logger.info("Flag: skipDistinctEigen ON -- filtering out all-distinct-eigenvalue intertwiner candidates");
       disableSymbFilters = cmd.hasOption("noSymbFilter");
       if (disableSymbFilters) logger.info("Flag: nofilter ON -- trace + eigenvalue filters DISABLED (direct solve)");
-      // Seeded from Params.ENUMERATOR_SEED (fixed default, separate from the
-      // optimizer's SEED) so repeated runs enumerate the same rule sets: this
-      // Random drives both the concrete fingerprint angles (getSymbolMap) and
-      // the symbolic trace seed, the two per-run wobbles.
       Random rand = new Random(Params.ENUMERATOR_SEED);
       logger.info("Enumerator seed: {}", Params.ENUMERATOR_SEED);
       EnumeratorPrune enumerator = null;
       String grammarFile = cmd.getOptionValue("grammar");
       if (grammarFile != null) {
-        // Grammar-file mode: read [gates] + [symbAngles] from disk and skip the
-        // hardcoded switch entirely. The -g <gateset> value is still used to
-        // pick rules_<gateset>.txt (commutative rules) and for output naming.
         Grammar gr = loadGrammar(grammarFile);
         logger.info("Loaded grammar from {}: {} gates, {} symbAngles",
                 grammarFile, gr.gates.length, gr.symbAngles.length);
@@ -2006,28 +1697,14 @@ public class EnumeratorPrune {
           String[] gates = {"rx1", "rx2", "rx3", "rz", "cz"};
           Expr[] symbAngles = {
                   new Symbol("theta1"),
-                  // new Symbol("theta2"),
-                  // new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2")),
-                  //new BinOp(Op.SUBTRACT, new BinOp(Op.MULT, new Real(4), new Symbol("pi")), new Symbol("theta1"))
           };
           enumerator = new EnumeratorPrune(gates, maxQubits, rand, symbAngles, gateset, genSymb);
           break;
         }
         case "ion": {
           String[] gates = {"rx", "ry", "rz", "rxx"};
-          // Symbolic-rule enumeration grammar. Free symbols capture the
-          // generic commutation rules. The Clifford angles (pi, pi/2, -pi/2)
-          // are needed so the QAOA gadget Identity B can be discovered:
-          //   LHS: RXX(pi/2); RX(-pi/2); RZ(γ); RXX(pi/2)
-          //   RHS: RX(pi/2); RZ(pi/2); RXX(γ); RY(pi/2); RX(pi)
-          // -- pi/2 anchors the RXX, -pi/2 generates the LHS Clifford prep,
-          //    pi generates the RHS RX(pi). Without all three the canonical
-          //    enumerator can't produce a pair where both sides land in the
-          //    same e-class. Cost: ~5-13s per Q(ζ8)-path candidate; mitigated
-          //    by the parallel pool + cancel-only post-processing.
           Expr[] symbAngles = {
                   new Symbol("theta1"),
-                  // new Symbol("theta2"),
                   new Symbol("pi"),
                   new BinOp(Op.DIV, new Symbol("pi"), new Real(2)),
                   new UnOp(Op.MINUS, new BinOp(Op.DIV, new Symbol("pi"), new Real(2)))
@@ -2050,7 +1727,7 @@ public class EnumeratorPrune {
 
       long time1 = System.currentTimeMillis();
       List<String> commutative = new ArrayList<>();
-     
+
       FileReader fr = new FileReader("rules_" + gateset + ".txt", StandardCharsets.UTF_8);
       try (BufferedReader br = new BufferedReader(fr)) {
           String line;
@@ -2058,16 +1735,12 @@ public class EnumeratorPrune {
                 commutative.add(line);
           }
       }
-      //enumerator.enumerate(maxQubits, maxSize);
       try{
         enumerator.enumerateEqsat(maxQubits, maxSize, maxSize, commutative);
       } catch (IOException e) {
         e.printStackTrace();
       }
-      //enumerator.pruneECS();
       long time2 = System.currentTimeMillis();
-//      logger.debug("enumerate time (s): " + ((time2-time1)/1000));
-      //enumerator.gatherRules(String.format("rules_q%s_s%s_%s", maxQubits, maxSize, gateset));
       long time3 = System.currentTimeMillis();
       logger.info(String.format("%s q%s s%s total time (s): %s", gateset, maxQubits, maxSize, ((time3-time1)/1000)));
     } catch (ParseException e) {

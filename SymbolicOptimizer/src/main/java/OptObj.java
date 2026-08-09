@@ -1,4 +1,3 @@
-
 public enum OptObj {
     TOTAL,
     TWO_Q,

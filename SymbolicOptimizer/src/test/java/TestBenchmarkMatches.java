@@ -4,11 +4,6 @@ import java.util.regex.*;
 import java.nio.file.*;
 import ast.*;
 
-/**
- * Sweep: for each ion benchmark, try every anchored symbolic rule and report
- * which rules match somewhere in the circuit. Outputs a per-benchmark + per-
- * rule match matrix.
- */
 public class TestBenchmarkMatches {
 
     static List<MatrixConstrainedRule> loadRules(String path) throws Exception {
@@ -59,13 +54,10 @@ public class TestBenchmarkMatches {
         Map<String, Integer> ruleMatchCount = new HashMap<>();
         Map<String, Set<String>> benchHits = new LinkedHashMap<>();
 
-        // Per-benchmark/per-rule cap: 5s wall time max per match attempt
         int timeoutMs = 5000;
 
-        // Subsample rules to keep total runtime bounded: take first 100
         int RULE_CAP = Math.min(rules.size(), 100);
 
-        // Subsample benchmarks: every 4th
         List<File> picks = new ArrayList<>();
         for (int i = 0; i < files.length; i += 4) picks.add(files[i]);
 
@@ -94,7 +86,7 @@ public class TestBenchmarkMatches {
                     matchedIdx.add(idx);
                     ruleMatchCount.merge("rule#" + idx, 1, Integer::sum);
                 }
-                if (System.currentTimeMillis() - bench_t0 > 60_000) break; // per-bench cap
+                if (System.currentTimeMillis() - bench_t0 > 60_000) break;
             }
             String name = f.getName();
             benchHits.put(name, new LinkedHashSet<>(matchedIdx.stream().map(i -> "rule#"+i).toList()));

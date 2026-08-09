@@ -15,7 +15,7 @@ import ast.Var;
 
 public class Symbolic {
   private Expr phi;
-  private TreeMap<String, Expr> f; // So that keys are sorted e.g. q0, q1, ...
+  private TreeMap<String, Expr> f;
 
   public static final String SYMB = "symb q";
   public static final String S_PI = "pi";
@@ -52,7 +52,6 @@ public class Symbolic {
     return "Symbolic [phi=" + phi + ", f=" + f + "]";
   }
 
-  /************************************* GATES *************************************/
   public static void x(Circuit circuit, String qubit) {
     if (!circuit.hasQubit(qubit)) { circuit.addQubit(qubit); }
 
@@ -379,7 +378,6 @@ public class Symbolic {
     circuit.addGate(new EggGen.SX(qubit));
   }
 
-  // for testing
   public static void main(String[] args) {
     ArrayList<String> qubits = new ArrayList<>(Arrays.asList("q0", "q1"));
     Expr phi = new Real(1);

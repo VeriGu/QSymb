@@ -3,14 +3,6 @@ import java.util.*;
 import java.util.regex.*;
 import ast.*;
 
-/**
- * Regression test for the branching primary-fragment bug: the chain walk in
- * matchBeforeAfter follows a single successor path, so a connected-but-
- * branching before-fragment (cx q0,q1; h q0; rz(pi) q1; cx q2,q1) was
- * silently partially matched, causing either a subList crash in
- * buildSymbolicRhs or a malformed RHS with an out-of-range qubit.
- * Expected with the fix: no exception and no match (conservative reject).
- */
 public class TestBranchingFragment {
 
     static List<MatrixConstrainedRule> loadRules(String path) throws Exception {
@@ -52,8 +44,6 @@ public class TestBranchingFragment {
         int failures = 0;
         int tested = 0;
         String hdr = "OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[3];\ncreg c[3];\n";
-        // Circuit embeds the branching before-fragment, an identity window
-        // (cx;cx), then x q0 — the shape that used to partially match.
         String qasm = hdr
                 + "cx q[0],q[1];\nh q[0];\nrz(pi) q[1];\ncx q[2],q[1];\n"
                 + "cx q[0],q[1];\ncx q[0],q[1];\nx q[0];\n";
@@ -70,7 +60,6 @@ public class TestBranchingFragment {
                 } else {
                     String out = res.toQASM();
                     System.out.println("    MATCHED, result:\n" + out);
-                    // a sound match must not reference qubits outside the register
                     if (out.matches("(?s).*q\\[[3-9]\\].*")) {
                         System.out.println("    FAIL: result references out-of-range qubit");
                         failures++;

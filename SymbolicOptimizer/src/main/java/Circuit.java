@@ -9,7 +9,6 @@ public class Circuit {
   private List<Symbolic> pathSum;
   private List<String> qasm;
 
-  // list of gates representation;
   private List<EggGen.Gate> gates;
 
   public Circuit(List<String> qubits, List<Symbolic> pathSum, List<String> qasm, List<EggGen.Gate> gates) {
@@ -19,7 +18,6 @@ public class Circuit {
     this.qasm = qasm;
     this.gates = gates;
   }
-
 
    public Circuit(Circuit c) {
     this.qubits = c.qubits;
@@ -40,7 +38,6 @@ public class Circuit {
   public List<EggGen.Gate> getGates() {
     return new ArrayList<>(gates);
   }
-
 
   public void addGate(int index, EggGen.Gate gate) {
     this.gates.add(index, gate);

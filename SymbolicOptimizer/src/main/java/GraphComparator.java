@@ -18,11 +18,6 @@ public class GraphComparator implements Comparator<OptCircuit> {
 
     @Override
     public int compare(OptCircuit o1, OptCircuit o2) {
-//        if (sizeNoRz(o1.getCircuit()) < sizeNoRz(o2.getCircuit())) {
-//            return -1;
-//        } else if (sizeNoRz(o1.getCircuit()) > sizeNoRz(o2.getCircuit())) {
-//            return 1;
-//        } else {
             if (o1.getCircuit().vertexSet().size() < o2.getCircuit().vertexSet().size()) {
                 return -1;
             } else if (o1.getCircuit().vertexSet().size() > o2.getCircuit().vertexSet().size()) {
@@ -36,6 +31,5 @@ public class GraphComparator implements Comparator<OptCircuit> {
                     return 0;
                 }
             }
-//        }
     }
 }

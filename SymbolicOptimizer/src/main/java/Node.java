@@ -92,8 +92,6 @@ public class Node {
         return this.isGate() && (this.id.equals("t") || this.id.equals("tdg") || (this.id.equals("rz") && Math.abs((CircuitDAG.eval(this.getAngles().get(0)) / Math.PI) % 0.5) == 0.25));
     }
 
-
-
     public int hash() {
         int result = Objects.hash(id, type, angles);
         result = 31 * result + (qubits != null ? qubits.hashCode() : 0);
@@ -104,7 +102,6 @@ public class Node {
     public String toString() {
         return toStringHelper(HashBiMap.create());
     }
-
 
     public String toString(BiMap<String, String> qubitRenameMap) {
         return toStringHelper(qubitRenameMap);

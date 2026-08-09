@@ -27,7 +27,6 @@ public final class Symbol extends Expr {
     return String.format("(Symbol \"%s\")", symbol);
   }
 
-
   @Override
   public void getAllSymbols(Set<String> vars) {
     vars.add(symbol);

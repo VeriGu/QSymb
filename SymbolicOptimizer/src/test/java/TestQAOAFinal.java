@@ -38,7 +38,6 @@ public class TestQAOAFinal {
         Verifier verifier = new Verifier(rand, 2);
         Expr g = new Symbol("theta1");
 
-        // CANDIDATE A: LHS order rxx;rz;rx;rxx
         {
             Circuit lhs = start(2);
             Symbolic.rxx(lhs, "q0", "q1", piH());
@@ -54,7 +53,6 @@ public class TestQAOAFinal {
                     lhs, rhs, verifier, rand, 20);
         }
 
-        // CANDIDATE B: LHS order rxx;rx;rz;rxx
         {
             Circuit lhs = start(2);
             Symbolic.rxx(lhs, "q0", "q1", piH());
@@ -72,7 +70,6 @@ public class TestQAOAFinal {
                     lhs, rhs, verifier, rand, 20);
         }
 
-        // Sanity: also check that identity A still works when q1 has trailing rx(-π) (= -rx(π))
         {
             Circuit lhs = start(2);
             Symbolic.rxx(lhs, "q0", "q1", piH());

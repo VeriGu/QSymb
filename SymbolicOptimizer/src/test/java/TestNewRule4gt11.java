@@ -4,14 +4,6 @@ import java.util.regex.*;
 import java.nio.file.*;
 import ast.*;
 
-/**
- * Test the newly-constructed canonical rule
- *     LHS: RXX(pi/2); SYMB
- *     RHS: SYMB; RZZ(-pi/2)
- *  against the 4gt11_83 lines 14-19 fragment. Confirms that
- *  symbolicMatchBeforeAfter finds the match (which requires the matcher to
- *  pass its basis check on the 4-gate middle).
- */
 public class TestNewRule4gt11 {
 
     static List<MatrixConstrainedRule> loadRules(String path) throws Exception {

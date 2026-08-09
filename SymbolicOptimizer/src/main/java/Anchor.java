@@ -34,10 +34,6 @@ import ast.UnOp;
 public class Anchor {
     public static List<MatrixConstrainedRule> anchor(List<Rule> rules, List<MatrixConstrainedRule> symbRules) {
         List<MatrixConstrainedRule> anchored_rules = new ArrayList<>();
-        // Always keep every original canonical rule. Anchoring must AUGMENT, not
-        // replace: the bare canonical (e.g. RZ commuting across SYMB) is the most
-        // broadly-applicable primitive and was previously dropped whenever it
-        // anchored successfully, leaving only context-specific composites.
         anchored_rules.addAll(symbRules);
 
         Queue<MatrixConstrainedRule> queue = new LinkedList<>(symbRules);
@@ -56,7 +52,6 @@ public class Anchor {
 
             System.out.println("Trying to anchor rule: " + symblhs + " -> " + symbrhs);
 
-            //four rules to anchor the symb rules
             EggGen.Circuit lhsCircuit = EggAstBuilder.parseCircuit(symblhs);
             EggGen.Circuit rhsCircuit = EggAstBuilder.parseCircuit(symbrhs);
 
@@ -92,11 +87,6 @@ public class Anchor {
                 if(ruleLhs.gates.size() > ruleRhs.gates.size()) {
                     Map<String, Expr> symbolmap = new HashMap<>();
                     Map<String, String> qubitmap = new HashMap<>();
-                    // Bindings of the SYMBOLIC rule's thetas to the concrete
-                    // rule's angles (matchAngle's symmetric case). These must
-                    // be substituted into the canonical's own gates AND its
-                    // basis matrices, otherwise the anchored rule keeps theta
-                    // free while only being valid at the bound angle.
                     Map<String, Expr> symbBindings = new HashMap<>();
                     if(matchPrefix(rhsAfterGates, ruleLhs.gates, symbolmap, qubitmap, symbBindings)) {
                         matched = true;
@@ -110,7 +100,6 @@ public class Anchor {
                         EggGen.Circuit newLhs = new EggGen.Circuit(newlhs);
                         String newlhsStr = EggGen.circuitToGeneralizedOnlyRemoveQ(newLhs, "c");
 
-
                         List<EggGen.Gate> ruleLhsGates = new ArrayList<>(ruleLhs.gates);
                         EggGen.Circuit ruleLhsCircuit = new EggGen.Circuit(ruleLhsGates);
                         EggGen.Circuit canoruleLhs = EggGen.canonicalizeCircuit(ruleLhsCircuit, qubitmap, true);
@@ -119,12 +108,6 @@ public class Anchor {
                         newrhs.add(new EggGen.SYMB(maxQubit));
                         newrhs.addAll(canoruleLhs.gates);
                         EggGen.Circuit newRhs = new EggGen.Circuit(newrhs);
-                        // Foreign free angles introduced by the anchored concrete
-                        // rule (e.g. merge's e2, which stays free) are not among
-                        // the theta1/2/3 names recognized downstream. Renumber
-                        // them — consistently across LHS and RHS — into unused
-                        // theta slots. Canonical symbolic thetas are preserved
-                        // (they are tied to the basis matrices).
                         Map<String, Expr> renumber = foreignRenumberMap(newLhs, newRhs);
                         newlhsStr = EggGen.circuitToGeneralizedOnlyRemoveQ(newLhs.substitute(renumber), "c");
                         String newrhsStr = EggGen.circuitToGeneralizedOnlyRemoveQ(newRhs.substitute(renumber), "c");
@@ -148,7 +131,6 @@ public class Anchor {
                         EggGen.Circuit newLhs = new EggGen.Circuit(newlhs);
                         String newlhsStr = EggGen.circuitToGeneralizedOnlyRemoveQ(newLhs, "c");
 
-
                         List<EggGen.Gate> ruleLhsGates = new ArrayList<>(ruleLhs.gates);
                         EggGen.Circuit ruleLhsCircuit = new EggGen.Circuit(ruleLhsGates);
                         EggGen.Circuit canoruleLhs = EggGen.canonicalizeCircuit(ruleLhsCircuit, qubitmap, true);
@@ -157,12 +139,6 @@ public class Anchor {
                         newrhs.add(new EggGen.SYMB(maxQubit));
                         newrhs.addAll(new EggGen.Circuit(new ArrayList<>(rhsAfterGates)).substitute(symbBindings).gates);
                         EggGen.Circuit newRhs = new EggGen.Circuit(newrhs);
-                        // Foreign free angles introduced by the anchored concrete
-                        // rule (e.g. merge's e2, which stays free) are not among
-                        // the theta1/2/3 names recognized downstream. Renumber
-                        // them — consistently across LHS and RHS — into unused
-                        // theta slots. Canonical symbolic thetas are preserved
-                        // (they are tied to the basis matrices).
                         Map<String, Expr> renumber = foreignRenumberMap(newLhs, newRhs);
                         newlhsStr = EggGen.circuitToGeneralizedOnlyRemoveQ(newLhs.substitute(renumber), "c");
                         String newrhsStr = EggGen.circuitToGeneralizedOnlyRemoveQ(newRhs.substitute(renumber), "c");
@@ -177,26 +153,19 @@ public class Anchor {
             if(!matched) {
                 System.out.println("No anchor form: " + symblhs + " -> " + symbrhs);
             }
-            // NOTE: original canonical rules are seeded into anchored_rules up
-            // front; anchored composites are added at their creation site above.
-            // Do not re-add here (that dropped bare canonicals and duplicated
-            // composites).
         }
 
         return anchored_rules;
     }
 
-
     public static List<EggGen.Gate> dropfront(List<EggGen.Gate> c, int n) {
         return new ArrayList<>(c.subList(n, c.size()));
     }
-
 
     public static List<EggGen.Gate> dropback(List<EggGen.Gate> c, int n) {
         return new ArrayList<>(c.subList(0, c.size() - n));
     }
 
-    // qubitMap will be modified no matter if the match is successful or not, so make sure to pass in a copy if you don't want it to be modified
     public static boolean matchPrefix(List<EggGen.Gate> prefix, List<EggGen.Gate> circuit, Map<String, Expr> angleMap, Map<String, String> qubitMap) {
         return matchPrefix(prefix, circuit, angleMap, qubitMap, new HashMap<>());
     }
@@ -238,10 +207,6 @@ public class Anchor {
                             return false;
                         }
                     } else {
-                        // The qubit map must be injective: two distinct circuit
-                        // qubits must not collapse onto the same pattern qubit,
-                        // which would turn e.g. cx q0,q1 into a degenerate
-                        // cx q1,q1 after canonicalization.
                         if(qubitMap.containsValue(prefixqubit)) {
                             return false;
                         }
@@ -251,7 +216,6 @@ public class Anchor {
             }
             return true;
     }
-
 
     public static boolean matchSuffix(List<EggGen.Gate> suffix, List<EggGen.Gate> circuit, Map<String, Expr> angleMap, Map<String, String> qubitMap) {
         return matchSuffix(suffix, circuit, angleMap, qubitMap, new HashMap<>());
@@ -293,10 +257,6 @@ public class Anchor {
                         return false;
                     }
                 } else {
-                    // The qubit map must be injective: two distinct circuit
-                    // qubits must not collapse onto the same pattern qubit,
-                    // which would turn e.g. cx q0,q1 into a degenerate
-                    // cx q1,q1 after canonicalization.
                     if(qubitMap.containsValue(suffixqubit)) {
                         return false;
                     }
@@ -307,10 +267,6 @@ public class Anchor {
         return true;
     }
 
-
-    // True when an angle expression is free of symbolic parameters (theta*),
-    // i.e. it only involves Real literals, pi, and arithmetic on them, so it
-    // can be evaluated to a concrete number.
     private static boolean isNumericAngle(Expr e) {
         if (e instanceof Real) {
             return true;
@@ -328,32 +284,18 @@ public class Anchor {
     }
 
     private static boolean sameAngle(Expr angle1, Expr angle2) {
-        // Structural equality first: handles symbolic angles (theta1,
-        // theta1+theta2, ...) which Optimizer.eval cannot evaluate.
         if (angle1.toString().equals(angle2.toString())) {
             return true;
         }
-        // Numeric comparison (mod 4*pi) only when both sides are
-        // parameter-free; otherwise we cannot prove equality, so be
-        // conservative and report not-equal (a missed anchor, not an
-        // unsound one).
         if (isNumericAngle(angle1) && isNumericAngle(angle2)) {
             return (Optimizer.eval(angle1) % (4 * Math.PI)) == (Optimizer.eval(angle2) % (4 * Math.PI));
         }
         return false;
     }
 
-
     private static boolean matchAngle(Expr pattern, Expr circ, Map<String, Expr> angleMap, Map<String, Expr> symbBindings) {
-        // System.out.println("Pattern:" + pattern);
-        // System.out.println("Circ:" + circ);
         if(pattern instanceof Symbol) {
             String key = pattern.toString();
-            // A bindable free pattern symbol: either a canonical theta* angle,
-            // or a hand-written merge-rule free angle (e1, e2, ...). Without the
-            // e\d+ case the RZ-merge rule's e1/e2 require exact equality and can
-            // never bind against the symbolic rule's concrete RZ angle, so the
-            // RZ;SYMB;RZ anchored rule is never emitted.
             if(key.contains("theta") || key.matches("e\\d+")) {
                 if(angleMap.containsKey(key)) {
 
@@ -366,14 +308,6 @@ public class Anchor {
                 return sameAngle(pattern, circ);
             }
         }
-        // Symmetric case: pattern is concrete but circ is a "theta*" symbol.
-        // Bind the symbolic rule's theta to whatever concrete expression the
-        // anchor-input concrete rule has at this position. Without this, e.g.
-        // matching circuit RXX(pi/2) against symbolic RXX(theta1) fails.
-        // The binding is recorded in symbBindings because it specializes the
-        // SYMBOLIC rule: the caller must substitute it into the canonical's
-        // gates and basis matrices, or the anchored rule is unsound (valid
-        // only at the bound angle but matched with theta free).
         if(circ instanceof Symbol) {
             String key = circ.toString();
             if(key.contains("theta")) {
@@ -411,13 +345,6 @@ public class Anchor {
         return false;
     }
 
-    /**
-     * Render an angle Expr as an exact sympy-parsable string for basis-matrix
-     * substitution. Multiples of pi/4 are emitted symbolically ("3*pi/4") so
-     * semantics.py keeps its exact algebraic-field path; anything else falls
-     * back to the decimal value. Non-numeric (theta-bearing) exprs are
-     * rendered as-is (theta renames).
-     */
     static String angleToSympy(Expr e) {
         if (!isNumericAngle(e)) {
             return e.toString();
@@ -432,13 +359,6 @@ public class Anchor {
         return Double.toString(v);
     }
 
-    /**
-     * Substitute bound thetas into the basis matrices. The basis was solved
-     * with the canonical rule's thetas free; once anchoring pins a theta to a
-     * concrete angle, the stored basis must be specialized at that angle.
-     * (Each basis element satisfies the intertwiner equation identically in
-     * theta, so evaluating it at the bound angle stays a valid solution.)
-     */
     static List<SymbolicSolve.SparseMatrix> substituteBasis(List<SymbolicSolve.SparseMatrix> basis, Map<String, Expr> symbBindings) {
         if (symbBindings.isEmpty() || basis == null) {
             return basis;
@@ -463,13 +383,6 @@ public class Anchor {
         return out;
     }
 
-
-    /**
-     * A two-qubit CX is degenerate when its control and target are the same
-     * qubit (e.g. "cx q1, q1"). Anchoring can produce such malformed rules;
-     * they are not valid gates and must be dropped from the output. Matches
-     * both "(CX q0 q1)" and "(CX (Q \"q0\") (Q \"q1\"))" serializations.
-     */
     private static final Pattern DEGENERATE_CX = Pattern.compile(
             "\\(CX\\s+(?:\\(Q\\s+\"([^\"]+)\"\\)|(q\\d+))\\s+(?:\\(Q\\s+\"([^\"]+)\"\\)|(q\\d+))\\)");
 
@@ -485,19 +398,6 @@ public class Anchor {
         return false;
     }
 
-    /**
-     * Build a substitution that renumbers "foreign" free angles — those an
-     * anchored concrete rule injects that are NOT among the theta1/2/3 names
-     * recognized downstream (EggGen.replaceSymbolWithVar, the SymbolicThread
-     * regex). The merge rule's second RZ angle (e2) is the motivating case: it
-     * stays free after anchoring and must become a real theta slot or it is
-     * silently dropped / unrecognized. Canonical symbolic thetas already
-     * present are KEPT untouched — they are bound to the rule's basis matrices,
-     * so renaming them would desync the constraint. Foreign symbols are mapped,
-     * in first-occurrence order (LHS then RHS), into the theta slots not already
-     * taken by a kept theta. Throws if there are more foreign angles than free
-     * slots (max 3 distinct thetas are recognized downstream).
-     */
     private static Map<String, Expr> foreignRenumberMap(EggGen.Circuit lhs, EggGen.Circuit rhs) {
         LinkedHashSet<String> all = new LinkedHashSet<>();
         collectFreeSymbols(lhs, all);
@@ -561,15 +461,6 @@ public class Anchor {
         }
     }
 
-    /**
-     * Load size-reducing ":ruleset merge" rewrites from a hand-written egglog
-     * gateset file (e.g. rules_nam.txt) so they can serve as anchor targets.
-     * These merge identities (RZ q a; RZ q b -> RZ q (a+b)) live ONLY in the
-     * gateset file, never in the Clifford-only enumerated concrete rules, so
-     * without this the RZ;SYMB;RZ anchored rule is never produced. The egglog
-     * S-expr uses bare q0 / e1 / c forms; we rewrite them into the (Q "..")
-     * (Symbol "..") (Nil) forms the Egg grammar expects before parsing.
-     */
     static List<Rule> loadMergeRules(String gatesetFile) {
         List<Rule> out = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(gatesetFile, StandardCharsets.UTF_8))) {
@@ -588,8 +479,6 @@ public class Anchor {
                 }
                 EggGen.Circuit lhs = parseEggCircuit(groups.get(0));
                 EggGen.Circuit rhs = parseEggCircuit(groups.get(1));
-                // Only size-reducing merges are useful anchor targets (the
-                // anchor loop's own gate at ruleLhs > ruleRhs also enforces it).
                 if (lhs.gates.size() > rhs.gates.size()) {
                     out.add(new Rule(lhs, rhs, new ArrayList<>()));
                     System.out.println("Loaded merge rule for anchoring: "
@@ -602,9 +491,6 @@ public class Anchor {
         return out;
     }
 
-    // Extract the top-level balanced-paren groups from an egglog rewrite body
-    // (the text after the "rewrite" keyword). The first two are LHS and RHS;
-    // bare tokens like ":ruleset" / "merge" are naturally skipped.
     private static List<String> topLevelGroups(String s) {
         List<String> groups = new ArrayList<>();
         int depth = 0;
@@ -642,8 +528,6 @@ public class Anchor {
         rulesO.setRequired(true);
         options.addOption(rulesO);
 
-
-
         Option symbRulesO = new Option("sr", "symbrule", true, "symb ruleset file path");
         symbRulesO.setRequired(false);
         options.addOption(symbRulesO);
@@ -678,19 +562,17 @@ public class Anchor {
             String rhs = comp[1];
             String type = comp[2];
             String matrix = comp[3];
-            
+
             Pattern matrixP = Pattern.compile("\\[(.*)\\]");
             Matcher matcher = matrixP.matcher(matrix);
             matcher.matches();
             String matricesStr = matcher.group(1);
             String[] matrices = matricesStr.split("::");
             List<SymbolicSolve.SparseMatrix> matrixList = new ArrayList<>();
-            //TODO: Construct Matrices
             for(String m: matrices) {
                     List<SymbolicSolve.SparseMatrix.MatrixEntry> sentries = new ArrayList<>();
                     if(m.startsWith("Matrix(")) {
                         String content = m.substring("Matrix(".length(), m.length() - 1);
-                        //System.out.println("content: " + content);
                         String[] entries = content.split(";");
                         int rows = Integer.valueOf(entries[0]);
                         int cols = Integer.valueOf(entries[1]);
@@ -711,7 +593,6 @@ public class Anchor {
             System.out.println("Error reading symb ruleset file: " + e.getMessage());
             System.exit(1);
         }
-
 
         List<Rule> rules = new ArrayList<>();
         String rulesFile = cmd.getOptionValue("rule");

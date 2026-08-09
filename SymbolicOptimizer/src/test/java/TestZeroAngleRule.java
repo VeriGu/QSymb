@@ -1,16 +1,6 @@
 import java.util.*;
 import ast.*;
 
-/**
- * Verify the simpler reduction path: zero-angle RY removal + RX commutation
- * lets two RXX(π/2) merge.
- *
- * Identity 1: RY(α);RY(-α) = I  (trivial, but tests merge+zero-removal chain)
- * Identity 2: RXX(π/2);RY(α)q1;RY(-α)q1;RXX(π/2) = RXX(π) (after RY cancels, RXX merge fires)
- * Identity 3: Full simplified qaoa-style gadget on q1 side:
- *             RXX(π/2);RX(-π/2)q1;RY(-π/2)q1;RY(π/2)q1;RXX(π/2)
- *             vs RX(-π/2)q1;RXX(π)  (saves 1 RXX)
- */
 public class TestZeroAngleRule {
 
     static Circuit start(int n) {
@@ -50,16 +40,13 @@ public class TestZeroAngleRule {
         Verifier verifier = new Verifier(rand, 2);
         Expr theta1 = new Symbol("theta1");
 
-        // Sanity: RY(α);RY(-α) on q0 == identity
         {
             Circuit l = start(2), r = start(2);
             Symbolic.ry(l, "q0", theta1);
             Symbolic.ry(l, "q0", neg(theta1));
-            // RHS: empty circuit
             check("[Test 1] RY(α);RY(-α) q0 == I", l, r, verifier, rand);
         }
 
-        // RY(α);RY(-α) sandwich preserves the RXX
         {
             Circuit l = start(2), r = start(2);
             Symbolic.rxx(l, "q0", "q1", piH());
@@ -67,11 +54,10 @@ public class TestZeroAngleRule {
             Symbolic.ry(l, "q1", piH());
             Symbolic.rxx(l, "q0", "q1", piH());
 
-            Symbolic.rxx(r, "q0", "q1", piE());  // merged RXX(π)
+            Symbolic.rxx(r, "q0", "q1", piE());
             check("[Test 2] RXX;RY(-π/2);RY(π/2);RXX == RXX(π)", l, r, verifier, rand);
         }
 
-        // Add an RX(-π/2) on q1 before the cancelling RY pair (as in qaoa_5)
         {
             Circuit l = start(2), r = start(2);
             Symbolic.rxx(l, "q0", "q1", piH());
@@ -80,31 +66,20 @@ public class TestZeroAngleRule {
             Symbolic.ry(l, "q1", piH());
             Symbolic.rxx(l, "q0", "q1", piH());
 
-            // RX(q1) commutes with RXX → RX commutes out, RY pair cancels, two RXXs merge to RXX(π)
             Symbolic.rx(r, "q1", neg(piH()));
             Symbolic.rxx(r, "q0", "q1", piE());
             check("[Test 3] RXX;RX;RY(-π/2);RY(π/2);RXX == RX;RXX(π)", l, r, verifier, rand);
         }
 
-        // Full qaoa-style q1 portion (3 single-qubit gates on q1, q0 portion ignored for now)
         {
-            // q0 has a chain U_0; q1 has rx(-π/2); ry(-π/2); ry(π/2)
-            // Approximate by setting q0 to a 1-q symbol via theta1 (RZ on q0).
-            // For this test, set q0 to just identity (only test the q1 reduction).
             Circuit l = start(2), r = start(2);
             Symbolic.rxx(l, "q0", "q1", piH());
-            // q0 middle: just RZ(γ) as a stand-in for the long q0 chain
             Symbolic.rz(l, "q0", theta1);
-            // q1 middle
             Symbolic.rx(l, "q1", neg(piH()));
             Symbolic.ry(l, "q1", neg(piH()));
             Symbolic.ry(l, "q1", piH());
             Symbolic.rxx(l, "q0", "q1", piH());
 
-            // Equivalent: RZ(γ) on q0 stays; RX(-π/2) on q1 commutes out; two RXX merge to RXX(π).
-            // But RZ on q0 also has to commute past RXX --- and RZ on q0 does NOT commute with RXX.
-            // So we'd need RZ between the two RXXs OR after the RXXs collapse.
-            // Try: RXX(π);RZ(γ) q0;RX(-π/2) q1  (collapse the gadget, RZ left in original spot)
             Symbolic.rxx(r, "q0", "q1", piE());
             Symbolic.rz(r, "q0", theta1);
             Symbolic.rx(r, "q1", neg(piH()));

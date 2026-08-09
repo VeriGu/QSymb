@@ -27,7 +27,7 @@ public class Verifier {
   private static final int TOLERANCE = -8;
   private static final int RANDOM_SAMPLES = 10;
   private Random rand;
-  private Map<Integer, boolean[][]> termsMap; // not worth using bitset unless > 8 qubits
+  private Map<Integer, boolean[][]> termsMap;
   private Map<Integer, List<List<Integer>>> permsMap;
   private int maxQubits;
   private List<List<Complex>> randomQubitStates;
@@ -59,7 +59,6 @@ public class Verifier {
       }
       this.randomQubitStates.add(randomQubitState);
     }
-    
 
     this.randomQubitStates2 = new ArrayList<>();
     for (int k = 0; k < RANDOM_SAMPLES; k++) {
@@ -79,7 +78,7 @@ public class Verifier {
       }
       this.randomQubitStates2.add(randomQubitState2);
     }
-    
+
     if (maxQubits < 4) {
       this.permsMap = new HashMap<>();
       for (int i = 1; i <= maxQubits; i++) {
@@ -93,10 +92,8 @@ public class Verifier {
   }
 
   public List<List<Integer>> verify(Circuit c1, Circuit c2) {
-    // c1 - c2
     Circuit cDiff = subtractCircuits(c1, c2);
 
-    // enumerate qubits
     boolean[][] terms = termsMap.get(cDiff.getQubits().size());
     boolean[][] funTerms = cDiff.getUsedQubits().size() > 0 ? termsMap.get(cDiff.getUsedQubits().size()) : terms;
     List<Map<String, Integer>> qubitMaps = getQubitMaps(cDiff, terms);
@@ -105,7 +102,6 @@ public class Verifier {
       return new ArrayList<>();
     }
 
-    // enumerate functions
     List<List<Integer>> perms = permsMap.get(funTerms.length);
     ArrayList<List<Integer>> constraints = new ArrayList<>();
 
@@ -123,10 +119,8 @@ public class Verifier {
   }
 
   public boolean verify(Circuit c1, Circuit c2, List<Integer> perm) {
-    // c1 - c2
     Circuit cDiff = subtractCircuits(c1, c2);
 
-    // enumerate qubits
     boolean[][] terms = termsMap.get(cDiff.getQubits().size());
     boolean[][] funTerms = cDiff.getUsedQubits().size() > 0 ? termsMap.get(cDiff.getUsedQubits().size()) : terms;
     List<Map<String, Integer>> qubitMaps = getQubitMaps(cDiff, terms);
@@ -135,11 +129,7 @@ public class Verifier {
     return verifyHelper(cDiff, terms, qubitMaps, funMaps);
   }
 
-
   public boolean verifyv2(Circuit c1, Circuit c2, Map<String, Double> symbolMap) {
-    // enumerate qubits over the UNION of c1 and c2 declared qubits so that
-    // gates touching qubits unique to one side actually get evaluated
-    // (otherwise empty-vs-single-gate pairs spuriously pass).
     java.util.LinkedHashSet<String> qubitSet = new java.util.LinkedHashSet<>(c1.getQubits());
     qubitSet.addAll(c2.getQubits());
     List<String> unionQubits = new ArrayList<>(qubitSet);
@@ -157,12 +147,6 @@ public class Verifier {
       qubitMaps.add(qubitMap);
     }
 
-    // Collect every (phi1, phi2) amplitude pair across all qubitMaps and
-    // basis-state buckets. A valid equivalence-up-to-global-phase requires a
-    // SINGLE complex constant p with |p|=1 such that phi1 = p * phi2 holds for
-    // every pair (zero/zero pairs are trivially consistent). The previous loop
-    // re-picked a phase per qubitMap, allowing rx(π) and ry(π) to pass even
-    // though their amplitudes differ by +i on |0⟩→|1⟩ and -i on |1⟩→|0⟩.
     List<Complex[]> phiPairs = new ArrayList<>();
     for (Map<String, Integer> qubitMap : qubitMaps) {
       List<Concrete> evaluatedCircuit = evalCircuit(c1, qubitMap, symbolMap, new HashMap<>());
@@ -179,8 +163,6 @@ public class Verifier {
 
     double tol = Math.pow(10, TOLERANCE);
 
-    // Derive the candidate phase from the pair with the largest |phi2| to
-    // avoid division by a noisy near-zero amplitude.
     Complex candidate = null;
     double bestMag = -1;
     for (Complex[] pp : phiPairs) {
@@ -188,21 +170,18 @@ public class Verifier {
       double m2 = pp[1].abs();
       boolean z1 = m1 < tol;
       boolean z2 = m2 < tol;
-      if (z1 != z2) return false;          // one side zero, the other not -- no phase fixes that
-      if (z1) continue;                    // both zero -- trivial
+      if (z1 != z2) return false;
+      if (z1) continue;
       if (m2 > bestMag) {
         bestMag = m2;
         candidate = pp[0].divide(pp[1]);
       }
     }
 
-    // All amplitudes zero on both sides -> the circuits agree trivially.
     if (candidate == null) return true;
 
-    // A real global phase has |p|=1. Reject scale-only matches.
     if (Math.abs(candidate.abs() - 1.0) >= tol) return false;
 
-    // Verify the candidate phase across every pair.
     for (Complex[] pp : phiPairs) {
       Complex phi1 = pp[0];
       Complex phi2 = pp[1];
@@ -212,7 +191,6 @@ public class Verifier {
     }
     return true;
   }
-
 
   public boolean verify(Circuit c, Map<String, Integer> qubitMap, Map<String, Boolean> expectedMap) {
     if (c.getSize() == 0) {
@@ -231,7 +209,6 @@ public class Verifier {
     }
 
     List<String> qubitsNotInMap = new ArrayList<>();
-    //java.util.Collections.sort(c.getUsedQubits());
     for (String qubit : c.getUsedQubits()) {
       if (!qubitMap.containsKey(qubit)) {
         qubitsNotInMap.add(qubit);
@@ -279,8 +256,8 @@ public class Verifier {
   private static List<Double> quantize(List<Double> values, double precision) {
         List<Double> out = new ArrayList<>(values.size());
         for (double v : values) {
-            double q = Math.rint(v / precision) * precision;  // rint = ties-to-even; use Math.round if preferred
-            if (q == -0.0) q = 0.0;                   // canonicalize -0.0
+            double q = Math.rint(v / precision) * precision;
+            if (q == -0.0) q = 0.0;
             out.add(q);
         }
         return out;
@@ -294,7 +271,6 @@ public class Verifier {
       List<Complex> randomQubitState = randomQubitStates.get(k);
       List<Complex> randomQubitState2 = randomQubitStates2.get(k);
       List<Concrete> newcircuit = new ArrayList<>();
-      //List<List<Concrete>> evaluatedCircuits = new ArrayList<>();
       for(int i = 0; i < qubitMaps.size(); i++) {
         Complex v = randomQubitState2.get(i);
         Map<String, Integer> qubitMap = qubitMaps.get(i);
@@ -317,12 +293,6 @@ public class Verifier {
       fingerprints.add(finger);
     }
 
-    // if (c.getQasmString().equals(";")) {
-    //   System.out.println("Circuit added to egraph with fingerprint raw" + fingerprints.toString().hashCode());
-    // }
-    // if (c.getQasmString().equals("rz(pi/2) q0; sx q0; rz(pi/2) q0;")) {
-    //   System.out.println("Circuit added to egraph with fingerprint raw" + fingerprints.toString().hashCode());
-    // }
     result.add(new SimpleEntry<>(fingerprints.toString().hashCode(), new ArrayList<>()));
     return result;
   }
@@ -407,7 +377,6 @@ public class Verifier {
     return c1Minusc2;
   }
 
-  /****************** Helpers for evaluating path sum ******************/
   private List<Concrete> evalCircuit(Circuit c,
                                      Map<String, Integer> qubitMap,
                                      Map<String, Double> symbolMap,
@@ -427,7 +396,6 @@ public class Verifier {
     return eval_circuit;
   }
 
-
   public Complex evalExpr(Expr e,
                            Map<String, Integer> qubitMap,
                            Map<String, Double> symbolMap,
@@ -440,7 +408,7 @@ public class Verifier {
       case Fun f: return evalFun(f, qubitMap, symbolMap, funMap);
       case UnOp uo: return evalUnOp(uo, qubitMap, symbolMap, funMap);
       case BinOp bo: return evalBinOp(bo, qubitMap, symbolMap, funMap);
-      default: assert false; return null; // stupid hack to make the compiler happy ugh
+      default: assert false; return null;
     }
   }
 
@@ -474,7 +442,6 @@ public class Verifier {
       }
     }
   }
-
 
   private Complex evalFun(Fun f,
                           Map<String, Integer> qubitMap,
@@ -603,7 +570,6 @@ public class Verifier {
     }
   }
 
-  // for testing
   public static void main(String[] args) {
     ArrayList<String> qubits = new ArrayList<>(Arrays.asList("q0", "q1"));
     Expr phi = new Real(1);
@@ -620,17 +586,6 @@ public class Verifier {
     Symbolic.cz(c1, "q0", "q1");
     Symbolic.rx(c1, "q0", new Symbol("pi"));
     Symbolic.rz(c1, "q0", new Symbol("theta1"));
-//    Symbolic.symb(c1, 2);
-//    Symbolic.rz(c1, "q1", new Symbol("theta2"));
-//     Symbolic.cx(c1, "q1", "q0");
-//     Symbolic.h(c1, "q1");
-//     Symbolic.h(c1, "q0");
-//    Symbolic.x(c1, "q0");
-//    Symbolic.h(c1, "q0");
-//    Symbolic.rz(c1, "q0", new Symbol("theta1"));
-//    Symbolic.h(c1, "q0");
-//    Symbolic.x(c1, "q0");
-
 
     ArrayList<String> qubits2 = new ArrayList<>(Arrays.asList("q0", "q1"));
     Expr phi2 = new Real(1);
@@ -643,20 +598,9 @@ public class Verifier {
     ArrayList<Symbolic> pathSum2 = new ArrayList<>(Arrays.asList(s2));
     Circuit c2 = new Circuit(qubits2, pathSum2, new ArrayList<>(), new ArrayList<>());
 
-//    Symbolic.rz(c2, "q0", new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2")));
-//    Symbolic.symb(c2, 2);
     Symbolic.cz(c2, "q0", "q1");
     Symbolic.rx(c2, "q0", new Symbol("pi"));
     Symbolic.rz(c2, "q0", new BinOp(Op.SUBTRACT, new Symbol("theta1"), new Symbol("theta2")));
-//     Symbolic.h(c2, "q1");
-//     Symbolic.h(c2, "q0");
-//     Symbolic.cx(c2, "q0", "q1");
-//    Symbolic.x(c2, "q0");
-//    Symbolic.x(c2, "q0");
-//    Symbolic.cx(c2, "q0", "q1");
-//    Symbolic.rz(c2, "q0", new Symbol("theta1"));
-//      Symbolic.h(c2, "q0");
-
 
     Random rand = new Random();
     rand.setSeed(54);
@@ -672,9 +616,6 @@ public class Verifier {
         System.out.println("eq, constraints: " + result.toString());
       }
     }
-
-//    System.out.println(Arrays.deepToString(verifier.termsMap.get(2)));
-//    System.out.println(Arrays.deepToString(verifier.termsMap.get(3)));
 
      HashMap<String, Double> symbolMap = new HashMap<>();
      symbolMap.put(Symbolic.S_PHI, rand.nextDouble());

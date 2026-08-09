@@ -4,15 +4,6 @@ import java.util.regex.*;
 import java.nio.file.*;
 import ast.*;
 
-/**
- * Take qaoa_5's first gadget instance (lines 28..44) and try every same-pair
- * RXX-SYMB-RXX symbolic rule against it. Report which (if any) match — meaning
- * the SYMB middle's matrix lies in the rule's basis constraint.
- *
- * Helps diagnose why the runtime SA loop applies 0 symbolic rules: is it that
- * none match by basis (mathematical), or that the matcher misses them
- * (engineering)?
- */
 public class TestGadgetMatch {
 
     static List<MatrixConstrainedRule> loadRules(String path) throws Exception {
@@ -51,7 +42,6 @@ public class TestGadgetMatch {
     }
 
     public static void main(String[] args) throws Exception {
-        // Write the qaoa_5 gadget instance (lines 28..44) as a standalone qasm
         String gadgetQasm = "OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[2];\ncreg c[2];\n"
                 + "rxx(pi/2) q[0],q[1];\n"
                 + "rx(-pi/2) q[0];\n"
@@ -73,11 +63,9 @@ public class TestGadgetMatch {
         Files.write(Paths.get("/tmp/qaoa_gadget_inst.qasm"), gadgetQasm.getBytes());
         System.out.println("Gadget written to /tmp/qaoa_gadget_inst.qasm (17 gates, 2 RXX)");
 
-        // Load ALL anchored rules
         List<MatrixConstrainedRule> rules = loadRules("/root/anchored_ion_q3_only.txt");
         System.out.println("Loaded " + rules.size() + " anchored rules");
 
-        // Keep only same-qubit-pair RXX-SYMB-RXX (gadget-shape) rules
         Pattern qaoaShape = Pattern.compile(
                 "RXX q[01] q[01] [^|]*SYMB[^|]*RXX q[01] q[01]");
         List<MatrixConstrainedRule> gadgetRules = new ArrayList<>();

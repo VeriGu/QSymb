@@ -3,11 +3,6 @@ import java.util.*;
 import java.util.regex.*;
 import ast.*;
 
-/**
- * Controlled positive tests for the symbolic-rule application path on nam rules.
- * Each case constructs a circuit whose S-window provably lies in the rule's
- * basis, so a no-match indicates an engineering bug, not a math one.
- */
 public class TestNamSymbApply {
 
     static List<MatrixConstrainedRule> loadRules(String path) throws Exception {
@@ -82,10 +77,6 @@ public class TestNamSymbApply {
 
         String hdr = "OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[2];\ncreg c[2];\n";
 
-        // Case 1: S; rz(pi) q0; rz(pi) q1  <->  rz(pi) q0; rz(pi) q1; S
-        // Disconnected after-fragment (rz q0 and rz q1 are separate components).
-        // S = cx;cx = identity covers both wires, so the secondary component
-        // can anchor adjacent to the window. Must pass.
         MatrixConstrainedRule r1 = findByLhs(rules,
                 "(Cons (SYMB 2) (Cons (RZ q0 (Symbol \"pi\")) (Cons (RZ q1 (Symbol \"pi\")) c)))");
         if (r1 == null) { System.out.println("case1 rule not found"); }
@@ -93,15 +84,10 @@ public class TestNamSymbApply {
                 + "cx q[0],q[1];\ncx q[0],q[1];\nrz(pi) q[0];\nrz(pi) q[1];\n",
                 "disconnected after-fragment, 2-wire window");
 
-        // Case 1b: same rule, but the window (rz(0.5) q0) never covers the
-        // secondary component's wire, so there is no window boundary to anchor
-        // it on. Known limitation: expect NO MATCH (not a bug).
         if (r1 != null) runCase(opt, r1, hdr
                 + "rz(0.5) q[0];\nrz(pi) q[0];\nrz(pi) q[1];\n",
                 "1-wire window, secondary wire uncovered (expect no match)");
 
-        // Case 2: cx q1,q0; S; cx q0,q1  ->  cx q1,q0; cx q1,q0; S
-        // S = cx q0,q1; cx q1,q0 satisfies cx10*S = S'*... (SWAP identity). Must pass.
         MatrixConstrainedRule r2 = findByLhs(rules,
                 "(Cons (CX q1 q0) (Cons (SYMB 2) (Cons (CX q0 q1) c)))");
         if (r2 == null) { System.out.println("case2 rule not found"); }

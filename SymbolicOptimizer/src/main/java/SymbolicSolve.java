@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,16 +24,10 @@ public class SymbolicSolve {
 
     private static final Logger logger = LoggerFactory.getLogger(SymbolicSolve.class);
 
-    /**
-     * Represents a complex number with real and imaginary parts.
-     */
     public static class Complex {
-        
+
         public final String symbolicValue;
 
-        // Constructor for numeric values
-       
-        // Constructor for symbolic values
         public Complex(String symbolic) {
             this.symbolicValue = symbolic;
         }
@@ -45,9 +38,6 @@ public class SymbolicSolve {
         }
     }
 
-    /**
-     * Represents a sparse matrix using a list of non-zero entries (COO format).
-     */
     public static class SparseMatrix {
         public final int rows;
         public final int cols;
@@ -128,7 +118,6 @@ public class SymbolicSolve {
         return symbolMap;
     }
 
-
     private  String gateToJson(EggGen.Gate gate) {
         String gateName;
         List<Integer> targets = new ArrayList<>();
@@ -198,7 +187,7 @@ public class SymbolicSolve {
         }
 
         String targetsJson = "[" + targets.stream().map(String::valueOf).collect(Collectors.joining(",")) + "]";
-        
+
         if (paramsJson != null) {
             return String.format("{\"gate\":\"%s\",\"targets\":%s,\"params\":%s}", gateName, targetsJson, paramsJson);
         } else {
@@ -213,13 +202,6 @@ public class SymbolicSolve {
                 .collect(Collectors.joining(",")) + "], \"n_qubits\":" + num_qubits + "}";
     }
 
-
-    // ---- persistent semantics.py server pool ----
-    // Pool of long-lived `python3 semantics.py --server` processes. Each slot
-    // serializes its own request/response so multiple threads in the JVM can
-    // make concurrent solveSymb / checkBig / etc. calls -- one per slot at a
-    // time. Each slot independently restarts itself every SERVER_RESTART_INTERVAL
-    // requests to bound sympy global-state accumulation.
     private static final int POOL_SIZE = Math.max(1,
             Integer.parseInt(System.getProperty("semantics.pool.size",
                     Integer.toString(Math.max(1, Runtime.getRuntime().availableProcessors() / 2)))));
@@ -275,14 +257,11 @@ public class SymbolicSolve {
         }
     }
 
-    /** Sends one request to a slot from the pool and returns its output.
-     *  Acquires a free slot, sends the request, releases the slot. */
     private static String runSemantics(String... argv) {
         ServerSlot slot = null;
         try {
             if (!poolInitialized) initPool();
             slot = pool.take();
-            // Restart if dead or quota reached.
             if (slot.proc == null || !slot.proc.isAlive()) {
                 logger.info("[SEMSERVER #{}] starting fresh (was null/dead)", slot.id);
                 slot.start();
@@ -324,30 +303,18 @@ public class SymbolicSolve {
                 circuitToJson(c2.gates, nqubits));
     }
 
-    /**
-     * Runs the `-is_subspace_linear` basis check through the persistent
-     * semantics.py server pool (instead of a fresh per-call process spawn).
-     * Args are the already-serialized JSON strings the caller built. Returns
-     * the server's raw stdout for the request.
-     */
     public String isSubspaceLinear(String circuitJson, String basisJson,
                                    String subspaceJson, String symbolMapJson) {
         return runSemantics("-is_subspace_linear", circuitJson, basisJson,
                 subspaceJson, symbolMapJson);
     }
 
-    /**
-     * Approximate variant: forwards -approx_eps so semantics.py accepts the
-     * window when its least-squares residual against the basis span is below
-     * eps (instead of the exact 1e-6 float-noise threshold).
-     */
     public String isSubspaceLinear(String circuitJson, String basisJson,
                                    String subspaceJson, String symbolMapJson,
                                    double approxEps) {
         return runSemantics("-is_subspace_linear", circuitJson, basisJson,
                 subspaceJson, symbolMapJson, "-approx_eps", String.valueOf(approxEps));
     }
-
 
     private String evalExpr(Expr expr) {
          if (expr instanceof Symbol) {
@@ -374,14 +341,13 @@ public class SymbolicSolve {
        }
     }
 
-    private String evalUniOp(UnOp uniop) { 
+    private String evalUniOp(UnOp uniop) {
         if(uniop.getOp() == Op.MINUS) {
             return "-" + evalExpr(uniop.getE());
         }
         return "";
     }
-    
-    
+
     private String paramToJson(String paramName, Expr expr) {
         return String.format("{\"" + paramName + "\":\"%s\"}", evalExpr(expr));
     }
@@ -401,12 +367,10 @@ public class SymbolicSolve {
         return Integer.parseInt(qubitStr);
     }
 
-
     public boolean checkTrace(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
         return runSemantics("-tracecheck", circuitToJson(c1.gates, nqubits),
                 circuitToJson(c2.gates, nqubits)).contains("True");
     }
-
 
     public boolean checkEigen(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
         return runSemantics("-eigencheck", circuitToJson(c1.gates, nqubits),
@@ -417,20 +381,11 @@ public class SymbolicSolve {
         return checkBig(c1, c2, nqubits, null, 1);
     }
 
-    /** True iff L (the intertwiner LHS) has all distinct eigenvalues at a random
-     *  concrete sample. Such cases produce dim(intertwiner) = n -- the smallest
-     *  non-trivial basis (3-torus of unitary middles mod global phase). When the
-     *  caller's enumerator wants only "richer" rules (degenerate eigenvalue
-     *  cases with off-diagonal freedom), it filters these out via this check. */
     public boolean hasAllDistinctEigen(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
         return runSemantics("-distincteigen", circuitToJson(c1.gates, nqubits),
                 circuitToJson(c2.gates, nqubits)).contains("True");
     }
 
-    /** Eigenvalue fingerprint string of L (from compute_L_R(c1, c2)) at a random
-     *  concrete sample. Two circuits with identical fingerprints share the same
-     *  eigenvalue multiset at that sample -- so they're plausible intertwiner
-     *  partners. Cheap bucket-key for the filter phase. Pass seed to reproduce. */
     public String getEigenFingerprint(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits, Long seed) {
         String[] argv = (seed != null)
                 ? new String[]{"-eigenfp", circuitToJson(c1.gates, nqubits), circuitToJson(c2.gates, nqubits),
@@ -439,10 +394,6 @@ public class SymbolicSolve {
         return runSemantics(argv).trim();
     }
 
-    /** Per-circuit eigenvalue fingerprint at a random concrete sample (SYMB
-     *  treated as identity). Same-fingerprint circuits inside a trace bucket
-     *  are unitarily similar -- only those can form intertwiner pairs, so we
-     *  use this for pre-bucketing before O(N^2) pair-wise checkBig. */
     public String getCircuitEigenFingerprint(List<EggGen.Gate> gates, int nqubits, Long seed) {
         String[] argv = (seed != null)
                 ? new String[]{"-singleeigenfp", circuitToJson(gates, nqubits),
@@ -466,25 +417,12 @@ public class SymbolicSolve {
         return content.contains("True");
     }
 
-    /**
-     * Exact symbolic eigenvalue-multiset check (characteristic-polynomial
-     * equality of L and R under sympy simplification). No sampling: the
-     * sound post-hoc validity test for the direct-solve ablation, where the
-     * seeded pre-filters are disabled.
-     */
     public boolean checkEigenSymbolic(EggGen.Circuit c1, EggGen.Circuit c2, int nqubits) {
         String j1 = circuitToJson(c1.gates, nqubits);
         String j2 = circuitToJson(c2.gates, nqubits);
         return runSemantics("-symbeigencheck", j1, j2).contains("True");
     }
 
-    /**
-     * Batched per-circuit eigen fingerprints at {@code ntraces} seeded angle
-     * samples -- ONE server round-trip for all circuits. Equal strings mean
-     * eigen-equal at every sample (same predicate the per-pair checkBig
-     * verified), so grouping by this key subsumes both the trace bucket and
-     * the pairwise eigen check. Returned in input order.
-     */
     public List<String> batchEigenFingerprints(List<List<EggGen.Gate>> circuits, int nqubits,
                                                long seed, int ntraces) {
         String json = "{\"circuits\":[" + circuits.stream()
@@ -501,7 +439,6 @@ public class SymbolicSolve {
         return fps;
     }
 
-    // First-stage cheap grouping: batched per-circuit TRACE fingerprints.
     public List<String> batchTraceFingerprints(List<List<EggGen.Gate>> circuits, int nqubits,
                                                long seed, int ntraces) {
         String json = "{\"circuits\":[" + circuits.stream()
@@ -517,7 +454,6 @@ public class SymbolicSolve {
         }
         return fps;
     }
-
 
     public String getTrace(List<EggGen.Gate> gates, int nqubits) {
         return getTrace(gates, nqubits, null, 1);
@@ -545,13 +481,6 @@ public class SymbolicSolve {
         System.out.println(runSemantics(jsonCircuit));
     }
 
-    /**
-     * Parses the string output from the python script's solve_intertwiner_equation
-     * method and returns a list of basis matrices.
-     *
-     * @param pythonOutput The string output from the python script.
-     * @return A list of Matrix objects representing the basis.
-     */
     public static List<SparseMatrix> parseBasis(String pythonOutput) {
         List<SparseMatrix> basis = new ArrayList<>();
         String[] lines = pythonOutput.split("\n");
@@ -561,7 +490,7 @@ public class SymbolicSolve {
             if (line.startsWith("Matrix(")) {
                 String content = line.substring("Matrix(".length(), line.length() - 1);
                 content = content.substring(1, content.length() - 1);
-                
+
                 List<String[]> rowElementsList = new ArrayList<>();
                 Pattern rowPattern = Pattern.compile("\\[(.*?)\\]");
                 Matcher rowMatcher = rowPattern.matcher(content);
@@ -587,14 +516,6 @@ public class SymbolicSolve {
         return basis;
     }
 
-    /**
-     * Parses a string representation of a number from sympy.
-     * NOTE: This parser is designed to handle integers and simple imaginary 
-     * numbers like 'I', '-I', '2*I'. It does not handle combined 
-     * expressions like '1 + 2*I'.
-     * @param s The string to parse.
-     * @return A Complex number.
-     */
     private static double parseDoubleWithSqrt(String s) {
         s = s.trim();
         if (s.contains("sqrt")) {
@@ -607,11 +528,9 @@ public class SymbolicSolve {
             } else if (s.startsWith("+")) {
                 numberPart = s.substring(1).trim();
             }
-            
+
             if (numberPart.startsWith("sqrt")) {
-                // It's of the form sqrt(n)
             } else if (numberPart.contains("*sqrt")) {
-                // It's of the form c*sqrt(n)
                 String[] parts = numberPart.split("\\*sqrt");
                 coefficient *= Double.parseDouble(parts[0]);
                 numberPart = "sqrt" + parts[1];
@@ -624,20 +543,19 @@ public class SymbolicSolve {
                 return coefficient * Math.sqrt(n);
             }
         }
-        
+
         return Double.parseDouble(s);
     }
 
     public static Complex parseComplex(String s) {
          return new Complex(s);
     }
-    
+
     public static void main(String[] args) {
         Random rand = new Random();
         rand.setSeed(54);
         SymbolicSolve solver = new SymbolicSolve(rand);
 
-        // Test case 1: Bell state (non-parameterized)
         List<EggGen.Gate> bellGates = new ArrayList<>();
         bellGates.add(new EggGen.CX("q0", "q1"));
         EggGen.Circuit bellStateCircuit = new EggGen.Circuit(bellGates);
@@ -646,17 +564,14 @@ public class SymbolicSolve {
         System.out.println(bellJson);
         solver.computeAndPrintMatrix(bellJson);
         System.out.println("Eigenvalues for Bell state circuit:");
-        //String eigenvalues = solver.getEigenvalues(bellJson);
-        //System.out.println(eigenvalues);
         System.out.println();
 
-        // Test case 2: Parameterized circuit from Test 12
         List<EggGen.Gate> paramGates = new ArrayList<>();
         paramGates.add(new EggGen.RZ("q0", new Symbol("theta1")));
         paramGates.add(new EggGen.SYMB(2));
         paramGates.add(new EggGen.RZ("q1", new Symbol("theta2")));
         EggGen.Circuit paramCircuit = new EggGen.Circuit(paramGates);
-        
+
         List<EggGen.Gate> paramGatesR = new ArrayList<>();
         paramGatesR.add(new EggGen.SYMB(2));
         paramGatesR.add(new EggGen.RZ("q1", new BinOp(Op.PLUS, new Symbol("theta1"), new Symbol("theta2"))));
@@ -673,11 +588,10 @@ public class SymbolicSolve {
             System.out.println(parsedBasis.get(i));
         }
 
-        // --- Test for sqrt parsing from Test 19 ---
         System.out.println("\n--- Parsing irrational basis from Test 19 output ---");
         String irrationalOutput = "Matrix([[1, sqrt(2)], [1, 0]])\n" +
                                   "Matrix([[sqrt(2), 1], [0, 1]])";
-        
+
         List<SparseMatrix> irrationalBasis = parseBasis(irrationalOutput);
         System.out.println("Parsed " + irrationalBasis.size() + " basis matrices:\n");
         for (int i = 0; i < irrationalBasis.size(); i++) {
@@ -685,10 +599,9 @@ public class SymbolicSolve {
             System.out.println(irrationalBasis.get(i));
         }
 
-        // --- Test for symbolic exp parsing ---
         System.out.println("\n--- Parsing symbolic 'exp' basis ---");
         String symbolicOutput = "Matrix([[exp(-I*theta1), 0], [0, 1]])";
-        
+
         List<SparseMatrix> symbolicBasis = parseBasis(symbolicOutput);
         System.out.println("Parsed " + symbolicBasis.size() + " basis matrices:\n");
         for (int i = 0; i < symbolicBasis.size(); i++) {

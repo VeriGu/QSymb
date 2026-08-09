@@ -82,20 +82,15 @@ public class TestSymbolicRules {
 
         Optimizer opt = new Optimizer();
 
-        // Pattern A: RXX wraps gates on OTHER qubits
         testCircuit(opt, "/tmp/pattern_A.qasm", rules, 2, 25, "Pattern A (other-qubit middle, minSymb=2)");
         testCircuit(opt, "/tmp/pattern_A.qasm", rules, 0, 25, "Pattern A (other-qubit middle, minSymb=0)");
 
-        // Pattern B: RXX wraps RX-only on wrapper qubits
         testCircuit(opt, "/tmp/pattern_B.qasm", rules, 2, 25, "Pattern B (RX-only middle)");
 
-        // QAOA gadget
         testCircuit(opt, "/tmp/qaoa_gadget.qasm", rules, 2, 25, "QAOA gadget (RZ-heavy middle)");
 
-        // Conjugation success case from earlier
         testCircuit(opt, "/tmp/test_conjugation.qasm", rules, 2, 25, "RXX(-π/2);[12 RX];RXX(π/2)");
 
-        // ORIGINAL qaoa_5 circuit, no egglog preprocessing
         testCircuit(opt, "/root/qsymb_benchmarks/ion/qaoa_5.qasm", rules, 0, 30, "qaoa_5 original (no egglog)");
 
         System.out.println("\nDone.");

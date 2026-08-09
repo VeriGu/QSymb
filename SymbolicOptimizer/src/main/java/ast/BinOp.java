@@ -34,7 +34,7 @@ public final class BinOp extends Expr {
   public Expr getE2() {
     return e2;
   }
-  
+
   public void setE2(Expr e2) {
     this.e2 = e2;
   }

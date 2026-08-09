@@ -4,15 +4,6 @@ import java.util.regex.*;
 import java.nio.file.*;
 import ast.*;
 
-/**
- * Test whether the 3 NEW anchored symbolic rules (added by SaveAnchored) can
- * match patterns in:
- *   - The qaoa_5 circuit (real benchmark)
- *   - A constructed gadget circuit
- *   - Pattern A (disjoint middle) and Pattern B (RX-only middle)
- * For each (rule, circuit) pair, report whether `symbolicMatchBeforeAfter`
- * returns non-null (full match: LHS pattern + basis check + equivalence verify).
- */
 public class TestNewSymbRules {
 
     static List<MatrixConstrainedRule> loadRules(String path, int skipFirst) throws Exception {
@@ -72,7 +63,6 @@ public class TestNewSymbRules {
     }
 
     public static void main(String[] args) throws Exception {
-        // Load ONLY the 3 NEW anchored rules (last 3 of anchored_ion_q3.txt, post-282 state)
         List<MatrixConstrainedRule> allRules = loadRules("/root/anchored_ion_q3.txt", 279);
         System.out.println("Loaded " + allRules.size() + " new anchored rules");
         for (int i = 0; i < allRules.size(); i++) {

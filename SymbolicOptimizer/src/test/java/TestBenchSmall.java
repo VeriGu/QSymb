@@ -5,8 +5,6 @@ import java.nio.file.*;
 import java.util.concurrent.*;
 import ast.*;
 
-/** Quick sweep: 6 smallest benchmarks × ALL 30 QAOA-shape rules (RXX-SYMB-RXX
- *  same-pair). Per call: 10s timeout. Reports matches. */
 public class TestBenchSmall {
     static List<MatrixConstrainedRule> loadRules(String path) throws Exception {
         List<MatrixConstrainedRule> out = new ArrayList<>();

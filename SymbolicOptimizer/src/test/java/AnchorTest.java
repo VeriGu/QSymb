@@ -1,6 +1,5 @@
 import org.junit.jupiter.api.Test;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,7 +12,6 @@ public class AnchorTest {
 
     @Test
     public void testAnchor() {
-        // 1. Create symbolic rule
         List<MatrixConstrainedRule> symbRules = new ArrayList<>();
         String rule = "(Cons (SYMB 2) (Cons (CX (Q \"q1\") (Q \"q2\")) c))";
         String rhs = "(Cons (CX (Q \"q1\") (Q \"q2\")) (Cons (SYMB 2) c))";
@@ -45,16 +43,13 @@ public class AnchorTest {
         }
         symbRules.add(new MatrixConstrainedRule(rule, rhs, basis, "birewrite"));
 
-        // 2. Create concrete rule
         List<Rule> rules = new ArrayList<>();
-        // The parser needs a valid QASM file, so we need to add headers.
         String concreteLHSStr = "cx q[0],q[1]; cx q[0],q[1];";
         String concreteRHSStr = ";";
         EggGen.Circuit concreteLHS = QASMAstBuilder.parse(concreteLHSStr);
         EggGen.Circuit concreteRHS = QASMAstBuilder.parse(concreteRHSStr);
         rules.add(new Rule(concreteLHS, concreteRHS, new ArrayList<>()));
 
-        
         List<MatrixConstrainedRule> anchoredRules = Anchor.anchor(rules, symbRules);
 
         System.out.println("Number of anchored rules: " + anchoredRules.size());
@@ -62,7 +57,6 @@ public class AnchorTest {
             System.out.println("Anchored rule: " + r.getLHS() + " -> " + r.getRHS());
         }
 
-        
         MatrixConstrainedRule anchoredRule = anchoredRules.get(0);
         assertEquals(1, anchoredRules.size());
     }

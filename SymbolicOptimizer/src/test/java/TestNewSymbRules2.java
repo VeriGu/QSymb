@@ -4,10 +4,6 @@ import java.util.regex.*;
 import java.nio.file.*;
 import ast.*;
 
-/**
- * Faster version — skip rule#2 on qaoa_5 (was hanging the matcher).
- * Test 3 new rules against smaller circuits only.
- */
 public class TestNewSymbRules2 {
     static List<MatrixConstrainedRule> loadRules(String path, int skipFirst) throws Exception {
         List<MatrixConstrainedRule> out = new ArrayList<>();
@@ -71,7 +67,6 @@ public class TestNewSymbRules2 {
         }
 
         Optimizer opt = new Optimizer();
-        // Use smaller benchmarks where the matcher won't explode
         String[][] circuits = {
                 {"/tmp/qaoa_gadget.qasm", "qaoa_gadget (1 instance)"},
                 {"/tmp/pattern_A.qasm", "Pattern A"},

@@ -3,7 +3,6 @@ import java.util.Comparator;
 public class CircuitComparator implements Comparator<CircuitDAG> {
     private CircuitDAG.OptObj optObj;
 
-
     public CircuitComparator(CircuitDAG.OptObj optObj) {
         this.optObj = optObj;
     }
@@ -11,23 +10,22 @@ public class CircuitComparator implements Comparator<CircuitDAG> {
     @Override
     public int compare(CircuitDAG circuit1, CircuitDAG circuit2) {
         switch (this.optObj) {
-            case TOTAL: { // total gate count -> create time
+            case TOTAL: {
                 return compareTotalGateCount(circuit1, circuit2);
             }
-            case T: { // tcount -> total gate count -> create time
+            case T: {
                 return compareTGateCount(circuit1, circuit2);
             }
-            case TWO_Q: { // 2q count -> total gate count -> create time
+            case TWO_Q: {
                 return compare2qGateCount(circuit1, circuit2);
             }
-            case TOTAL_IGNORE_RZ: { // total gate count ignoring rz -> create time
+            case TOTAL_IGNORE_RZ: {
                 return compareTotalGateCountIgnoreRz(circuit1, circuit2);
             }
             default:
                 throw new RuntimeException("Unsupported optObj: " + this.optObj);
         }
     }
-
 
     public int compareTotalGateCount(CircuitDAG circuit1, CircuitDAG circuit2) {
         return circuit1.cost(CircuitDAG.OptObj.TOTAL) - circuit2.cost(CircuitDAG.OptObj.TOTAL);
@@ -42,7 +40,6 @@ public class CircuitComparator implements Comparator<CircuitDAG> {
             return compareTotalGateCount(circuit1, circuit2);
         }
     }
-    
 
     public int compare2qGateCount(CircuitDAG circuit1, CircuitDAG circuit2) {
         if(circuit1.cost(CircuitDAG.OptObj.TWO_Q) < circuit2.cost(CircuitDAG.OptObj.TWO_Q)) {

@@ -1,6 +1,3 @@
-
-
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,17 +28,7 @@ public class QASMToDAGVisitor extends QASMBaseVisitor<Object> {
         return dag;
     }
 
-
-
     public static CircuitDAG parse(String circuit) {
-        // Rule strings arrive as "gates... when q0 != q1": the -lr path splits
-        // "A | B when C" on '|' and hands this side (with the trailing when-
-        // clause) straight here. This entry parses the plain-circuit `program`
-        // production, which has no 'when' -- ANTLR error-recovers by skipping
-        // the tokens but prints "extraneous input 'when'" per parse (observed
-        // multi-GB logs). Strip the clause up front: it is redundant for the
-        // DAG matcher anyway, whose qubitMap/reverseMap binding is injective,
-        // so distinct pattern qubits always bind distinct circuit qubits.
         int whenIdx = circuit.indexOf(" when ");
         if (whenIdx >= 0) {
             circuit = circuit.substring(0, whenIdx);
@@ -55,7 +42,6 @@ public class QASMToDAGVisitor extends QASMBaseVisitor<Object> {
         return visitor.getDAG();
     }
 
-
     @Override
     public Object visitProgram(QASMParser.ProgramContext ctx) {
         for (QASMParser.StatementContext statementCtx : ctx.statement()) {
@@ -65,16 +51,13 @@ public class QASMToDAGVisitor extends QASMBaseVisitor<Object> {
             Node qubitSink = new Node(qubit, Node.Type.QUBIT_SINK, null, null);
             dag.addVertex(qubitSink);
             dag.addEdge(lastNodeOnQubit.get(qubit), qubitSink, dag.getEdge(lastNodeOnQubit.get(qubit), qubitSink, qubit));
-            //System.out.println("added sink qubit: " + lastNodeOnQubit.get(qubit).getId() + " -> " + qubitSink.getId() + " on qubit: " + qubit);
         }
         return null;
     }
 
-
     @Override
     public Object visitGate_statement(QASMParser.Gate_statementContext ctx) {
         String gateName = ctx.ID().getText();
-
 
         List<Expr> params = new ArrayList<>();
         if (ctx.expression() != null) {
@@ -110,27 +93,20 @@ public class QASMToDAGVisitor extends QASMBaseVisitor<Object> {
                 qubits.add(qubitCtx.QUBIT().getText());
             }
         }
-        // Create a new node for the gate
         Node gateNode = new Node(gateName, Node.Type.GATE, qubits, params);
-       
+
         dag.addVertex(gateNode);
 
-        
-
-        // Add edges from the last node on each qubit
         for (String qubitName: qubits) {
             if (lastNodeOnQubit.containsKey(qubitName)) {
                 Node lastNode = lastNodeOnQubit.get(qubitName);
                 dag.addEdge(lastNode, gateNode, dag.getEdge(lastNode, gateNode, qubitName));
-                //System.out.println("added edge: " + lastNode.toString() + " -> " + gateNode.toString() + " on qubit: " + qubitName);
             }
             lastNodeOnQubit.put(qubitName, gateNode);
             if (!qubitNodes.containsKey(qubitName)) {
                 Node qubitNode = new Node(qubitName, Node.Type.QUBIT_SOURCE, null, null);
                 dag.addVertex(qubitNode);
-                //System.out.println("added source qubit: " + qubitName);
                 dag.addEdge(qubitNode, gateNode, dag.getEdge(qubitNode, gateNode, qubitName));
-                //System.out.println("added edge: " + qubitNode.toString() + " -> " + gateNode.toString() + " on qubit: " + qubitName);
                 qubitNodes.put(qubitName, qubitNode);
             }
         }

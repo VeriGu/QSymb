@@ -29,6 +29,6 @@ public final class Bool extends Expr {
 
   @Override
   public void getAllSymbols(Set<String> vars) {
-    
+
   }
 }

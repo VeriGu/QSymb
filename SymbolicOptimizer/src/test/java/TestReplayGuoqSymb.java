@@ -4,12 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-// Replay guoq's winning rule sequence through OUR application path, INCLUDING
-// the 146 symbolic rules (previously skipped). Concrete rules go through
-// applyRule; symbolic rules (lines containing "symb ") go through our monomial
-// matcher symbolicMatchBeforeAfterMono. Answers: can our matcher fire the
-// symbolic rules guoq applied -- especially the cross-qubit rz merge we just
-// enabled by relaxing the enumerator filter?
 public class TestReplayGuoqSymb {
     public static void main(String[] args) throws Exception {
         String benchmark = "qsymb_benchmarks/nam_rz/adr4_197.qasm";
@@ -40,17 +34,14 @@ public class TestReplayGuoqSymb {
 
             if (line.contains("symb ")) {
                 symbolic++;
-                // RESULT | PATTERN | [basis maps]
                 String[] f = line.split("\\s\\|\\s");
                 if (f.length < 3) { sParseErr++; continue; }
-                String result = f[0].trim();   // RHS replacement (with symb)
-                String pattern = f[1].trim();  // LHS pattern (with symb)
+                String result = f[0].trim();
+                String pattern = f[1].trim();
                 String basisStr = f[2].trim();
-                // strip the outer [ ... ] wrapping the list of maps
                 if (basisStr.startsWith("[")) basisStr = basisStr.substring(1);
                 if (basisStr.endsWith("]")) basisStr = basisStr.substring(0, basisStr.length() - 1);
 
-                // cross-qubit merge: pattern has rz on two DIFFERENT qubits
                 boolean cross = isCrossQubit(pattern);
                 if (cross) crossTotal++;
 
@@ -83,12 +74,11 @@ public class TestReplayGuoqSymb {
                 continue;
             }
 
-            // concrete: RESULT | PATTERN
             concrete++;
             int sep = line.indexOf(" | ");
             if (sep < 0) { continue; }
-            String left = line.substring(0, sep).trim();    // RESULT / RHS
-            String right = line.substring(sep + 3).trim();   // PATTERN / LHS
+            String left = line.substring(0, sep).trim();
+            String right = line.substring(sep + 3).trim();
             CircuitDAG candidate;
             try {
                 CircuitDAG pat = QASMToDAGVisitor.parse(right);
@@ -124,8 +114,6 @@ public class TestReplayGuoqSymb {
         System.out.println("guoq best 2q       : 1013");
     }
 
-    // pattern like "rz(theta1) q0; symb q; rz(theta2) q1;" -- cross-qubit if the
-    // rz gates around symb sit on two distinct qubits.
     static boolean isCrossQubit(String pattern) {
         java.util.Set<String> rzQubits = new java.util.HashSet<>();
         java.util.regex.Matcher m =

@@ -28,7 +28,6 @@ public class MatrixConstrainedRule {
         return rhs;
     }
 
-
     public List<SymbolicSolve.SparseMatrix> getConstraint() {
         return constraint;
     }
@@ -55,7 +54,6 @@ public class MatrixConstrainedRule {
         start.append("]");
         return start.toString();
     }
-
 
     @Override
     public boolean equals(Object o) {

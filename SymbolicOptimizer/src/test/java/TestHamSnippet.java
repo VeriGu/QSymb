@@ -4,8 +4,6 @@ import java.util.regex.*;
 import java.nio.file.*;
 import ast.*;
 
-/** Take the small same-pair RXX-RXX snippet from ham3_102 (lines 56-61) and
- *  try every same-pair gadget rule in anchored_only against it. */
 public class TestHamSnippet {
 
     static List<MatrixConstrainedRule> loadRules(String path) throws Exception {
@@ -40,7 +38,6 @@ public class TestHamSnippet {
     }
 
     public static void main(String[] args) throws Exception {
-        // ham3_102 lines 56..61 snippet (RXX-RXX same pair q[2],q[1] with 4-gate middle)
         String qasm = "OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[3];\ncreg c[3];\n"
                 + "rxx(pi/2) q[2],q[1];\n"
                 + "rx(-pi/2) q[1];\n"
@@ -52,7 +49,6 @@ public class TestHamSnippet {
         System.out.println(qasm.replace("OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[3];\ncreg c[3];\n", ""));
 
         List<MatrixConstrainedRule> all = loadRules("/root/anchored_ion_q3_only.txt");
-        // Pick the gadget-shape same-pair rules
         Pattern qaoaShape = Pattern.compile("RXX q[01] q[01] [^|]*SYMB[^|]*RXX q[01] q[01]");
         List<MatrixConstrainedRule> gadget = new ArrayList<>();
         for (MatrixConstrainedRule r : all) {
@@ -67,7 +63,6 @@ public class TestHamSnippet {
         for (int i = 0; i < gadget.size(); i++) {
             MatrixConstrainedRule r = gadget.get(i);
             String lhs = r.getLHS();
-            // shorten for display
             String dispL = lhs.length() > 110 ? lhs.substring(0, 110) + "..." : lhs;
             try {
                 CircuitDAG result = opt.symbolicMatchBeforeAfter(

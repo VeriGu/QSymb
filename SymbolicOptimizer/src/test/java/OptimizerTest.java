@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
-
 public class OptimizerTest {
     @Test
     public void testSymbolicMatch() throws IOException {
@@ -67,12 +66,11 @@ public class OptimizerTest {
                       "cx q[1],q[0];\n";
         EggGen.Circuit eggCircuit = QASMAstBuilder.parse(qasm);
         EggGen.ConstrainedCircuit eggConstrainedCircuit = new EggGen.ConstrainedCircuit(eggCircuit, new EggGen.Permutation(new ArrayList<>()));
-        
 
         String rule = "(Cons (X (Q \"q0\")) (Cons (SYMB 2) c))";
         String rhs = "(Cons (SYMB 2) (Cons (X (Q \"q0\")) c)))";
         String basisString = "[Matrix(4;4;(0,0,1);(1,3,1);(2,2,1);(3,1,1))]";
-        
+
         List<SymbolicSolve.SparseMatrix> basis = new ArrayList<>();
         Pattern matrixP = Pattern.compile("\\[(.*)\\]");
         Matcher matcher = matrixP.matcher(basisString);
@@ -125,7 +123,7 @@ public class OptimizerTest {
         String rule = "(Cons (SYMB 2) (Cons (CX (Q \"q1\") (Q \"q0\")) c))";
         String rhs = "(Cons (CX (Q \"q1\") (Q \"q0\")) (Cons (SYMB 2) c))";
         String basisString = "[Matrix(4;4;(0,2,1);(1,3,1);(2,0,1);(3,1,1))]";
-        
+
         List<SymbolicSolve.SparseMatrix> basis = new ArrayList<>();
         Pattern matrixP = Pattern.compile("\\[(.*)\\]");
         Matcher matcher = matrixP.matcher(basisString);
@@ -258,7 +256,7 @@ public class OptimizerTest {
                 }
             }
         }
-        
+
         try {
             CircuitDAG result = optimizer.symbolicMatch(eggCircuit, rule, rhs, 1, maxSymbSize, basis, null);
             System.out.println("----------------------Test 5 Ended-------------------------------");
@@ -285,7 +283,6 @@ public class OptimizerTest {
         String rhs = "(Cons (SYMB 2) (Cons (CX (Q \"q0\") (Q \"q1\")) c))";
         int maxSymbSize = 11;
         String basisString = "[Matrix(4;4;(0, 0, 1);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 1);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 1);(0, 3, 1);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 1);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 1);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 1);(1, 3, 1);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 1);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 1);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 1);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 1);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 1);(3, 0, 0);(3, 1, 0);(3, 2, 1);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 1);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 1))]";
-        //String basisString = "[Matrix(4;4;(0, 0, 1);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 1);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 1);(0, 3, 1);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 1);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 1);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 1);(1, 3, 1);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 1);(2, 1, 0);(2, 2, 0);(2, 3, 0);(3, 0, 1);(3, 1, 0);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 1);(2, 2, 0);(2, 3, 0);(3, 0, 0);(3, 1, 1);(3, 2, 0);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 0);(2, 3, 1);(3, 0, 0);(3, 1, 0);(3, 2, 1);(3, 3, 0))::Matrix(4;4;(0, 0, 0);(0, 1, 0);(0, 2, 0);(0, 3, 0);(1, 0, 0);(1, 1, 0);(1, 2, 0);(1, 3, 0);(2, 0, 0);(2, 1, 0);(2, 2, 1);(2, 3, 0);(3, 0, 0);(3, 1, 0);(3, 2, 0);(3, 3, 1))]";
         List<SymbolicSolve.SparseMatrix> basis = new ArrayList<>();
         Pattern matrixP = Pattern.compile("\\[(.*)\\]");
         Matcher matcher = matrixP.matcher(basisString);
@@ -311,7 +308,7 @@ public class OptimizerTest {
                 }
             }
         }
-        
+
         try {
             CircuitDAG result = optimizer.symbolicMatch(eggCircuit, rule, rhs, 2, maxSymbSize, basis, null);
             System.out.println("----------------------Test 6 Ended-------------------------------");
@@ -320,8 +317,6 @@ public class OptimizerTest {
             e.printStackTrace();
         }
     }
-
-
 
     @Test
     public void testSymbolicCXGateCancellation7() throws IOException {
@@ -374,7 +369,7 @@ public class OptimizerTest {
                 }
             }
         }
-        
+
         try {
             CircuitDAG result = optimizer.symbolicMatchBeforeAfter(circuit, rule, rhs, 1, maxSymbSize, basis, null);
             System.out.println(result.toQASM());
@@ -384,8 +379,6 @@ public class OptimizerTest {
             e.printStackTrace();
         }
     }
-
-
 
     @Test
     public void testSymbolicRZCommute() throws IOException {
@@ -403,7 +396,7 @@ public class OptimizerTest {
                         "rz(1.5707963267948966) q[3];\n" +
                         "x q[0];\n" +
                         "rz(1.5707963267948966) q[0];\n";
-                        
+
         CircuitDAG circuit = QASMToDAGVisitor.parse(qasm);
         String rule = "(Cons (RZ q0 theta1) (Cons (SYMB 2) (Cons (RZ q0 theta2) c)))";
         String rhs = "(Cons (RZ q0 theta1) (Cons (RZ q0 theta2) (Cons (SYMB 2) c)))";
@@ -435,7 +428,7 @@ public class OptimizerTest {
                 }
             }
         }
-        
+
         try {
             CircuitDAG result = optimizer.symbolicMatchBeforeAfter(circuit, rule, rhs, 1, maxSymbSize, basis, null);
             System.out.println("----------------------Test 8 Ended-------------------------------");

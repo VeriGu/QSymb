@@ -1,6 +1,3 @@
-
-
-
 import org.jgrapht.graph.DirectedMultigraph;
 
 import java.util.List;
@@ -34,7 +31,6 @@ public class CircuitDAG {
         this.qubits = new HashSet<>();
         this.rulesApplied = new ArrayList<>();
     }
-
 
     public CircuitDAG(CircuitDAG other) {
         this.dag = (DirectedMultigraph<Node, Edge>) other.getDag().clone();
@@ -75,7 +71,6 @@ public class CircuitDAG {
     public void addEdge(Node source, Node target, Edge edge) {
         dag.addEdge(source, target, edge);
     }
-
 
     public Edge getEdge(Node source, Node target, String qubit) {
         Edge.Label sourceLabel = Edge.Label.NONE;
@@ -128,14 +123,11 @@ public class CircuitDAG {
         return dag.vertexSet();
     }
 
-
     public DirectedMultigraph<Node, Edge> getDag() {
         return dag;
     }
 
-
     public List<List<Node>> topoSort() {
-        //        dagToQasm(circuit); // useful for sanity check when debugging
         List<List<Node>> layers = new ArrayList<>();
         Set<Node> added = new HashSet<>();
         Set<Node> vertices = new HashSet<>(dag.vertexSet());
@@ -155,10 +147,6 @@ public class CircuitDAG {
 
         return layers;
     }
-
-
-
-
 
     public Map<String, Node> rootsMap() {
         Map<String, Node> roots = new HashMap<>();
@@ -210,7 +198,6 @@ public class CircuitDAG {
         FIDELITY
     }
 
-
     public int cost(OptObj optObj) {
         switch (optObj) {
             case TOTAL: {
@@ -235,7 +222,6 @@ public class CircuitDAG {
                 throw new RuntimeException("Unsupported optObj: " + optObj);
         }
     }
-
 
     private static boolean isZeroAngleGate(Node n) {
         List<Expr> angles = n.getAngles();
@@ -334,10 +320,9 @@ public class CircuitDAG {
                 return evalUnOp(uo);
             default:
                 assert false;
-                return null; // stupid hack to make the compiler happy ugh
+                return null;
         }
     }
-
 
     public static Real eval(Expr e, Map<String, Expr> angleMap) {
         switch (e) {
@@ -356,10 +341,9 @@ public class CircuitDAG {
                 return evalUnOp(uo, angleMap);
             default:
                 assert false;
-                return null; // stupid hack to make the compiler happy ugh
+                return null;
         }
     }
-
 
     public static Expr substitute(Expr e, Map<String, Expr> angleMap) {
         switch (e) {
@@ -386,7 +370,7 @@ public class CircuitDAG {
                 return angleMap.get(v.getId());
             default:
                 assert false;
-                return null; // stupid hack to make the compiler happy ugh
+                return null;
         }
     }
 
@@ -443,7 +427,6 @@ public class CircuitDAG {
                 throw new RuntimeException(String.format("unimplemented UnOp: %s", uo.getOp()));
         }
     }
-
 
     public int getDagHash() {
         int hash = 31;

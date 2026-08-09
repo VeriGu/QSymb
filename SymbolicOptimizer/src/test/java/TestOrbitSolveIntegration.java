@@ -2,16 +2,6 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Integration test: feed every CliffordOrbitCandidates pair through the real
- * Python intertwiner solver (SymbolicSolve.solveSymb) and verify each
- * produces a non-empty basis.
- *
- * Skipped by JUnit suite because it spawns the semantics.py process pool.
- * Run manually after building the jar:
- *   javac --enable-preview --release 17 -cp <jar> TestOrbitSolveIntegration.java
- *   java  --enable-preview -cp .:<jar> TestOrbitSolveIntegration
- */
 public class TestOrbitSolveIntegration {
     public static void main(String[] args) throws Exception {
         SymbolicSolve solver = new SymbolicSolve(new Random(0));
@@ -37,8 +27,6 @@ public class TestOrbitSolveIntegration {
                 System.err.println("FAIL: candidate " + i + " produced empty basis");
                 System.exit(1);
             }
-            // Sylvester: for L, R sharing eigenvalue multiset {a^2, b^2} on a
-            // 4-dim space, the intertwiner has dim 8.
             if (parsed.size() != 8) {
                 System.out.println("NOTE: candidate " + i + " produced basis size "
                         + parsed.size() + " (expected 8); investigate.");

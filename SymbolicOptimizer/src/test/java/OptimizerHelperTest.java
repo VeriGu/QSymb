@@ -13,13 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
-/**
- * Unit tests for the DAG-fragment matching helpers in {@link Optimizer}, in
- * particular {@link Optimizer#matchPrimaryComponent}, which replaced the old
- * single-successor chain walk. The key regression these guard against is a
- * connected-but-branching before/after fragment being only partially covered
- * (and therefore rejected) by the matcher.
- */
 public class OptimizerHelperTest {
 
     private static final String HDR =
@@ -31,7 +24,6 @@ public class OptimizerHelperTest {
         return QASMToDAGVisitor.parse(HDR + body);
     }
 
-    /** All circuit gate nodes whose gate id matches the given pattern start. */
     private List<Node> candidateStarts(CircuitDAG circuit, Node patternStart) {
         List<Node> out = new ArrayList<>();
         for (Node n : circuit.nodes()) {
@@ -40,7 +32,6 @@ public class OptimizerHelperTest {
         return out;
     }
 
-    /** Run the matcher from every plausible start; return the first full match. */
     private List<Node> firstFullMatch(CircuitDAG circuit, CircuitDAG pattern) {
         Node patternStart = opt.primaryGateRoot(pattern);
         int primarySize = opt.primaryComponentSize(pattern, opt.secondaryComponents(pattern));
@@ -65,15 +56,12 @@ public class OptimizerHelperTest {
         List<Node> matched = firstFullMatch(circuit, pattern);
         assertNotNull(matched, "linear chain fragment should match");
         assertEquals(2, matched.size());
-        // matched nodes are distinct circuit gates
         assertEquals(2, new HashSet<>(matched).size());
         for (Node n : matched) assertTrue(n.isGate());
     }
 
     @Test
     public void matchesBranchingFragmentFully() {
-        // The exact shape that the old single-successor walk could not cover:
-        // cx q0 q1 branches into h q0 and rz q1, and cx q2 q1 re-merges on q1.
         CircuitDAG circuit = parse(
                 "cx q[0],q[1];\nh q[0];\nrz(pi) q[1];\ncx q[2],q[1];\n"
                 + "cx q[0],q[1];\ncx q[0],q[1];\nx q[0];\n");
@@ -92,7 +80,6 @@ public class OptimizerHelperTest {
     @Test
     public void returnsNullWhenFragmentAbsent() {
         CircuitDAG circuit = parse("cx q[0],q[1];\nh q[0];\nx q[1];\n");
-        // pattern needs a t gate the circuit doesn't contain
         CircuitDAG pattern = parse("cx q[0],q[1];\nt q[0];\n");
         assertNull(firstFullMatch(circuit, pattern), "absent fragment must not match");
     }
@@ -105,7 +92,7 @@ public class OptimizerHelperTest {
         List<Node> starts = candidateStarts(circuit, patternStart);
         assertTrue(!starts.isEmpty());
 
-        Set<Node> taken = new HashSet<>(starts); // forbid every start gate
+        Set<Node> taken = new HashSet<>(starts);
         for (Node start : starts) {
             List<Node> matched = opt.matchPrimaryComponent(circuit, pattern, start, patternStart,
                     new HashMap<>(), new HashMap<>(), new HashMap<>(), taken);
@@ -121,7 +108,6 @@ public class OptimizerHelperTest {
 
         boolean anyMatched = false;
         for (Node start : candidateStarts(circuit, patternStart)) {
-            // Pre-bind circuit q0 to a pattern qubit the match cannot satisfy.
             Map<String, String> qm = new HashMap<>();
             qm.put("q0", "qZ");
             List<Node> matched = opt.matchPrimaryComponent(circuit, pattern, start, patternStart,
@@ -133,7 +119,6 @@ public class OptimizerHelperTest {
 
     @Test
     public void componentDecompositionCountsAllGates() {
-        // Two components: {cx q0 q1, h q0} and the disconnected {x q2}.
         CircuitDAG pattern = parse("cx q[0],q[1];\nh q[0];\nx q[2];\n");
         List<List<Node>> secs = opt.secondaryComponents(pattern);
         int primarySize = opt.primaryComponentSize(pattern, secs);
@@ -157,12 +142,9 @@ public class OptimizerHelperTest {
         }
         assertNotNull(cx); assertNotNull(h); assertNotNull(x);
 
-        // successor of cx on q0 is h; on q1 is x
         assertEquals(h, opt.adjacentGateOnWire(circuit, cx, "q0", false));
         assertEquals(x, opt.adjacentGateOnWire(circuit, cx, "q1", false));
-        // predecessor of h on q0 is cx
         assertEquals(cx, opt.adjacentGateOnWire(circuit, h, "q0", true));
-        // cx is at the circuit boundary: no gate predecessor on either wire
         assertNull(opt.adjacentGateOnWire(circuit, cx, "q0", true));
         assertNull(opt.adjacentGateOnWire(circuit, cx, "q1", true));
     }

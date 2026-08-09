@@ -3,9 +3,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Random;
 
-// Replay guoq's winning rule sequence through OUR applyRule, egglog OFF.
-// Answers: do the rules guoq applied also fire in our matcher? Rules out a
-// rule-applying / matcher problem vs a search-throughput problem.
 public class TestReplayGuoq {
     public static void main(String[] args) throws Exception {
         String benchmark = "qsymb_benchmarks/nam_rz/adr4_197.qasm";
@@ -30,7 +27,6 @@ public class TestReplayGuoq {
             if (line.trim().isEmpty()) continue;
             total++;
 
-            // Symbolic rules carry a basis matrix as a 3rd " | " field and contain "symb".
             if (line.contains("symb ")) {
                 symbolic++;
                 continue;
@@ -39,8 +35,8 @@ public class TestReplayGuoq {
 
             int sep = line.indexOf(" | ");
             if (sep < 0) { parseErr++; continue; }
-            String left = line.substring(0, sep).trim();   // RESULT / RHS
-            String right = line.substring(sep + 3).trim();  // PATTERN / LHS
+            String left = line.substring(0, sep).trim();
+            String right = line.substring(sep + 3).trim();
 
             CircuitDAG candidate;
             try {

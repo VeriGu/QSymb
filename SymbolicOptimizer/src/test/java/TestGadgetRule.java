@@ -13,10 +13,6 @@ import ast.UnOp;
 import ast.Var;
 import ast.BinOp;
 
-/**
- * Verify the QAOA-gadget rule symbolically using Verifier.verifyv2.
- * Uses the same path-sum infrastructure as the enumerator's rule-discovery loop.
- */
 public class TestGadgetRule {
 
     static Circuit start(int n) {
@@ -42,10 +38,8 @@ public class TestGadgetRule {
 
     static boolean tryRule(String label, Runnable buildLhs, Runnable buildRhs,
             Circuit lhs, Circuit rhs, Verifier verifier, Random rand, int trials) {
-        // Run buildLhs / buildRhs (they mutate lhs/rhs via Symbolic helpers).
         buildLhs.run();
         buildRhs.run();
-        // Try multiple random symbol assignments
         int passes = 0;
         for (int t = 0; t < trials; t++) {
             Map<String, Double> symbolMap = new HashMap<>();
@@ -64,7 +58,6 @@ public class TestGadgetRule {
         Verifier verifier = new Verifier(rand, 2);
         Expr theta1 = new Symbol("theta1");
 
-        // ---- Test 1: SANITY — trivial identity (LHS == RHS) should always pass.
         {
             Circuit lhs = start(2);
             Circuit rhs = start(2);
@@ -75,10 +68,6 @@ public class TestGadgetRule {
             System.out.println("  result: " + ok);
         }
 
-        // ---- Test 2: known identity — RY-conjugated RXX = RZZ-flavored
-        //   LHS: RY(π/2) q0; RY(π/2) q1; RXX(θ); RY(-π/2) q0; RY(-π/2) q1
-        //   RHS: RZZ analog (implemented via the same generator)
-        //   We test if LHS = "RZZ"-equivalent by checking LHS = LHS again (i.e. self-consistency)
         {
             Circuit lhs = start(2);
             Circuit rhs = start(2);
@@ -87,7 +76,6 @@ public class TestGadgetRule {
             Symbolic.rxx(lhs, "q0", "q1", theta1);
             Symbolic.ry(lhs, "q0", neg(piHalf()));
             Symbolic.ry(lhs, "q1", neg(piHalf()));
-            // RHS = same circuit (sanity)
             Symbolic.ry(rhs, "q0", piHalf());
             Symbolic.ry(rhs, "q1", piHalf());
             Symbolic.rxx(rhs, "q0", "q1", theta1);
@@ -98,9 +86,6 @@ public class TestGadgetRule {
             System.out.println("  result: " + ok);
         }
 
-        // ---- Test 3: The actual rule candidate
-        //   LHS: RXX(π/2); RZ(γ) q0; RX(-π/2) q0; RXX(π/2)
-        //   RHS_candidate1: RY(-π/2) q0; RY(-π/2) q1; RXX(γ); RY(π/2) q0; RY(π/2) q1
         {
             Circuit lhs = start(2);
             Circuit rhs = start(2);
@@ -119,8 +104,6 @@ public class TestGadgetRule {
             System.out.println("  result: " + ok);
         }
 
-        // ---- Test 4: Try other Clifford-conjugated forms
-        //   RHS_candidate2: RX(π/2) q0; RXX(γ); RX(-π/2) q0   (single-side correction)
         {
             Circuit lhs = start(2);
             Circuit rhs = start(2);
@@ -137,7 +120,6 @@ public class TestGadgetRule {
             System.out.println("  result: " + ok);
         }
 
-        // ---- Test 5: maybe LHS = (corr_q0) · RXX(γ) · RXX(π) · (corr_q0)
         {
             Circuit lhs = start(2);
             Circuit rhs = start(2);

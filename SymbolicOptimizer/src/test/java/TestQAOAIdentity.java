@@ -1,11 +1,6 @@
 import java.util.*;
 import ast.*;
 
-/**
- * Search for a 1-RXX equivalent of the QAOA gadget using the Verifier.
- * Tries both possible gate orders (rxx;rx;rz;rxx and rxx;rz;rx;rxx) and
- * a broad space of single-qubit Clifford pre/post corrections.
- */
 public class TestQAOAIdentity {
 
     static Circuit start(int n) {
@@ -43,7 +38,7 @@ public class TestQAOAIdentity {
             case "rx": Symbolic.rx(c, q, ang); break;
             case "ry": Symbolic.ry(c, q, ang); break;
             case "rz": Symbolic.rz(c, q, ang); break;
-            case "id": break;  // identity, no gate
+            case "id": break;
         }
     }
 
@@ -52,7 +47,6 @@ public class TestQAOAIdentity {
         Verifier verifier = new Verifier(rand, 2);
         Expr g = new Symbol("theta1");
 
-        // Try BOTH possible LHS orderings (which one matches qaoa_5 depends on transpilation)
         for (int order = 0; order < 2; order++) {
             String orderLabel = (order == 0) ? "rxx;rz;rx;rxx" : "rxx;rx;rz;rxx";
             System.out.println("\n========= LHS order: " + orderLabel + " =========");
@@ -68,13 +62,11 @@ public class TestQAOAIdentity {
             }
             Symbolic.rxx(lhs, "q0", "q1", piH());
 
-            // Brute-force scan: pre and post single-qubit corrections on BOTH q0 and q1
             String[] axes = {"id", "rx", "ry", "rz"};
             Expr[] angs = {piH(), neg(piH()), piE(), neg(piE())};
             Expr[] all_angs_with_id = {new Real(0.0), piH(), neg(piH()), piE(), neg(piE())};
 
             int tried = 0, hits = 0;
-            // pre0 on q0, pre1 on q1, RXX(g), post0 on q0, post1 on q1
             for (String pre0_ax : axes) {
                 for (Expr pre0_ang : angs) {
                     if (pre0_ax.equals("id") && !pre0_ang.equals(angs[0])) continue;

@@ -3,10 +3,6 @@ import java.util.*;
 import java.util.regex.*;
 import ast.*;
 
-/**
- * Run Anchor with full canonical symbolic rules + gadget concrete rule.
- * See if NEW anchored rules emerge.
- */
 public class TestAnchorReal {
 
     static List<MatrixConstrainedRule> loadCanonicalSymbRules(String path) throws Exception {
@@ -52,17 +48,14 @@ public class TestAnchorReal {
     }
 
     public static void main(String[] args) throws Exception {
-        // Load canonical symbolic rules
         List<MatrixConstrainedRule> symbRules = loadCanonicalSymbRules("/root/rules_ion_q3_2_symb_nm.txt");
         System.out.println("Loaded " + symbRules.size() + " canonical symbolic rules");
 
-        // Concrete rules: include the new gadget rule
         List<Rule> concreteRules = new ArrayList<>();
         concreteRules.add(mkRule(
                 "rxx(pi/2) q[0],q[1]; rz(theta3) q[0]; rx(-pi/2) q[0]; rxx(pi/2) q[0],q[1];",
                 "rxx(theta3) q[0],q[1]; rx(pi/2) q[0]; rx(pi) q[1];"
         ));
-        // Also add the basic RXX merge
         concreteRules.add(mkRule(
                 "rxx(theta1) q[0],q[1]; rxx(theta2) q[0],q[1];",
                 "rxx((theta1+theta2)) q[0],q[1];"
@@ -73,13 +66,12 @@ public class TestAnchorReal {
         List<MatrixConstrainedRule> anchored = Anchor.anchor(concreteRules, symbRules);
         System.out.println("Total anchored rules generated: " + anchored.size());
 
-        // Show the NEW rules (more than the originals)
         int original = symbRules.size();
         System.out.println("\n========== NEW anchored rules ==========");
         int newCount = 0;
         for (int i = 0; i < anchored.size(); i++) {
             MatrixConstrainedRule r = anchored.get(i);
-            if (i < original) continue;  // first N are originals
+            if (i < original) continue;
             newCount++;
             if (newCount > 30) break;
             System.out.println("\nNEW #" + newCount + ":");

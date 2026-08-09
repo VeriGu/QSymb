@@ -189,7 +189,7 @@ public class Applier {
                         continue;
                     }
                 }
- 
+
                 Node gateNode = new Node(gate, Node.Type.GATE, Arrays.asList(qubits), angles);
                 dag.addVertex(gateNode);
                 addEdges(dag, qubitToLeaf, qubitNodes, gateNode);
@@ -490,7 +490,6 @@ public class Applier {
 
     private boolean sameAngle(Expr angle1, Expr angle2) {
         return (eval(angle1) % (4*Math.PI)) == (eval(angle2) % (4*Math.PI));
-//        return eval(angle1).equals(eval(angle2));
     }
 
     private boolean sameAngles(List<Expr> angle1, List<Expr> angle2) {
@@ -537,7 +536,7 @@ public class Applier {
                 }
             }
             case UnOp uo: return evalUnOp(uo);
-            default: assert false; return null; // stupid hack to make the compiler happy ugh
+            default: assert false; return null;
         }
     }
 
@@ -759,7 +758,6 @@ public class Applier {
             if (patternNode.isCX()) {
                 result.put(patternNode.getQubits().get(1), patternToCirc.get(patternNode).getQubits().get(1));
             } else if (patternNode.isCCZ()) {
-                // TODO improve
                 result.put(patternNode.getQubits().get(1), patternToCirc.get(patternNode).getQubits().get(1));
                 result.put(patternNode.getQubits().get(2), patternToCirc.get(patternNode).getQubits().get(2));
             }
@@ -800,14 +798,6 @@ public class Applier {
                 }
             }
         }
-
-//        System.out.println(patternRoots);
-//        System.out.println(patternLeaves);
-//        System.out.println(ancPatternRoots);
-//        System.out.println(replaceRoots);
-//        System.out.println(replaceLeaves);
-//        System.out.println(decPatternLeaves);
-//        System.out.println(patternToCircuitQubit);
 
         Set<Node> toRemove = new HashSet<>();
         for (Node n : replace.vertexSet()) {
@@ -912,12 +902,6 @@ public class Applier {
                 i++;
             }
 
-//            System.out.println(angleMap);
-//            System.out.println(findBefore);
-//            System.out.println(findAfter);
-//            System.out.println(replaceBefore);
-//            System.out.println(replaceAfter);
-
             replaceBefore = StringUtils.replaceEach(replaceBefore, searchList, replaceList);
             replaceAfter = StringUtils.replaceEach(replaceAfter, searchList, replaceList);
 
@@ -926,8 +910,6 @@ public class Applier {
             newLHS = replaceAngles(newLHS, angleMap);
 
             String newRHS = getQasm(symb);
-//            System.out.println(dagToQasm(circuit));
-//            System.out.println(newLHS.trim() + " | " + newRHS.trim());
             return applyRule(circuit, newLHS.trim(), qasmToDag(newRHS.trim()));
         }
         return circuit;
@@ -1167,7 +1149,7 @@ public class Applier {
     }
 
     public List<List<Node>> topoSort(DirectedMultigraph<Node, Edge> circuit) {
-        dagToQasm(circuit); //TODO remove?
+        dagToQasm(circuit);
         List<List<Node>> layers = new ArrayList<>();
         Set<Node> added = new HashSet<>();
         Set<Node> vertices = new HashSet<>(circuit.vertexSet());
@@ -1496,7 +1478,6 @@ public class Applier {
                                 if (goToElse) {
                                     if (circN2.getId().equals("h")) {
                                         blockedQubits.add(circN2.getQubits().get(0));
-//                                        removeSuccs(circuit, symb, circN2);
                                         symbToReplace.add(circN2);
                                     } else {
                                         if (!symbToReplace.contains(circN2) && !blockedQubits.contains(circN2.getQubits().get(0)) && !blockedQubits.contains(circN2.getQubits().get(1)) && !blockedQubits.contains(circN2.getQubits().get(2))) {
@@ -1505,22 +1486,16 @@ public class Applier {
                                         } else {
                                             if (circN2.isCCZ()) {
                                                 if (!blockedQubits.contains(circN2.getQubits().get(2))) {
-                                                    // target in border, exclude qubit and successors
                                                     blockedQubits.add(circN2.getQubits().get(2));
                                                     symbToReplace.add(circN2);
-//                                                removeSuccs(circuit, symb, circN2);
                                                 } else if (blockedQubits.contains(circN2.getQubits().get(2))) {
-                                                    // control in border, ignore
                                                     symbToReplace.add(circN2);
                                                 }
                                             } else if (circN2.isCX()) {
                                                 if (blockedQubits.contains(circN2.getQubits().get(0))) {
-                                                    // target in border, exclude qubit and successors
                                                     blockedQubits.add(circN2.getQubits().get(1));
                                                     symbToReplace.add(circN2);
-//                                                removeSuccs(circuit, symb, circN2);
                                                 } else if (blockedQubits.contains(circN2.getQubits().get(1))) {
-                                                    // control in border, ignore
                                                     symbToReplace.add(circN2);
                                                 }
                                             } else {
@@ -1538,33 +1513,6 @@ public class Applier {
 
         return null;
     }
-
-//    private void removeSuccs(DirectedMultigraph<Node, Edge> circuit, List<Node> symb, Node succ) {
-//        TopologicalOrderIterator<Node, Edge> circIter = new TopologicalOrderIterator<>(circuit);
-//
-//        boolean remove = false;
-//        while (circIter.hasNext()) {
-//            Node next = circIter.next();
-//            if (!next.isGate()) {
-//                continue;
-//            }
-//            if (next == succ) {
-//                remove = true;
-//            }
-//            if (remove) {
-//                String blockedQubit = succ.getQubits()[0];
-//                if (blockedQubit.equals(next.getQubits()[0]) || blockedQubit.equals(next.getQubits()[1])) {
-//                    symb.remove(next);
-//                }
-//                if (succ.isCX()) {
-//                    String blockedQubit2 = succ.getQubits()[1];
-//                    if (blockedQubit2.equals(next.getQubits()[0]) || blockedQubit2.equals(next.getQubits()[1])) {
-//                        symb.remove(next);
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     private int hash(DirectedMultigraph<Node, Edge> graph) {
         int hash = 31;
@@ -1812,12 +1760,6 @@ public class Applier {
                 }
             }
 
-//             comment out unless adding both side size preserve
-//            if (StringUtils.countMatches(splitRule[0], ";") == StringUtils.countMatches(splitRule[1], ";")) {
-//                if (validRule(splitRule[0], splitRule[1], lhs, rhs)) {
-//                    result.add(new Pair<>(lhs, splitRule[1] + " | " + splitRule[0]));
-//                }
-//            }
         }
 
         return result;
@@ -1844,12 +1786,6 @@ public class Applier {
                 pruned.add(rule);
             }
 
-//          comment out unless adding both side size preserve
-//            if (StringUtils.countMatches(find, ";") == StringUtils.countMatches(replace, ";")) {
-//                if (validSymbRule(replaceBeforeSymb, replaceAfterSymb, findBeforeSymb, findAfterSymb)) {
-//                    pruned.add(splitRule[1] + " | " + splitRule[0] + " | " + splitRule[2];);
-//                }
-//            }
         }
         return pruned;
     }
@@ -1915,12 +1851,6 @@ public class Applier {
                 int rulesSizeBefore = rules.size();
                 int symbRulesSizeBefore = rulesSymb.size();
                 for (Pair<DirectedMultigraph<Node, Edge>, String> rule : rules) {
-//                    for (Pair<String, Integer> p : bestCircuit.getRulesApplied()) {
-//                        if (p.getFirst().equals(rule.getSecond())) {
-//                            trimmedRules.add(rule);
-//                            break;
-//                        }
-//                    }
 
                     if (ruleCount.containsKey(rule.getSecond())) {
                         trimmedRules.add(rule);
@@ -1930,12 +1860,6 @@ public class Applier {
 
                 List<String> trimmedSymbRules = new ArrayList<>();
                 for (String ruleSymb : rulesSymb) {
-//                    for (Pair<String, Integer> p : bestCircuit.getRulesApplied()) {
-//                        if (p.getFirst().equals(ruleSymb)) {
-//                            trimmedSymbRules.add(ruleSymb);
-//                            break;
-//                        }
-//                    }
 
                     if (ruleCount.containsKey(ruleSymb)) {
                         trimmedSymbRules.add(ruleSymb);
@@ -1948,7 +1872,6 @@ public class Applier {
             System.out.println(filename + " Queue size: " + q.size() + ", Seen set size: " + seen.size());
             OptCircuit c = q.poll();
             if (c.getCircuit().vertexSet().size() < bestCircuit.getCircuit().vertexSet().size()) {
-//            if (topoSort(c.getCircuit()).size() < topoSort(bestCircuit.getCircuit()).size()) {
                 bestCircuit = c;
                 timeToBest = ((System.currentTimeMillis() - timeStart) / 1000);
             }
@@ -1974,8 +1897,6 @@ public class Applier {
             if (!onlySymb) {
                 for (Pair<DirectedMultigraph<Node, Edge>, String> rule : rules) {
                     String[] splitRule = rule.getSecond().split(" \\| ");
-//                    System.out.println(dagToQasm(c));
-//                    System.out.println(rule.getSecond());
                     DirectedMultigraph<Node, Edge> result = applyRule(c.getCircuit(), splitRule[0], rule.getFirst());
 
                     if (result == c.getCircuit()) {
@@ -1984,9 +1905,6 @@ public class Applier {
 
                     int hash = hash(result);
                     if (result.vertexSet().size() <= bestCircuit.getCircuit().vertexSet().size() && !seen.contains(hash)) {
-//                    if (topoSort(result).size() <= topoSort(bestCircuit.getCircuit()).size() && !seen.contains(hash)) {
-//                        System.out.println(rule.getSecond());
-//                        System.out.println(dagToQasm(result));
                         if (ruleCount.containsKey(rule.getSecond())) {
                             ruleCount.put(rule.getSecond(), ruleCount.get(rule.getSecond()) + 1);
                         } else {
@@ -2020,10 +1938,7 @@ public class Applier {
                 }
 
                 int hash = hash(result);
-                if (result.vertexSet().size() <= bestCircuit.getCircuit().vertexSet().size() && !seen.contains(hash)) { //  && circuitSize2q(result) <= circuitSize2q(bestCircuit.getCircuit())
-//                    if (topoSort(result).size() <= topoSort(bestCircuit.getCircuit()).size() && !seen.contains(hash)) {
-//                        System.out.println(ruleSymb);
-//                        System.out.println(dagToQasm(result));
+                if (result.vertexSet().size() <= bestCircuit.getCircuit().vertexSet().size() && !seen.contains(hash)) {
                     if (ruleCount.containsKey(ruleSymb)) {
                         ruleCount.put(ruleSymb, ruleCount.get(ruleSymb) + 1);
                     } else {
@@ -2082,8 +1997,6 @@ public class Applier {
         if (!file.getName().contains("qasm")) { return; }
         System.out.println(file.getName());
         String content = Files.readString(file.toPath());
-
-        //TODO: gateset toff decomp
 
         if (gateset.equals("nam")) {
 
@@ -2429,23 +2342,5 @@ public class Applier {
             System.exit(1);
         }
 
-
-
-//        Integer maxSymbQubits = Integer.parseInt(args[10]);
-//        Applier applier = new Applier(new Random(), maxSymbQubits);
-//        String fileName = args[0];
-//        Integer timeout = Integer.parseInt(args[1]);
-//        Integer maxQueueSize = Integer.parseInt(args[2]);
-//        String ruleFileName = args[3];
-//        String symbRuleFileName = args[4];
-//        String outputDir = args[5];
-//        String gateset = args[6];
-//        Integer itersBeforePrune = Integer.parseInt(args[7]);
-//        Integer pruneProportional = Integer.parseInt(args[8]); // 0 if no, 1 if yes
-//        String jobInfo = args[9];
-//        Integer maxSymbSize = Integer.parseInt(args[11]);
-//        Path path = Path.of(  FileSystems.getDefault().getPath(new String()).toAbsolutePath() + "/benchmarks/" + fileName);
-//        applier.optimizeOne(new File(String.valueOf(path)), timeout, maxQueueSize, ruleFileName, symbRuleFileName, Path.of(FileSystems.getDefault().getPath(new String()).toAbsolutePath() + outputDir), gateset, itersBeforePrune, pruneProportional, jobInfo, maxSymbQubits, maxSymbSize);
-//        applier.optimizeAll(timeout, maxQueueSize, ruleFileName, symbRuleFileName, Path.of(FileSystems.getDefault().getPath(new String()).toAbsolutePath() + outputDir), gateset, itersBeforePrune, pruneProportional, jobInfo, maxSymbQubits, maxSymbSize);
     }
 }

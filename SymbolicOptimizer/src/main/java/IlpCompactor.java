@@ -6,21 +6,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * ILP-based circuit compaction.
- *
- * <p>Shells out to {@code scripts/ilp_compact.py}, which reuses Quasar's
- * {@code dag.linearized_circuit_from_dag} (the MinLA ILP at the heart of
- * Quasar's {@code _run_ilp}). The ILP re-linearizes the circuit DAG into a
- * topological order that minimizes dependency stretch, which tends to bring
- * dependent gates closer together so downstream rewriting/chunking can match
- * larger patterns. It is gate-set agnostic and never changes gate count.
- *
- * <p>The wrapper returns a permutation of the input gates (not QASM), so the
- * caller's exact angle representation is preserved across the round trip.
- * Any failure (missing interpreter, parse error, timeout, ...) is swallowed
- * and the original circuit is returned unchanged.
- */
 public final class IlpCompactor {
 
     private static final Pattern QUBIT_INDEX = Pattern.compile("q\\[(\\d+)\\]");
@@ -28,10 +13,6 @@ public final class IlpCompactor {
     private IlpCompactor() {
     }
 
-    /**
-     * Returns an ILP-compacted copy of {@code circuit}, or {@code circuit}
-     * itself if compaction is not possible.
-     */
     public static CircuitDAG compact(CircuitDAG circuit) {
         if (circuit == null) {
             System.out.println("[ILP] skipped: null circuit");
@@ -50,14 +31,11 @@ public final class IlpCompactor {
                     lines.add(line);
                 }
             }
-            // Nothing to reorder for trivial circuits.
             if (lines.size() < 2) {
                 System.out.println("[ILP] skipped: " + lines.size()
                         + " gate line(s), body length " + body.length());
                 return circuit;
             }
-            // The MinLA ILP is O(n^2) in gate count; skip circuits too large
-            // for it to ever finish (see Params.ILP_MAX_GATES).
             if (lines.size() > Params.ILP_MAX_GATES) {
                 System.out.println("[ILP] skipped: " + lines.size()
                         + " gates exceeds ILP_MAX_GATES=" + Params.ILP_MAX_GATES);
@@ -95,19 +73,12 @@ public final class IlpCompactor {
                     outFile.toString(),
                     String.valueOf(Params.ILP_TIME_LIMIT_SEC));
             pb.redirectErrorStream(true);
-            // Redirect output to a file rather than draining it in-process.
-            // A blocking stdout drain would sit ahead of waitFor() and make
-            // the timeout below unreachable when the subprocess hangs.
             pb.redirectOutput(procLog.toFile());
             Process p = pb.start();
 
-            // Hard wall-clock bound on the whole subprocess: the solver budget
-            // plus slack for process startup / qiskit import.
             boolean finished = p.waitFor(
                     Params.ILP_TIME_LIMIT_SEC + 60L, TimeUnit.SECONDS);
             if (!finished) {
-                // Kill the python process AND its solver children (CBC),
-                // otherwise they orphan and keep burning CPU/RAM.
                 p.descendants().forEach(ProcessHandle::destroyForcibly);
                 p.destroyForcibly();
                 p.waitFor(10, TimeUnit.SECONDS);
@@ -132,7 +103,6 @@ public final class IlpCompactor {
                 }
             }
 
-            // The permutation must cover exactly the input gates.
             if (perm.size() != lines.size()) {
                 System.err.println("ILP compaction size mismatch ("
                         + perm.size() + " vs " + lines.size()
@@ -176,7 +146,6 @@ public final class IlpCompactor {
                     Files.deleteIfExists(procLog);
                 }
             } catch (Exception ignored) {
-                // best-effort temp cleanup
             }
         }
     }

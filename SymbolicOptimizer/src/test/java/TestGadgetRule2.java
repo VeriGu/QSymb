@@ -55,7 +55,7 @@ public class TestGadgetRule2 {
 
         System.out.println("=== A: RXX(π/2);RZ(γ);RXX(π/2) variants (no middle RX) ===");
 
-        {  // try: LHS = RXX(π/2);RZ(γ);RXX(π/2)  vs  RY-conjugated RXX(γ)
+        {
             Circuit l = start(2), r = start(2);
             Symbolic.rxx(l, "q0", "q1", piH()); Symbolic.rz(l, "q0", g); Symbolic.rxx(l, "q0", "q1", piH());
             Symbolic.ry(r, "q0", neg(piH())); Symbolic.ry(r, "q1", neg(piH()));
@@ -64,29 +64,26 @@ public class TestGadgetRule2 {
             check("LHS RXX(π/2);RZ(γ);RXX(π/2) vs RY-RXX(γ)-RY", l, r, verifier, rand);
         }
 
-        {  // try: LHS = RXX(π/2);RZ(γ);RXX(π/2)  vs  -i·RXX(π);conjugate of RZ(γ)?
+        {
             Circuit l = start(2), r = start(2);
             Symbolic.rxx(l, "q0", "q1", piH()); Symbolic.rz(l, "q0", g); Symbolic.rxx(l, "q0", "q1", piH());
-            // -i·X⊗X · ...; in QASM that's RXX(π) (= -i·X⊗X up to phase)
             Symbolic.rxx(r, "q0", "q1", piE());
-            Symbolic.rz(r, "q0", g); // doesn't quite work but try
+            Symbolic.rz(r, "q0", g);
             check("LHS RXX(π/2);RZ(γ);RXX(π/2) vs RXX(π);RZ(γ)", l, r, verifier, rand);
         }
 
         System.out.println("\n=== B: full QAOA gadget variants (RXX;RZ;RX;RXX) ===");
 
-        {  // smaller variant: try same with γ instead of separate theta
+        {
             Circuit l = start(2), r = start(2);
             Symbolic.rxx(l, "q0", "q1", piH()); Symbolic.rz(l, "q0", g);
             Symbolic.rx(l, "q0", neg(piH())); Symbolic.rxx(l, "q0", "q1", piH());
 
-            // candidate: RXX(π);RZ(-γ) — just swap signs
             Symbolic.rxx(r, "q0", "q1", piE()); Symbolic.rz(r, "q0", neg(g));
             check("RXX;RZ(γ);RX(-π/2);RXX  vs  RXX(π);RZ(-γ)", l, r, verifier, rand);
         }
 
-        {  // candidate: RY(-π/2)q0 · RZ(γ)q0 · RY(π/2)q0  (Clifford-conjugated RZ on q0 only — no 2q!)
-           // Would be a 0-RXX reduction if true; but X⊗X has only X-axis commuting, so unlikely.
+        {
             Circuit l = start(2), r = start(2);
             Symbolic.rxx(l, "q0", "q1", piH()); Symbolic.rz(l, "q0", g);
             Symbolic.rx(l, "q0", neg(piH())); Symbolic.rxx(l, "q0", "q1", piH());
@@ -96,7 +93,7 @@ public class TestGadgetRule2 {
 
         System.out.println("\n=== C: candidate from Clifford-conjugation theory — surrounding pattern ===");
 
-        {  // candidate: 1-RXX form = RX(-π/2)q0 · RY(π/2)q1 · RXX(γ) · RY(-π/2)q1 · RX(π/2)q0
+        {
             Circuit l = start(2), r = start(2);
             Symbolic.rxx(l, "q0", "q1", piH()); Symbolic.rz(l, "q0", g);
             Symbolic.rx(l, "q0", neg(piH())); Symbolic.rxx(l, "q0", "q1", piH());
@@ -111,7 +108,6 @@ public class TestGadgetRule2 {
 
         System.out.println("\n=== D: brute-force scan — try many simple RHS templates ===");
 
-        // Build LHS once
         Circuit fixed_lhs = start(2);
         Symbolic.rxx(fixed_lhs, "q0", "q1", piH()); Symbolic.rz(fixed_lhs, "q0", g);
         Symbolic.rx(fixed_lhs, "q0", neg(piH())); Symbolic.rxx(fixed_lhs, "q0", "q1", piH());
@@ -125,13 +121,11 @@ public class TestGadgetRule2 {
             for (Expr a1ang : g1angs) {
                 for (String a2 : g1axis) {
                     for (Expr a2ang : g1angs) {
-                        // RHS: g1[a1](a1ang) q0; RXX(γ); g1[a2](a2ang) q0
                         Circuit r = start(2);
                         applyG(r, a1, "q0", a1ang);
                         Symbolic.rxx(r, "q0", "q1", g);
                         applyG(r, a2, "q0", a2ang);
                         tried++;
-                        // silent check
                         int passes = 0;
                         for (int t = 0; t < 3; t++) {
                             Map<String, Double> sm = new HashMap<>();

@@ -28,7 +28,6 @@ import com.opencsv.exceptions.CsvValidationException;
 
 import ast.Expr;
 
-
 public class EggGen {
     private final StringBuilder content = new StringBuilder();
     public final Set<String> rules = new HashSet<>();
@@ -36,7 +35,6 @@ public class EggGen {
     private final Set<String> canonicalRules = new HashSet<>();
     private static final Logger logger = LoggerFactory.getLogger(EnumeratorPrune.class);
     private Integer numCircuits;
-    
 
     private long addNewCircuitTime;
     private long equalitySaturationTime;
@@ -98,7 +96,6 @@ public class EggGen {
         ematchingSuffixTime = 0;
         ematchingRuleApplicationTime = 0;
         ematchingResultParsingTime = 0;
-        // Add standard datatype and function definitions from qast.egg
         content.append("\n(datatype Op\n  (EXP :cost 0) (SQRT :cost 0) (MINUS :cost 0) (COS :cost 0) (SIN :cost 0) (NOT :cost 0) (PLUS :cost 0) (SUBTRACT :cost 0) (MULT :cost 0) (DIV :cost 0) (POWER :cost 0) (XOR :cost 0) (AND :cost 0) (OR :cost 0))\n");
         content.append("\n(datatype Expr\n  (Bool bool :cost 0) (Real f64 :cost 0) (Symbol String :cost 0) (Var String :cost 0) (Fun String Expr :cost 0) (UnOp Op Expr :cost 0) (BinOp Op Expr Expr :cost 0))\n");
         content.append("\n(datatype Qubit (Q String :cost 0))\n");
@@ -115,43 +112,37 @@ public class EggGen {
         content.append("(ruleset opt)\n");
         content.append("(ruleset opt1)\n");
         content.append("(ruleset opt2)\n");
-        // Rotation-merging rules live in their own ruleset so optimize_SA can
-        // run them as a one-shot pre-pass BEFORE the main equality saturation.
-        // Doing the merge up front collapses adjacent same-axis rotations into
-        // a single gate with a summed angle, so the wire/opt1 rulesets that
-        // follow don't have to chew through long rotation chains -- which is
-        // what drove the egglog blowup on big circuits like qaoa_n8_p4.
         content.append("(ruleset merge)\n");
-        content.append("(rule\n" + //
-                        " ((= x (Nil)))\n" + //
-                        " ((set (size x) 0))\n" + //
+        content.append("(rule\n" +
+                        " ((= x (Nil)))\n" +
+                        " ((set (size x) 0))\n" +
                         ":ruleset sizeanalysis)");
-        content.append("(rule\n" + //
-                        " ((= x (Cons y z))\n" + //
-                        "  (= s (size z))\n" + //
-                        " )\n" + //
-                        " (\n" + //
-                        "  (set (size x) (+ 1 s))\n" + //
-                        " )\n" + //
+        content.append("(rule\n" +
+                        " ((= x (Cons y z))\n" +
+                        "  (= s (size z))\n" +
+                        " )\n" +
+                        " (\n" +
+                        "  (set (size x) (+ 1 s))\n" +
+                        " )\n" +
                         ":ruleset sizeanalysis)\n");
         content.append("(relation notSameButEqfinger (ConstrainedCircuit ConstrainedCircuit))\n");
-        content.append("(rule \n" + //
-                        "(" + //
-                        " (= x (CCircuit cx p))\n" + //
-                        " (= y (CCircuit cy p))\n" + //
-                        " (!= x y)\n" + //
-                        " (= (fingerprint x) (fingerprint y))\n" + //
-                        ")\n" + //
-                        "(" + //
-                        " (notSameButEqfinger x y)\n" + //
-                        ")\n" + //
+        content.append("(rule \n" +
+                        "(" +
+                        " (= x (CCircuit cx p))\n" +
+                        " (= y (CCircuit cy p))\n" +
+                        " (!= x y)\n" +
+                        " (= (fingerprint x) (fingerprint y))\n" +
+                        ")\n" +
+                        "(" +
+                        " (notSameButEqfinger x y)\n" +
+                        ")\n" +
                         ":ruleset noteqfinger)\n");
         content.append("(relation bad (ConstrainedCircuit ConstrainedCircuit))\n");
         content.append("(relation done (String))\n");
         content.append("(done \"Done\")\n");
-        content.append("(ruleset list-ruleset)\n" + 
-        "(constructor list-append (Circuit Circuit) Circuit)\n" + 
-        "(rewrite (list-append (Nil) list) list :ruleset list-ruleset)\n" + 
+        content.append("(ruleset list-ruleset)\n" +
+        "(constructor list-append (Circuit Circuit) Circuit)\n" +
+        "(rewrite (list-append (Nil) list) list :ruleset list-ruleset)\n" +
         "(rewrite (list-append (Cons head tail) list) (Cons head (list-append tail list)) :ruleset list-ruleset)\n");
         content.append("(ruleset const)\n");
 
@@ -168,52 +159,17 @@ public class EggGen {
         content.append("(rewrite (BinOp (DIV) (Real x) (Real y)) (Real (/ x y)) :ruleset const)\n");
         content.append("(rewrite (BinOp (MULT) (Real x) (Real y)) (Real (* x y)) :ruleset const)\n");
         content.append("(rewrite (Symbol \"pi\") (Real 3.141592653589793238) :ruleset const)\n");
-        // Forward fold: collapse a wrapped negation into a single Real.
         content.append("(rewrite (UnOp (MINUS) (Real x)) (Real (- 0.0 x)) :ruleset const)\n");
-        // Reverse direction: populate a UnOp form for any negative Real and
-        // union it into the same e-class. This lets patterns written as
-        // (UnOp (MINUS) theta1) match circuits whose negative angle was parsed
-        // as a bare (Real -v) -- without this, structural pattern matching
-        // misses those gates entirely.
         content.append("(rule ((= e (Real x)) (< x 0.0))\n" +
                        "      ((union e (UnOp (MINUS) (Real (- 0.0 x)))))\n" +
                        "      :ruleset const)\n");
-        // content.append("(rewrite (BinOp (PLUS) (Real 0.0) x) x :ruleset const)\n");
-        // content.append("(rewrite (BinOp (MULT) (Real 0.0) x) (Real 0.0) :ruleset const)\n");
-        // content.append("(rewrite (BinOp (PLUS) x y) (BinOp (PLUS) y x) :ruleset const)\n");
-        // content.append("(rewrite (BinOp (PLUS) (BinOp (MULT) (Real x) (Symbol z)) (BinOp (MULT) (Real y) (Symbol z))) (BinOp (MULT) (Real (+ x y)) (Symbol z)) :ruleset const)\n");
-        // content.append("(rewrite (BinOp (MULT) x y) (BinOp (MULT) y x) :ruleset const)\n");
-        // content.append("(rewrite (BinOp (DIV) (Symbol x) (Real y)) (BinOp (MULT) (Real (/ 1.0 y)) (Symbol x)) :ruleset const)\n");
-        // content.append("(rewrite (BinOp (DIV) (UnOp (MINUS) (Symbol x)) (Real y)) (BinOp (MULT) (Real (/ -1.0 y)) (Symbol x)) :ruleset const)\n");
         content.append("(rewrite (UnOp (MINUS) (Real y)) (Real (- 0.0 y)) :ruleset const)\n");
         content.append("(rewrite (UnOp (MINUS) (UnOp (MINUS) y)) y :ruleset const)\n");
-        // Any Real also has a (UnOp MINUS Real -y) representation so that
-        // rule patterns like (UnOp MINUS theta) can match plain Real angles.
-        // Without this, a rule like `rz(theta); x -> x; rz(-theta)` (line 5
-        // of rule_copy.txt) fires forward but its reverse direction's LHS
-        // `x; rz(UnOp MINUS theta)` cannot match a circuit containing
-        // `rz(Real 1.57)` -- the patterns are structurally distinct.
-        // Symbolic cancellation: x + (-x) -> 0 (and reverse). With merge giving
-        // rz(theta);rz(-theta) -> rz(theta + -theta) and wire's rz(0) -> e,
-        // adding this closes the loop so e-saturation proves the identity,
-        // making the enumerator skip it as redundant.
         content.append("(rewrite (BinOp (PLUS) x (UnOp (MINUS) x)) (Real 0.0) :ruleset const)\n");
         content.append("(rewrite (BinOp (PLUS) (UnOp (MINUS) x) x) (Real 0.0) :ruleset const)\n");
-        // Normalize Real angles modulo 2π (projective equivalence; the
-        // Verifier ignores global phase). Euclidean mod ((x % 2π) + 2π) % 2π
-        // lands in [0, 2π); rules only fire when x is outside that range so
-        // saturation terminates.
         content.append("(rule ((= e (Real x)) (>= x 6.283185307179586)) ((union e (Real (% (+ (% x 6.283185307179586) 6.283185307179586) 6.283185307179586)))) :ruleset const)\n");
         content.append("(rule ((= e (Real x)) (< x 0.0)) ((union e (Real (% (+ (% x 6.283185307179586) 6.283185307179586) 6.283185307179586)))) :ruleset const)\n");
-        //content.append("(rewrite (BinOp (PLUS) x y) (BinOp (PLUS) y x) :ruleset const)\n");
         content.append("(ruleset wire)\n");
-        // content.append("(union (Symbol \"pi\") (Real 3.141592653589793238))\n");
-        // content.append("(union (BinOp (DIV) (Symbol \"pi\") (Real 2.0)) (Real 1.570796326794896619))\n");
-        // content.append("(union (BinOp (DIV) (Symbol \"pi\") (Real 4.0)) (Real 0.7853981633974483096))\n");
-        // content.append("(union (BinOp (DIV) (Symbol \"pi\") (Real 8.0)) (Real 0.3926990816987241548))\n");
-        // content.append("(union (BinOp (MULT) (Symbol \"pi\") (Real 2.0)) (Real 6.283185307179586476))\n");
-        // content.append("(union (BinOp (MULT) (Symbol \"pi\") (Real 4.0)) (Real 12.56637061435917295))\n");
-        // content.append("(union (BinOp (MULT) (Symbol \"pi\") (Real 8.0)) (Real 25.13274122871834591))\n");
         logger.debug(content.toString());
         try {
             startEgglogREPL();
@@ -253,11 +209,9 @@ public class EggGen {
     public List<ConstrainedCircuit> extract(String name, int n) {
         String output = sendCommand(String.format("(extract %s %d)", name, n), true);
         output = processPrintedOutput(output);
-        //System.out.println(output);
         List<EggGen.ConstrainedCircuit> list = new ArrayList<>();
         String[] lines = output.substring(1, output.length()-1).trim().split("\\n");
         for(String line: lines) {
-            //System.out.println(line);
             list.add(EggAstBuilder.parse(line));
         }
         return list;
@@ -267,7 +221,6 @@ public class EggGen {
         ProcessBuilder pb = new ProcessBuilder("egglog-experimental");
         pb.environment().put("RUST_LOG", "ERROR");
         pb.redirectErrorStream(true);
-        //the program output should be redirected to my buffer reader
         this.egglogProcess = pb.start();
         this.processInput = new BufferedWriter(new OutputStreamWriter(egglogProcess.getOutputStream()));
         this.processError = new BufferedReader(new InputStreamReader(egglogProcess.getErrorStream()));
@@ -281,33 +234,11 @@ public class EggGen {
         }
     }
 
-    // Per-command timeout + restart resilience for egglog: treat the egglog
-    // subprocess like a server -- if it hangs past the timeout or its pipe
-    // breaks, kill it, restart, replay the command log (egg_run.egg, which
-    // holds every command we have so far ACCEPTED) so state is restored, and
-    // retry. After EGGLOG_MAX_RESTARTS failed attempts the call returns ""
-    // so callers can recover gracefully instead of NPE-crashing the main thread.
     private static final long EGGLOG_COMMAND_TIMEOUT_MS = 60_000L;
     private static final int EGGLOG_MAX_RESTARTS = 3;
-    // In-memory log of every command this EggGen instance has successfully
-    // sent to egglog. Used by restartEgglog() to replay state into a fresh
-    // egglog process. Has to live in this instance (not a shared file) because
-    // multiple Optimizer JVMs run in parallel from the same cwd and would
-    // otherwise race on a shared egg_run.egg.
     private final java.util.List<String> commandLog = new java.util.ArrayList<>();
-    // Number of leading commandLog entries that constitute one-time SETUP
-    // (schema + ruleset declarations + const rewrites + pre-loop commutative
-    // opt1 rules). restartEgglog() replays ONLY this prefix; everything after
-    // is per-stage scratch the SA loop reconstructs itself. 0 = not marked yet
-    // (restart then falls back to full replay, e.g. enumeration-phase EggGen).
     private volatile int setupLogEnd = 0;
-    // Snapshot the current commandLog length as the end of one-time setup. The
-    // optimizer calls this once, right before entering the SA stage loop.
     public void markSetupEnd() { setupLogEnd = commandLog.size(); }
-    // Set true whenever a command actually hit the per-command timeout (the
-    // killer task force-killed egglog). Lets callers like runN report whether a
-    // saturation depth was too slow, which the optimizer uses to size a dynamic
-    // slow-start max depth. Reset by the caller before the command of interest.
     private volatile boolean timeoutOccurred = false;
 
     public String sendCommand(String command) {
@@ -330,12 +261,6 @@ public class EggGen {
                 String out = readOutputWithTimeout(EGGLOG_COMMAND_TIMEOUT_MS);
                 boolean gotDone = out != null && out.contains("done");
                 if (gotDone) {
-                    // Persist to the in-memory log only until markSetupEnd():
-                    // restartEgglog() replays just the setup prefix, so
-                    // per-stage commands after the mark would never be read --
-                    // retaining them only grows the log unboundedly over a
-                    // long run. The file log keeps everything (debug
-                    // visibility).
                     if (setupLogEnd == 0) {
                         commandLog.add(command);
                     }
@@ -350,12 +275,7 @@ public class EggGen {
             } catch (IOException e) {
                 lastErr = e;
             }
-            // Any restart -- killer timeout, crash, or broken pipe -- means the
-            // command was too expensive / unstable; surface it for the dynamic
-            // depth slow-start (the killer path alone missed crash-restarts).
             timeoutOccurred = true;
-            // Diagnostic: log which command tripped the retry, truncated so a
-            // giant (run ...) doesn't spam the log.
             {
                 String preview = command == null ? "<null>" : command;
                 if (preview.length() > 240) preview = preview.substring(0, 240) + "...";
@@ -377,10 +297,6 @@ public class EggGen {
     }
 
     private String readOutputWithTimeout(long ms) {
-        // Bound the blocking read: if egglog hasn't produced "done" in `ms`,
-        // destroyForcibly() kills it -- readLine then returns null and we
-        // unwind to the restart-loop in sendCommand. If the read finishes
-        // first, killer.cancel() drops the pending kill.
         if (egglogProcess == null) return readOutput();
         final Process proc = egglogProcess;
         java.util.Timer killer = new java.util.Timer(true);
@@ -401,15 +317,6 @@ public class EggGen {
     }
 
     private void restartEgglog() throws IOException {
-        // Replay only the SETUP prefix (schema datatypes/functions + ruleset
-        // declarations + the const rewrites + the pre-loop commutative opt1
-        // rules), never the full per-stage history. Everything after
-        // setupLogEnd (addCircuit / run-schedule / push / pop / fingerprints)
-        // is per-stage scratch inside a push/pop scope; the SA loop re-adds its
-        // own circuit and rules next stage, so replaying it is pure waste and
-        // was the thing wedging us (replaying prior heavy run-schedules with no
-        // timeout). setupLogEnd <= 0 means markSetupEnd() was never called, so
-        // fall back to the whole log (e.g. enumeration-phase EggGen instances).
         int replayUpto = (setupLogEnd > 0) ? Math.min(setupLogEnd, commandLog.size())
                                            : commandLog.size();
         logger.warn("Restarting egglog and replaying " + replayUpto + " setup commands"
@@ -422,14 +329,6 @@ public class EggGen {
         }
         startEgglogREPL();
         if (replayUpto > 0) {
-            // Concurrent reader thread drains egglog stdout while we flood its
-            // stdin. Without this, egglog blocks writing its per-command output
-            // once its stdout pipe fills (Linux default 64 KiB), which stops
-            // it from reading further stdin, which fills our own stdin pipe
-            // and blocks our write() indefinitely -- the classic
-            // producer-consumer pipe deadlock. The pre-fix loop only started
-            // reading AFTER the whole write batch, which was fine for tiny
-            // replays (~few hundred cmds) but wedged for larger ones.
             final BufferedReader out = processOutput;
             final java.util.concurrent.atomic.AtomicBoolean sawDone =
                 new java.util.concurrent.atomic.AtomicBoolean(false);
@@ -442,7 +341,7 @@ public class EggGen {
                             return;
                         }
                     }
-                } catch (IOException ignored) { /* stream closed */ }
+                } catch (IOException ignored) {  }
             }, "egglog-replay-drain");
             drain.setDaemon(true);
             drain.start();
@@ -459,8 +358,6 @@ public class EggGen {
                 logger.warn("egglog replay write aborted: " + e.getMessage());
             }
 
-            // Bound the wait: fresh egglog reloading only the setup prefix
-            // is cheap; if it takes > timeout something is wrong.
             try {
                 drain.join(EGGLOG_COMMAND_TIMEOUT_MS);
             } catch (InterruptedException ignored) {
@@ -478,7 +375,6 @@ public class EggGen {
         sendCommand(String.format("(set (fingerprint %s) %s)", c.toEggString(), fingerprint.toString()));
         addNewCircuitTime += System.nanoTime() - time;
     }
-
 
     public void insertBad(ConstrainedCircuit c1, ConstrainedCircuit c2) {
         String relation = String.format("(bad %s %s)", c1.toEggString(), c2.toEggString());
@@ -509,7 +405,6 @@ public class EggGen {
         return list;
     }
 
-
     public List<EggGen.Circuit> parseSingletons(String rel) {
         rel = rel.replaceAll("\n+$", "");
         List<EggGen.Circuit> list = new ArrayList<>();
@@ -526,7 +421,6 @@ public class EggGen {
         }
         return list;
     }
-
 
     public List<SimpleEntry<EggGen.Circuit, EggGen.Circuit>> parseCircuitTwoRelation(String rel) {
         rel = rel.replaceAll("\n+$", "");
@@ -580,11 +474,10 @@ public class EggGen {
                 String elem1 = nextLine[1];
                 String elem2 = nextLine[2];
                 String eid = nextLine[nextLine.length-1];
-                
+
                 EggGen.Circuit c = EggAstBuilder.parseCircuit(elem1);
                 EggGen.Permutation perm = EggAstBuilder.parsePerm(elem2);
                 EggGen.ConstrainedCircuit cc = new ConstrainedCircuit(c, perm);
-                // EggGen.ConstrainedCircuit cc2 = EggAstBuilder.parse(elem2);
                 if(map.containsKey(eid)) {
                     map.get(eid).add(cc);
                 } else {
@@ -598,11 +491,10 @@ public class EggGen {
         return map;
     }
 
-
     private String readError() {
         StringBuilder error = new StringBuilder();
         String line;
-        
+
         try {
             while ((line = processError.readLine()) != null) {
                 error.append(line).append('\n');
@@ -616,7 +508,6 @@ public class EggGen {
 
     private String readOutput() {
         StringBuilder output = new StringBuilder();
-        // A short sleep to allow the process to start writing output
         String line;
         try {
         while ((line = processOutput.readLine()) != null) {
@@ -631,19 +522,14 @@ public class EggGen {
         return output.toString();
     }
 
-
     public boolean check(String predicate) {
         long startTime = System.nanoTime();
         String output = sendCommand(String.format("(check %s)",predicate), true);
         logger.debug(output);
-        //System.out.println(predicate);
         if(output.contains("failed")) {
-            //System.out.println(output);
-            //System.out.println("false");
             checkEqualityTime += System.nanoTime() - startTime;
             return false;
         }
-        //System.out.println("true");
         checkEqualityTime += System.nanoTime() - startTime;
         return true;
     }
@@ -656,8 +542,7 @@ public class EggGen {
         sendCommand("(pop)");
     }
 
-
-    public void clearRules() { 
+    public void clearRules() {
         rules.clear();
         optrules.clear();
     }
@@ -666,7 +551,6 @@ public class EggGen {
         long startTime = System.nanoTime();
         String name = "c_" + numCircuits++;
         String output = sendCommand(String.format("(let %s %s)", name, circuit.toEggString()));
-        //System.err.println(output);
         addNewCircuitTime += System.nanoTime() - startTime;
         return name;
     }
@@ -675,7 +559,6 @@ public class EggGen {
         long startTime = System.nanoTime();
         String name = "cc_" + numCircuits++;
         String output = sendCommand(String.format("(let %s %s)\n", name, constrainedCircuit.toEggString()));
-        //System.err.println(output);
         addNewCircuitTime += System.nanoTime() - startTime;
         return name;
     }
@@ -685,9 +568,6 @@ public class EggGen {
             long startTime = System.nanoTime();
             rules.add(rule);
             String output = sendCommand(rule);
-            // Surface egglog rule-registration failures (unbound vars,
-            // syntax errors). Keep them — they're rare and high-signal —
-            // but don't log every successful add.
             if (output != null && (output.contains("Error") || output.contains("error")
                                     || output.contains("ERROR") || output.contains("Unbound"))) {
                 System.out.println("[EGGLOG-ERR] rule=" + rule);
@@ -695,86 +575,6 @@ public class EggGen {
             addRewriteRuleTime += System.nanoTime() - startTime;
         }
     }
-
-
-    // public List<String> preprocessRule(String rule, String ruleset, boolean allBirewrite) {
-    //     String[] compo = rule.split("\\|");
-    //     String lhs = compo[0];
-    //     String rhs = compo[1];
-    //     List<String> processed = new ArrayList<>();
-        
-    //     String type = compo[2];
-        
-    //     if(lhs.contains("Q") && rhs.contains("Q")) {
-    //         if(type.equals("rewrite")) {
-    //             if(allBirewrite) {
-    //                 processed.add(String.format("(birewrite %s %s :ruleset %s)", lhs, rhs, ruleset));
-    //             } else {
-    //                 processed.add(String.format("(rewrite %s %s :ruleset %s)", lhs, rhs, ruleset));
-    //             }
-    //         } else if(type.equals("birewrite")) {
-    //             processed.add(String.format("(birewrite %s %s :ruleset %s)", lhs, rhs, ruleset));
-    //         }
-    //         return processed;
-    //     }
-    //     Set<String> qubitVars = new HashSet<>();
-    //     Pattern qubitPattern = Pattern.compile("q\\d+");
-
-    //     Matcher lhsMatcher = qubitPattern.matcher(lhs);
-    //     while (lhsMatcher.find()) {
-    //         qubitVars.add(lhsMatcher.group());
-    //     }
-
-    //     Matcher rhsMatcher = qubitPattern.matcher(rhs);
-    //     while (rhsMatcher.find()) {
-    //         qubitVars.add(rhsMatcher.group());
-    //     }
-
-    //     List<String> constraints = new ArrayList<>();
-    //     List<String> sortedQubitVars = new ArrayList<>(qubitVars);
-    //     sortedQubitVars.sort(null); // Sort to ensure consistent order of constraints
-
-    //     for (int i = 0; i < sortedQubitVars.size(); i++) {
-    //         for (int j = i + 1; j < sortedQubitVars.size(); j++) {
-    //             constraints.add(String.format("(!= %s %s)", sortedQubitVars.get(i), sortedQubitVars.get(j)));
-    //         }
-    //     }
-
-    //     String constraintString = String.join(" ", constraints);
-        
-
-    //     if (type.equals("rewrite")) {
-    //         String newRule = String.format("(rewrite %s %s :when (%s) :ruleset %s)", lhs, rhs, constraintString, ruleset);
-    //         processed.add(newRule);
-    //         if(allBirewrite) {
-    //             String newRule1 = String.format("(rewrite %s %s :when (%s) :ruleset %s)", rhs, lhs, constraintString, ruleset);
-    //             processed.add(newRule1);
-    //         } 
-    //         //String newRule1 = String.format("(rewrite %s %s :when (%s) :ruleset %s)", rhs, lhs, constraintString, "opt");
-    //         //processed.add(newRule1);
-    //     } else if (type.equals("birewrite")) {
-    //         // Generate two rewrite rules for birewrite
-    //         String rule1 = String.format("(birewrite %s %s :when (%s) :ruleset %s)", lhs, rhs, constraintString, ruleset);
-    //         processed.add(rule1);
-    //     }
-
-    //     return processed;
-    // }
-
-    // public void addRewritev2(String rule, String ruleset, boolean allBirewrite) {
-    //     List<String> rs = preprocessRule(rule, ruleset, allBirewrite);
-    //     for(String r: rs) {
-    //         addRewrite(r);
-    //     }
-    // }
-
-    // public void addRewritev2(String rule) {
-    //     //System.out.println(rule);
-    //     List<String> rs = preprocessRule(rule, "opt", false);
-    //     for(String r: rs) {
-    //         addRewrite(r);
-    //     }
-    // }
 
     public List<Rule> processRules(Set<String> rules) {
         List<Rule> processedRules = new ArrayList<>();
@@ -785,8 +585,6 @@ public class EggGen {
         return processedRules;
     }
 
-    // Collect every variable (qubit name + angle Var) appearing in a circuit.
-    // Used by addOptRule to decide whether birewrite is safe.
     private static Set<String> collectAllVars(Circuit c) {
         Set<String> vars = new HashSet<>();
         for (Gate g : c.gates) {
@@ -814,11 +612,6 @@ public class EggGen {
         if (e == null) return;
         if (e instanceof ast.Var) { vars.add(((ast.Var) e).getId()); return; }
         if (e instanceof ast.Symbol) {
-            // Rule files use Symbols like "theta", "theta1" for free angle
-            // variables; replaceSymbolWithVar turns them into Vars at
-            // egglog-emit time, so for groundedness purposes they must be
-            // treated as variables here. The string "pi" is a real constant,
-            // not a variable.
             String s = ((ast.Symbol) e).getSymbol();
             if (!s.equals("pi")) vars.add(s);
             return;
@@ -830,29 +623,18 @@ public class EggGen {
             return;
         }
         if (e instanceof ast.Fun) { collectExprVars(((ast.Fun) e).getArg(), vars); return; }
-        // Real, Bool — no vars.
     }
 
     public void addOptRule(Rule r, String ruleset, String type) {
-        // If caller asked for birewrite, check that BOTH directions are
-        // groundable — every variable on a rule's RHS must be bound by
-        // its LHS, otherwise egglog rejects with "ungrounded variable" and
-        // the rule is silently lost. Both qubit vars and angle vars
-        // (theta, theta1, ...) must be checked. Downgrade to one-way
-        // rewrite when only one direction is groundable.
         if ("birewrite".equals(type)) {
             Set<String> lhsVars = collectAllVars(r.lhs);
             Set<String> rhsVars = collectAllVars(r.rhs);
-            // Forward direction LHS→RHS is groundable iff all RHS vars
-            // are bound by LHS.
             boolean forwardOk = lhsVars.containsAll(rhsVars);
-            // Reverse direction RHS→LHS is groundable iff all LHS vars
-            // are bound by RHS.
             boolean reverseOk = rhsVars.containsAll(lhsVars);
             if (forwardOk && !reverseOk) {
-                type = "rewrite";  // keep forward, drop reverse
+                type = "rewrite";
             } else if (!forwardOk && reverseOk) {
-                r = new Rule(r.rhs, r.lhs, r.conditions);  // swap so the OK direction is forward
+                r = new Rule(r.rhs, r.lhs, r.conditions);
                 type = "rewrite";
             } else if (!forwardOk && !reverseOk) {
                 logger.warn("addOptRule: neither direction is groundable, dropping rule lhs={} rhs={}",
@@ -905,15 +687,6 @@ public class EggGen {
         return vars;
     }
 
-    // private String circuitToAlphaEquivalentString(Circuit circuit, Map<String, String> qubitMap) {
-    //     String current = "(Nil)";
-    //     for (int i = circuit.gates.size() - 1; i >= 0; i--) {
-    //         Gate g = circuit.gates.get(i);
-    //         current = String.format("(Cons %s %s)", gateToAlphaEquivalentString(g, qubitMap), current);
-    //     }
-    //     return current;
-    // }
-
     public static Circuit canonicalizeCircuit(Circuit circuit, Map<String, String> qubitMap) {
         return canonicalizeCircuit(circuit, qubitMap, false);
     }
@@ -926,7 +699,6 @@ public class EggGen {
         EggGen.Circuit canonicalEggCircuit = new EggGen.Circuit(canonicalGates);
         return canonicalEggCircuit;
     }
-
 
     private static EggGen.Gate canonicalizeGate(EggGen.Gate gate, Map<String, String> qubitMap, boolean replaceSymbol) {
         if (gate instanceof EggGen.X x) {
@@ -985,15 +757,8 @@ public class EggGen {
 
     private static String canonicalizeQubit(String qubit, Map<String, String> qubitMap) {
         int maxq = -1;
-        // Prefix used when inventing a fresh canonical name. Defaults to "q",
-        // but when the map already holds circuit qubit names we adopt their
-        // prefix so a newly-invented qubit stays in the same namespace
-        // (e.g. "node3" amongst "node0".."node2", not a stray "q3").
         String prefix = "q";
         for (String q : qubitMap.values()) {
-            // Qubit names are not always "qN": DAG-derived circuits use names
-            // like "node2". Split off the trailing digit run; skip any value
-            // with no trailing digits.
             int end = q.length();
             int start = end;
             while (start > 0 && Character.isDigit(q.charAt(start - 1))) {
@@ -1014,22 +779,15 @@ public class EggGen {
         return qubitMap.computeIfAbsent(qubit, q -> finalPrefix + (finalMaxq + 1));
     }
 
-
     private void addListAppendViewForMatchPrefix(String matchExpr) {
         push();
         sendCommand("(ruleset prefixset)");
-        // sendCommand("(relation prefix-split (Circuit Circuit))");
         sendCommand("(relation prefix-demand (Circuit Circuit))");
-        // sendCommand("(rule ((prefix-demand (Cons x y))) ((prefix-demand y)) :ruleset prefixset)");
-        // sendCommand("(rule ((prefix-demand (Nil)) (= pattern (Nil))) ((prefix-split candidate (Nil))) :ruleset prefixset)");
-        // sendCommand("(rule ((prefix-demand pattern) (= pattern (Cons gate pattern-tail)) (= candidate (Cons gate candidate-tail)) (prefix-split candidate-tail pattern-tail)) ((prefix-split candidate pattern)) :ruleset prefixset)");
         sendCommand(String.format("(rule ((= e %s)) ((prefix-demand c %s)) :ruleset prefixset)", matchExpr, matchExpr));
         runSaturation("prefixset");
         String prefixCsv = printFunctionCSV("prefix-demand");
         pop();
 
-        // System.out.print("expressions that have prefix " + matchExpr + ":\n");
-        // System.out.println(prefixCsv);
         if (prefixCsv == null || prefixCsv.isEmpty()) {
             return;
         }
@@ -1070,13 +828,13 @@ public class EggGen {
                         candidateExpr,
                         prefixCircuit.toEggString(),
                         suffixCircuit.toEggString());
-                    
+
                     sendCommand(unionCmd);
                 }
             }
         }
     }
-  
+
     private void addListAppendViewsForMatch(String matchExpr) {
 
         push();
@@ -1090,10 +848,7 @@ public class EggGen {
         runSaturation("suffixset");
         suffixCsv = printFunctionCSV("suffix-of");
         pop();
-        
 
-        //System.out.print("expressions that have suffix " + matchExpr + ":\n");
-        //System.out.println(suffixCsv);
         if (suffixCsv == null || suffixCsv.isEmpty()) {
             return;
         }
@@ -1133,15 +888,12 @@ public class EggGen {
                         candidateExpr,
                         prefixExpr,
                         matched.toEggString());
-                    
+
                     sendCommand(unionCmd);
                 }
             }
         }
     }
-
-
-
 
     public static String replaceNilWithVar(Circuit circuit, String congruenceVar) {
         String current = congruenceVar;
@@ -1161,7 +913,6 @@ public class EggGen {
         Circuit alphaCircuit = new Circuit(alphaGates);
         return alphaCircuit.toQASM();
     }
-
 
     public static String circuitToGeneralizedOnlyRemoveQ(Circuit circuit, String congruenceVar) {
         String current = congruenceVar;
@@ -1192,7 +943,6 @@ public class EggGen {
     if(gate instanceof SYMB) return String.format("(SYMB %s)", ((SYMB) gate).maxQubits);
     return null;
    }
-
 
     public static Gate gateToAlphaEquivalentString(Gate gate, Map<String, String> qubitMap, boolean replaceSymbol) {
         if(replaceSymbol){
@@ -1235,7 +985,6 @@ public class EggGen {
         return null;
     }
 
-
     private void addOptRules(String rule) {
         if(!optrules.contains(rule)) {
             logger.debug("Adding optimization rule: " + rule);
@@ -1256,7 +1005,7 @@ public class EggGen {
         Map<String, String> qubitToVar = new HashMap<>();
         Circuit lhsCanonicalCircuit = canonicalizeCircuit(lhsCircuit, qubitToVar, true);
         Circuit rhsCanonicalCircuit = canonicalizeCircuit(rhsCircuit, qubitToVar, true);
-        
+
         String lhsCanonical = replaceNilWithVar(lhsCanonicalCircuit, congruenceVar);
         String rhsCanonical = replaceNilWithVar(rhsCanonicalCircuit, congruenceVar);
         String lhsCanonicalQASM = lhsCanonicalCircuit.toQASM(false);
@@ -1267,7 +1016,7 @@ public class EggGen {
         rhsCanonicalCircuit.getQubitVars(qubitVars);
 
         List<String> sortedQubitVars = new ArrayList<>(qubitVars);
-        sortedQubitVars.sort(null); // Sort to ensure consistent order of constraints
+        sortedQubitVars.sort(null);
         List<String> constraints = new ArrayList<>();
         for (int i = 0; i < sortedQubitVars.size(); i++) {
             for (int j = i + 1; j < sortedQubitVars.size(); j++) {
@@ -1299,7 +1048,6 @@ public class EggGen {
                 }
             } else {
                 if(isopt){
-                    //this should be deprecated
                     String rule = String.format("(CCircuit %s %s)|(CCircuit %s %s)|rewrite",
                     lhsCircuit.toCongruenceString("c"), ruleEntry.getKey().permutation.toEggString(),
                     rhsCircuit.toCongruenceString("c"), ruleEntry.getValue().permutation.toEggString());
@@ -1430,23 +1178,14 @@ public class EggGen {
         sendCommand("(run-schedule (run const))");
     }
 
-    // Timeout/restart tracking for the dynamic egraph-depth slow-start. The
-    // caller resets the flag right before an opt1 saturation, then reads it
-    // right after: true means egglog had to be restarted for ANY reason during
-    // that window (per-command kill, crash, or broken pipe), i.e. that depth was
-    // too expensive. This is more reliable than watching only the kill path,
-    // which missed crash-restarts and let depth grow unbounded.
     public void resetTimeoutFlag() { timeoutOccurred = false; }
     public boolean timedOut() { return timeoutOccurred; }
 
     public void runSchedule(String ruleset1, String ruleset2, String ruleset3, String ruleset4, int rounds, int n1,int n2, int n3, int n4) {
         String output = sendCommand(String.format("(run-schedule (let-scheduler bo (back-off)) (repeat %d (repeat %d (run  %s)) (repeat %d (run %s)) (repeat %d (run %s)) (repeat %d (run %s))))", rounds, n1, ruleset1, n2, ruleset2, n3, ruleset3, n4, ruleset4));
-        //System.out.println("Run Schedule: " + output);
     }
 
     public void runBackoff(String ruleset, int n) {
-        // Same const-handling as runN: bounded (run const 1) pre and post,
-        // no per-iteration saturate-const cascade.
         sendCommand("(run-schedule (run const))");
         sendCommand(String.format("(run-schedule (let-scheduler bo (back-off)) (repeat %d (run-with bo %s)))", n, ruleset));
         sendCommand("(run-schedule (run const))");
@@ -1462,7 +1201,6 @@ public class EggGen {
         sendCommand(String.format("(run-schedule (saturate (run %s)))\n", ruleSet));
         equalitySaturationTime += System.nanoTime() - startTime;
     }
-
 
     public String printSize(String name) {
         String output = sendCommand(String.format("(print-size %s)", name));
@@ -1483,11 +1221,9 @@ public class EggGen {
         return output;
     }
 
-
     public String printFunctionCSV(String name) {
         long startTime = System.nanoTime();
         String output = sendCommand(String.format("(print-function %s :mode csv)", name), true);
-        //System.out.println("original output:" +  output);
         int lastNewline = output.lastIndexOf('\n');
         if(lastNewline > 0) {
             output = output.substring(0, lastNewline).trim();
@@ -1501,11 +1237,9 @@ public class EggGen {
         else{
             return "";
         }
-        //System.out.println("truncated output:" +  output);
         printFunctionTime += System.nanoTime() - startTime;
         return output;
     }
-
 
     private String processPrintedOutput(String output) {
         int lastNewline = output.lastIndexOf('\n');
@@ -1533,15 +1267,12 @@ public class EggGen {
     public String printFunctionCSVn(String name, int n) {
         long startTime = System.nanoTime();
         String output = sendCommand(String.format("(print-function %s %d :mode csv)", name, n), true);
-        //System.out.println("original output:" +  output);
         output = processPrintedOutput(output);
-        //System.out.println("truncated output:" +  output);
         printFunctionTime += System.nanoTime() - startTime;
         return output;
     }
 
- 
-    public String printFunctionListCSV(List<String> list) {             
+    public String printFunctionListCSV(List<String> list) {
         long startTime = System.nanoTime();
         String output = sendCommand(String.format("(print-function %s :mode csv)", list.toArray()), true);
         int lastNewline = output.lastIndexOf('\n');
@@ -1560,14 +1291,13 @@ public class EggGen {
         }
         System.out.println("truncated output:" +  output);
         printFunctionTime += System.nanoTime() - startTime;
-        return output; 
+        return output;
     }
 
     public List<Triple<EggGen.Circuit, EggGen.Circuit, EggGen.Circuit>> ematching(String lhs, String rhs, int n) {
         long ematchingStartTime = System.nanoTime();
         System.out.println("LHS:" + lhs);
         System.out.println("RHS:" + rhs);
-        // replace SYMB with a variable
         long setupStartTime = System.nanoTime();
         Set<String> qubitVars = new HashSet<>();
         Pattern qubitPattern = Pattern.compile("q\\d+");
@@ -1584,7 +1314,7 @@ public class EggGen {
 
         List<String> constraints = new ArrayList<>();
         List<String> sortedQubitVars = new ArrayList<>(qubitVars);
-        sortedQubitVars.sort(null); // Sort to ensure consistent order of constraints
+        sortedQubitVars.sort(null);
 
         for (int i = 0; i < sortedQubitVars.size(); i++) {
             for (int j = i + 1; j < sortedQubitVars.size(); j++) {
@@ -1627,7 +1357,7 @@ public class EggGen {
 
         System.out.println("Replaced lhs:" + lhs);
         System.out.println("Replaced rhs:" + rhs);
-        
+
         push();
         if (matchExpr != null) {
             long suffixTime = System.nanoTime();
@@ -1665,7 +1395,6 @@ public class EggGen {
         return result;
     }
 
-   
     public Map<String, Long> getProfilingData() {
         Map<String, Long> profilingData = new HashMap<>();
         profilingData.put("addNewCircuitTime", addNewCircuitTime);
@@ -1699,13 +1428,11 @@ public class EggGen {
         try {
             eggGen.startEgglogREPL();
 
-            // Send the datatype definitions
             String datatypes = eggGen.content.toString();
             String output1 = eggGen.sendCommand(datatypes);
             System.out.println("Datatype definitions loaded:");
             System.out.println(output1);
 
-            // Define a circuit
             List<Gate> gates = new ArrayList<>();
             gates.add(new X("q0"));
             gates.add(new X("q0"));
@@ -1713,27 +1440,22 @@ public class EggGen {
             String circuitName = eggGen.addCircuit(circuit);
             System.out.println("Circuit defined: " + circuitName);
 
-            // Add a rewrite rule
             String rule = "(rewrite (CCircuit (Cons (X q) (Cons (X q) (Nil))) (PermNil)) (CCircuit (Nil) (PermNil))) ";
             String output3 = eggGen.sendCommand(rule);
             System.out.println("Rule added:");
             System.out.println(output3);
 
-            // Run saturation
             String output4 = eggGen.sendCommand("(run-schedule (saturate (run)))");
             System.out.println("Saturation complete:");
             System.out.println(output4);
 
-            // Extract representative
             String output5 = eggGen.sendCommand("(extract " + circuitName + ")");
             System.out.println("Extracted representative:");
             System.out.println(output5);
 
-            //parse
             EggGen.ConstrainedCircuit c = EggAstBuilder.parse(output5);
 
             System.out.println("Profiling data: " + eggGen.getProfilingData());
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -1742,7 +1464,6 @@ public class EggGen {
         }
     }
 
-    // Inner classes for Expr, Op, Value
     public static enum Op {
         EXP, SQRT, MINUS, COS, SIN, NOT, PLUS, SUBTRACT, MULT, DIV, POWER, XOR, AND, OR;
 
@@ -1752,8 +1473,6 @@ public class EggGen {
         }
     }
 
-
-    // Inner classes for Circuit and Gates
     public static class Gate {
         public String toEggString() {
             return "Gate";
@@ -1774,7 +1493,7 @@ public class EggGen {
         }
 
         public void getAllSymbols(Set<String> vars){
-    
+
         }
 
         public String toQASM() {
@@ -1797,11 +1516,9 @@ public class EggGen {
             return "Gate";
         }
 
-
         public List<Expr> getParameters() {
             return new ArrayList<>();
         }
-
 
         public List<String> getQubits() {
             return new ArrayList<>();
@@ -1823,7 +1540,6 @@ public class EggGen {
             return count;
         }
 
-
         public String toQASM() {
             return toQASM(true);
         }
@@ -1843,7 +1559,6 @@ public class EggGen {
             }
             return qasm;
         }
-
 
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
             return toAlphaEquivalentStringRecursive(0, qubitMap);
@@ -1892,13 +1607,11 @@ public class EggGen {
             return max;
         }
 
-
         public void getAllSymbols(Set<String> vars) {
             for (Gate g : gates) {
                 g.getAllSymbols(vars);
             }
         }
-
 
         public Circuit instantiate(Map<String, Expr> angleMap) {
             List<Gate> gatesnew = new ArrayList<>();
@@ -1908,7 +1621,6 @@ public class EggGen {
             return new Circuit(gatesnew);
         }
 
-
         public Circuit substitute(Map<String, Expr> angleMap) {
             List<Gate> gatesnew = new ArrayList<>();
             for(Gate g: gates) {
@@ -1916,7 +1628,6 @@ public class EggGen {
             }
             return new Circuit(gatesnew);
         }
-
 
         @Override
         public boolean equals(Object obj) {
@@ -1976,8 +1687,6 @@ public class EggGen {
     public static class X extends Gate {
         public final String qubit;
         public X(String qubit) { this.qubit = qubit; }
-
-        
 
         public String toEggString() { return String.format("(X (Q \"%s\"))", qubit); }
 
@@ -2057,12 +1766,10 @@ public class EggGen {
             return String.format("(CX %s %s)", controlVar, targetVar);
         }
 
-
         @Override
         public int getMaxQubits(){
             return Integer.max(Integer.valueOf(control.replaceAll("q", "")), Integer.valueOf(target.replaceAll("q", "")));
         }
-
 
         @Override
         public void getAllSymbols(Set<String> vars) {
@@ -2101,7 +1808,7 @@ public class EggGen {
             return qubits;
         }
     }
-    
+
     public static class RZ extends Gate {
         public final String qubit;
         public final Expr angle;
@@ -2129,7 +1836,6 @@ public class EggGen {
             return Integer.valueOf(qubit.replaceAll("q", ""));
         }
 
-
         @Override
         public void getAllSymbols(Set<String> vars) {
             angle.getAllSymbols(vars);
@@ -2154,18 +1860,15 @@ public class EggGen {
            return new RZ(qubit, CircuitDAG.eval(angle, angleMap));
         }
 
-
         @Override
         public Gate substitute(Map<String, Expr> angleMap) {
             return new RZ(qubit, CircuitDAG.substitute(angle, angleMap));
         }
 
-
         @Override
         public String gateName() {
             return "RZ";
         }
-
 
         @Override
         public List<Expr> getParameters() {
@@ -2174,7 +1877,6 @@ public class EggGen {
             return params;
         }
 
-
         @Override
         public List<String> getQubits() {
             List<String> qubits = new ArrayList<>();
@@ -2182,7 +1884,7 @@ public class EggGen {
             return qubits;
         }
     }
-    
+
     public static class H extends Gate {
         public final String qubit;
         public H(String qubit) { this.qubit = qubit; }
@@ -2197,8 +1899,6 @@ public class EggGen {
         public void getQubitVars(Set<String> vars) {
             vars.add(qubit);
         }
-
-
 
         @Override
         public String toAlphaEquivalentString(Map<String, String> qubitMap) {
@@ -2305,7 +2005,6 @@ public class EggGen {
             return Integer.valueOf(qubit.replaceAll("q", ""));
         }
 
-
         @Override
         public void getAllSymbols(Set<String> vars) {
             lambda.getAllSymbols(vars);
@@ -2330,7 +2029,6 @@ public class EggGen {
             return new U1(qubit, CircuitDAG.eval(lambda, angleMap));
         }
 
-
         @Override
         public Gate substitute(Map<String, Expr> angleMap) {
             return new U1(qubit, CircuitDAG.substitute(lambda, angleMap));
@@ -2340,7 +2038,6 @@ public class EggGen {
         public String gateName() {
             return "U1";
         }
-
 
         @Override
         public List<Expr> getParameters() {
@@ -2408,13 +2105,12 @@ public class EggGen {
         @Override
          public Gate substitute(Map<String, Expr> angleMap) {
             return new U2(qubit, CircuitDAG.substitute(phi, angleMap), CircuitDAG.substitute(lambda, angleMap));
-        }   
+        }
 
         @Override
         public String gateName() {
             return "U2";
         }
-
 
         @Override
         public List<Expr> getParameters() {
@@ -2492,7 +2188,6 @@ public class EggGen {
             return "U3";
         }
 
-
         @Override
         public List<Expr> getParameters() {
             List<Expr> params = new ArrayList<>();
@@ -2555,7 +2250,6 @@ public class EggGen {
         public Gate instantiate(Map<String, Expr> angleMap) {
             return new RX(qubit, CircuitDAG.eval(angle, angleMap));
         }
-
 
         @Override
         public Gate substitute(Map<String, Expr> angleMap) {
@@ -2634,7 +2328,6 @@ public class EggGen {
             return "CZ";
         }
 
-
         @Override
         public Gate substitute(Map<String, Expr> angleMap) {
             return new CZ(control, target);
@@ -2704,7 +2397,6 @@ public class EggGen {
             return "RY";
         }
 
-
         @Override
         public List<Expr> getParameters() {
             List<Expr> params = new ArrayList<>();
@@ -2732,7 +2424,7 @@ public class EggGen {
         public int getTwoQubitsCount() {
             return 1;
         }
-        
+
         @Override
         public String gateName() {
             return "RXX";
@@ -2755,7 +2447,6 @@ public class EggGen {
         public int getMaxQubits(){
             return Integer.max(Integer.valueOf(qubit1.replaceAll("q", "")), Integer.valueOf(qubit2.replaceAll("q", "")));
         }
-
 
         public void getAllSymbols(Set<String> vars) {
             angle.getAllSymbols(vars);
@@ -2816,7 +2507,6 @@ public class EggGen {
             return Integer.valueOf(qubit.replaceAll("q", ""));
         }
 
-
         @Override
         public void getAllSymbols(Set<String> vars) {
             phi.getAllSymbols(vars);
@@ -2841,12 +2531,10 @@ public class EggGen {
             return new GPI(qubit, CircuitDAG.eval(phi, angleMap));
         }
 
-
         @Override
         public Gate substitute(Map<String, Expr> angleMap) {
             return new GPI(qubit, CircuitDAG.substitute(phi, angleMap));
         }
-
 
         @Override
         public String gateName() {
@@ -2961,7 +2649,6 @@ public class EggGen {
             return Integer.valueOf(qubit.replaceAll("q", ""));
         }
 
-
         @Override
         public void getAllSymbols(Set<String> vars) {
             theta.getAllSymbols(vars);
@@ -3036,7 +2723,6 @@ public class EggGen {
             return Integer.max(Integer.valueOf(qubit1.replaceAll("q", "")), Integer.valueOf(qubit2.replaceAll("q", "")));
         }
 
-
         @Override
         public void getAllSymbols(Set<String> vars) {
             phi1.getAllSymbols(vars);
@@ -3062,7 +2748,6 @@ public class EggGen {
             return new MS(qubit1, qubit2, CircuitDAG.eval(phi1, angleMap), CircuitDAG.eval(phi2, angleMap));
         }
 
-
         @Override
         public Gate substitute(Map<String, Expr> angleMap) {
             return new MS(qubit1, qubit2, CircuitDAG.substitute(phi1, angleMap), CircuitDAG.substitute(phi2, angleMap));
@@ -3073,7 +2758,6 @@ public class EggGen {
             return "MS";
         }
 
-
         @Override
         public List<Expr> getParameters() {
             List<Expr> params = new ArrayList<>();
@@ -3081,7 +2765,6 @@ public class EggGen {
             params.add(phi2);
             return params;
         }
-
 
         @Override
         public List<String> getQubits() {
@@ -3107,7 +2790,6 @@ public class EggGen {
             String var = qubitMap.computeIfAbsent(qubit, q -> "q" + qubitMap.size());
             return String.format("(SX %s)", var);
         }
-
 
         @Override
         public int getMaxQubits(){

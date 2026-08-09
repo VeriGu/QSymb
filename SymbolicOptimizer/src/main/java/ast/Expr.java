@@ -2,28 +2,23 @@ package ast;
 
 import java.util.Set;
 
-public sealed class Expr 
+public sealed class Expr
   permits Bool, Real, Symbol, Var, Fun, UnOp, BinOp {
   public enum Op {
-    /* UnOps */
-    EXP,   // e^ix
+    EXP,
     SQRT,
-    MINUS, // -
+    MINUS,
     COS,
     SIN,
-    // bool
-    NOT,   // !
-    /* BinOps */
+    NOT,
     PLUS,
     SUBTRACT,
     MULT,
     DIV,
     POWER,
-    // bool
     XOR,
     AND,
     OR;
-
 
     public String toEggString() {
         return "("+name()+")";
@@ -35,13 +30,11 @@ public sealed class Expr
     return "Expr []";
   }
 
-
   public String toEggString() {
     return "(Expr )";
   }
 
-
   public void getAllSymbols(Set<String> vars) {
-    
+
   }
 }
