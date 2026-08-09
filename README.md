@@ -29,7 +29,7 @@ size/qubit bounds, and (2) a small, expressive **canonical symbolic** rule set.
 
 ## Prerequisites
 
-**Recommended — prebuilt Docker image** (all tools below preinstalled):
+**Recommended — prebuilt Docker image** (everything preinstalled):
 ```bash
 docker pull xiaoqianghweye/qsymb:oopsla26
 ```
@@ -37,24 +37,10 @@ See **[Artifact_README.md](Artifact_README.md)** for running the image.
 
 **Native toolchain** (for building outside the image):
 
-| Tool | Version | Used for |
-|------|---------|----------|
-| JDK | 17 (built/run with `--enable-preview`) | rule synthesis + optimizer |
-| Maven | ≥ 3.6 | build via `build_qsymb.sh`; auto-fetches antlr4, jgrapht, guava, gson, commons-*, opencsv, lombok |
-| `egglog-experimental` | 1.0.0 (binary on `PATH`) | e-graph rule saturation |
-| Python | 3.10 | symbolic solver, ILP compaction, equivalence checks |
-
-Python packages:
-
-| Package | Used for |
-|---------|----------|
-| sympy 1.11, numpy 1.23 | symbolic intertwiner / eigenvalue solve and numeric grouping fingerprints (`semantics.py`) |
-| PuLP (+ CBC) | ILP circuit compaction (`SymbolicOptimizer/scripts/ilp_compact.py`) |
-| qiskit | equivalence verification |
-| matplotlib, pandas, seaborn, scipy | figure / table generation (paper plots only) |
-
-All Java libraries are resolved automatically by Maven; only the JDK, Maven, the
-`egglog-experimental` binary, and the Python packages need to be installed.
+- JDK 17 (built/run with `--enable-preview`)
+- Maven >= 3.6 (Java libraries — antlr4, jgrapht, guava, gson, commons-*, opencsv, lombok — are fetched automatically)
+- `egglog-experimental` 1.0.0 (binary on `PATH`)
+- Python 3.10 with: sympy 1.11, numpy 1.23, PuLP (+ CBC), qiskit, matplotlib, pandas, seaborn, scipy
 
 ## Reproducing the paper
 See **[Artifact_README.md](Artifact_README.md)** for full build and experiment instructions
