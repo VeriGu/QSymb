@@ -96,12 +96,12 @@ done
 # ---------------------------------------------------------------------------
 #  Paper Table 3 (Synthesis of canonical symbolic rules with and without
 #  property grouping), same columns as the paper:
-#  Gateset | #Rules | Cost w/ Grouping (min) | Cost w/o Grouping (min) | Speedup | size
+#  Gateset | #Rules | Cost w/ Grouping (s) | Cost w/o Grouping (s) | Speedup | size
 # ---------------------------------------------------------------------------
 echo
 echo "=== Table 3. Synthesis of canonical symbolic rules with and without property grouping ==="
 printf "%-10s %-8s %-22s %-24s %-9s %-5s\n" \
-  "Gateset" "#Rules" "Cost w/ Grouping (min)" "Cost w/o Grouping (min)" "Speedup" "size"
+  "Gateset" "#Rules" "Cost w/ Grouping (s)" "Cost w/o Grouping (s)" "Speedup" "size"
 for GS in "${GATESETS[@]}"; do
   SIZE="${SIZES[$GS]}"
   OUTDIR=/root/filter_speedup_${GS}
@@ -114,8 +114,8 @@ for GS in "${GATESETS[@]}"; do
     t_off=$(grep -oE "wall time \(s\): [0-9]+" "$OUTDIR/${GS}_s${SIZE}_off.log" 2>/dev/null | grep -oE "[0-9]+" | tail -1)
   fi
   rules=$(wc -l < "$OUTDIR/rules_on.txt" 2>/dev/null || echo "?")
-  m_on=$(awk -v s="${t_on:-}" 'BEGIN{if(s=="")print"?";else printf "%.3f", s/60}')
-  m_off=$(awk -v s="${t_off:-}" 'BEGIN{if(s=="")print"?";else printf "%.3f", s/60}')
+  m_on=$(awk -v s="${t_on:-}" 'BEGIN{if(s=="")print"?";else printf "%d", s}')
+  m_off=$(awk -v s="${t_off:-}" 'BEGIN{if(s=="")print"?";else printf "%d", s}')
   spd=$(awk -v a="${t_off:-0}" -v b="${t_on:-0}" 'BEGIN{if(b>0)printf "%.0fx", a/b; else print"?"}')
   printf "%-10s %-8s %-22s %-24s %-9s %-5s\n" \
     "${PAPER_NAME[$GS]:-$GS}" "$rules" "$m_on" "$m_off" "$spd" "$SIZE"
