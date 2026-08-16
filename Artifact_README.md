@@ -31,12 +31,9 @@ Stop/remove: `docker stop qsymb && docker rm qsymb`.
 ## 1. Build (~1 min)
 
 ```bash
-pip install -r requirements.txt
 bash build_qsymb.sh
 ```
-Installs the Python dependencies (already present in the image; the command
-is a no-op there) and builds
-`SymbolicOptimizer-1.0-SNAPSHOT-jar-with-dependencies.jar`.
+Builds `SymbolicOptimizer-1.0-SNAPSHOT-jar-with-dependencies.jar`.
 
 ## 2. Kick-the-tires (~15 min)
 
