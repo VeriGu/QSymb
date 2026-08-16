@@ -1,0 +1,13 @@
+# Python dependencies for QSymb (semantics.py, smt_check.py, ILP compaction,
+# fidelity/equivalence checking, and the qsymb_plot_tools figure scripts).
+# Install: pip install -r requirements.txt
+numpy==1.23.5
+sympy==1.11.1
+scipy==1.10.1
+qiskit==0.41.1
+z3-solver==4.8.12.0
+pulp==3.3.2
+networkx==2.8.8
+pandas==1.5.3
+matplotlib==3.7.1
+seaborn==0.12.2

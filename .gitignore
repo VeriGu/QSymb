@@ -17,6 +17,7 @@
 *.log
 *.qasm
 *.txt
+!requirements.txt
 *.ibmq
 *.pdf
 *.json

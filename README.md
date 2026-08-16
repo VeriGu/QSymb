@@ -29,6 +29,11 @@ size/qubit bounds, and (2) a small, expressive **canonical symbolic** rule set.
 - JDK 17 (built/run with `--enable-preview`)
 - Maven >= 3.6 (Java libraries — antlr4, jgrapht, guava, gson, commons-*, opencsv, lombok — are fetched automatically)
 - `egglog-experimental` 1.0.0 (binary on `PATH`)
+- Python 3.10 with the packages in `requirements.txt`:
+
+```bash
+pip install -r requirements.txt
+```
 
 ## Reproducing the paper
 See **[Artifact_README.md](Artifact_README.md)** for full build and experiment instructions
