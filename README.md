@@ -24,13 +24,6 @@ size/qubit bounds, and (2) a small, expressive **canonical symbolic** rule set.
 | `qsymb_plot_tools/`, `paper_results/` | figure generation and precomputed results |
 
 ## Prerequisites
-
-**Recommended — prebuilt Docker image** (everything preinstalled):
-```bash
-docker pull xiaoqianghweye/qsymb:oopsla26
-```
-See **[Artifact_README.md](Artifact_README.md)** for running the image.
-
 **Native toolchain** (for building outside the image):
 
 - JDK 17 (built/run with `--enable-preview`)
