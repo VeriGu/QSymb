@@ -21,6 +21,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import org.antlr.v4.runtime.tree.Tree;
 import org.apache.commons.cli.CommandLine;
@@ -85,6 +86,53 @@ public class EnumeratorPrune {
   private List<Circuit> symbccs;
   private Set<String> badrules;
   private Set<String> goodRules;
+
+  private static final boolean SMT_CHECK = !"false".equals(System.getProperty("smt.check"));
+  public long smtChecked = 0, smtRejected = 0, smtUnknown = 0, smtTimeMs = 0;
+  private Process smtProc;
+  private java.io.BufferedWriter smtIn;
+  private BufferedReader smtOut;
+
+  private void startSmtServer() throws IOException {
+    ProcessBuilder pb = new ProcessBuilder("python3", "smt_check.py", "--server");
+    pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+    smtProc = pb.start();
+    smtIn = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        smtProc.getOutputStream(), java.nio.charset.StandardCharsets.UTF_8));
+    smtOut = new BufferedReader(new InputStreamReader(
+        smtProc.getInputStream(), java.nio.charset.StandardCharsets.UTF_8));
+  }
+
+  private String smtCheckEquivalent(String lhsQasm, String rhsQasm) {
+    long t0 = System.currentTimeMillis();
+    for (int attempt = 0; attempt < 2; attempt++) {
+      try {
+        if (smtProc == null || !smtProc.isAlive()) {
+          startSmtServer();
+        }
+        java.util.Base64.Encoder enc = java.util.Base64.getEncoder();
+        String req = enc.encodeToString("CHECK".getBytes(java.nio.charset.StandardCharsets.UTF_8))
+            + "\t" + enc.encodeToString(lhsQasm.getBytes(java.nio.charset.StandardCharsets.UTF_8))
+            + "\t" + enc.encodeToString(rhsQasm.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        smtIn.write(req);
+        smtIn.write('\n');
+        smtIn.flush();
+        String line = smtOut.readLine();
+        if (line == null) {
+          throw new IOException("smt_check.py closed unexpectedly");
+        }
+        smtTimeMs += System.currentTimeMillis() - t0;
+        return new String(java.util.Base64.getDecoder().decode(line.trim()),
+            java.nio.charset.StandardCharsets.UTF_8);
+      } catch (IOException e) {
+        logger.warn("smt_check server error (attempt {}): {}", attempt + 1, e.getMessage());
+        if (smtProc != null) smtProc.destroyForcibly();
+        smtProc = null;
+      }
+    }
+    smtTimeMs += System.currentTimeMillis() - t0;
+    return "UNKNOWN server unavailable";
+  }
 
   private class RuleWithPriority implements Comparable<RuleWithPriority> {
     SimpleEntry<ConstrainedCircuit, ConstrainedCircuit> rule;
@@ -620,6 +668,10 @@ public class EnumeratorPrune {
     logger.info("E-graph time (ms): " + this.egraphTime);
     logger.info("Translation time (ms): " + this.translateTime);
     logger.info("Choose rules time (ms): " + this.chooseTime);
+    if (SMT_CHECK) {
+      logger.info("SMT rule validation: checked={} refuted={} inconclusive={} time (ms): {}",
+          smtChecked, smtRejected, smtUnknown, smtTimeMs);
+    }
     logger.info("Enumeration time (ms): " + this.enumerationTime);
     logger.info("Filter time (ms): " + this.filtertime);
 
@@ -839,6 +891,22 @@ public class EnumeratorPrune {
           if (!hasCommonSubcircuit(r, other)) {
             if (!r.hasSymb() && !other.hasSymb()) {
               if (verifier.verifyv2(r, other, symbolMap)) {
+                String smtVerdict = SMT_CHECK
+                    ? smtCheckEquivalent(r.getQasmString(), other.getQasmString())
+                    : "VALID";
+                if (SMT_CHECK) smtChecked++;
+                if (!"VALID".equals(smtVerdict)) {
+                  if (smtVerdict.startsWith("UNKNOWN")) {
+                    smtUnknown++;
+                    logger.warn("rule rejected, SMT inconclusive ({}): {}", smtVerdict, rule);
+                  } else {
+                    smtRejected++;
+                    logger.warn("rule rejected, SMT refuted (passed sampling!): {}", rule);
+                  }
+                  badrules.add(CircuitTranslator.translate(r).toEggString() + "|" + CircuitTranslator.translate(other).toEggString());
+                  badrules.add(CircuitTranslator.translate(other).toEggString() + "|" + CircuitTranslator.translate(r).toEggString());
+                  continue;
+                }
                 learned_rules.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
                 if(!symb) {
                   learned.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
