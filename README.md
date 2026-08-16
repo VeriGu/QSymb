@@ -2,7 +2,8 @@
 
 **Synthesis of Compact and Expressive Quantum-Circuit Optimizations.**
 
-A state-of-the-art rule synthesizer and optimizer for quantum circuit optimization. QSymb automatically synthesizes both concrete rules and symbolic rules and QSymb-Optimizer use them as input to perform optimization.
+A state-of-the-art rule synthesizer and optimizer for quantum circuit optimization. Given a gate set, QSymb automatically synthesizes both concrete rules and symbolic rules, and QSymb-Optimizer uses them as input to perform optimization. On the IBM-Eagle gate set, Qsymb strictly outperforms state-of-the-art rewrite-based optimizers (Qiskit, Guoq-Rewrite, Quartz, TKET, and Queso) in two-qubit-gate reduction on 90%, 67%, 82%, 85%, and 83% of standard quantum algorithm benchmarks, respectively; on Nam gate set, the corresponding rates are 88%, 74%, 81%, 86%, and 82.9%. It
+achieves final average two-qubit-gate reductions of 27.44% and 29.95%.
 
 ## Key ideas
 - **Symbolic rewrite rules** — a symbolic gate stands for infinitely many subcircuits; a
